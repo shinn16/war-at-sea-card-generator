@@ -1,6 +1,7 @@
 from json.encoder import JSONEncoder
 from models.alliance import Alliance
 from models.nation import Nation
+from models.unit import Unit
 
 class ModelJsonEncoder(JSONEncoder):
     def default(self, o):
