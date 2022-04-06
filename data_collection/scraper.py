@@ -120,7 +120,7 @@ for nation in NATION_LIST:
         current_record += 1
         sleep(2)
 
-outputFile = open("War_at_Sea.json", "w")
+outputFile = open("../War_at_Sea.json", "w")
 outputFile.writelines(json.dumps(NATION_LIST, cls=ModelJsonEncoder, indent=4))
 outputFile.close()
 print("Total records: " + str(total_records))
