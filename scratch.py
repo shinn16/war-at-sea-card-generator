@@ -1,9 +1,13 @@
 from PIL import Image, ImageDraw, ImageFont
 from card_generator.generator import Coordinates, Resizing, TextColor, TextSize
 
-card_base = Image.open("assets/axis-card-base.png")
-draw_layer = ImageDraw.Draw(card_base)
+card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
+draw_layer = ImageDraw.Draw(card_base, "RGBA")
 
+germany_icon = Image.open("assets/nation-emblems/Germany-sm.png")
+germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM.value)
+
+card_base.paste(germany_icon, Coordinates.NATION_EMBLEM.value, germany_icon)
 
 nameFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.SHIP_NAME.value)
 draw_layer.text(Coordinates.SHIP_NAME.value, "T27",
@@ -29,19 +33,19 @@ draw_layer.text(Coordinates.SHIP_SPEED.value, "Speed - 2",
                 fill=TextColor.STATS.value)
 
 attackArmorFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.ATTACK_ARMOR_STATS.value)
-draw_layer.text((70, 257), "Attacks",
+draw_layer.text((72, 257), "Attacks",
                 font=attackArmorFont,
                 fill=TextColor.STATS.value)
 
-draw_layer.text((235, 257), "0",
+draw_layer.text((240, 257), "0",
                 font=attackArmorFont,
                 fill=TextColor.STATS.value)
 
-draw_layer.text((310, 257), "1",
+draw_layer.text((317, 257), "1",
                 font=attackArmorFont,
                 fill=TextColor.STATS.value)
 
-draw_layer.text((385, 257), "2",
+draw_layer.text((391, 257), "2",
                 font=attackArmorFont,
                 fill=TextColor.STATS.value)
 
@@ -50,23 +54,42 @@ draw_layer.text((465, 257), "3",
                 fill=TextColor.STATS.value)
 
 draw_layer.line([(210, 254), (210, 292)], TextColor.POINT_VALUE.value, 3)
-draw_layer.line([(280, 254), (280, 292)], TextColor.POINT_VALUE.value, 1)
-draw_layer.line([(355, 254), (355, 292)], TextColor.POINT_VALUE.value, 1)
-draw_layer.line([(435, 254), (435, 292)], TextColor.POINT_VALUE.value, 1)
+draw_layer.line([(286, 254), (286, 292)], TextColor.POINT_VALUE.value, 1)
+draw_layer.line([(361, 254), (361, 292)], TextColor.POINT_VALUE.value, 1)
+draw_layer.line([(436, 254), (436, 292)], TextColor.POINT_VALUE.value, 1)
 
 # Dynamic stuff
-# draw_layer.rectangle([(56, 295), (210, 360)], (0, 0, 0), None, 0)
+transparentEnablingOverlay = Image.new("RGBA", card_base.size, (255, 255, 255, 0))
+overlayDraw = ImageDraw.Draw(transparentEnablingOverlay)
 
 # 65
 base = 295
 width = 65
-for i in range(2):
-    draw_layer.rectangle([(56, base), (210, base + width)], (0, 0, 0), None, 0)
+attacks = 2
+for i in range(attacks):
+    overlayDraw.rectangle([(56, base + 2), (210, base + width)], (0, 0, 0), None, 0)
+    overlayDraw.rectangle([(210, base + 1), (513, base + width)], (0, 255, 0, 80), None, 0)
+    overlayDraw.line([(286, base + 1), (286, base + width)], (0, 0, 0), 1)
+    overlayDraw.line([(361, base + 1), (361, base + width)], (0, 0, 0), 1)
+    overlayDraw.line([(436, base + 1), (436, base + width)], (0, 0, 0), 1)
+    if i == 0:
+        # no horizontal border needed
+        pass
+    else:
+        overlayDraw.line([(56, base + 1), (210,  base + 1)], TextColor.POINT_VALUE.value, 1)
+        overlayDraw.line([(211, base + 1), (513, base + 1)], (0, 0, 0), 1)
     base += width
 
+# black line outer border
+overlayDraw.line([(513, 296), (513, base + 1)], (0, 0, 0), 3)
+# white line inner border
+overlayDraw.line([(210, 292), (210, base + 1)], TextColor.POINT_VALUE.value, 3)
+# bottom grey border
+overlayDraw.line([(56, base + 1), (514, base + 1)], (137, 140, 141), 3)
 
-germany_icon = Image.open("assets/nation-emblems/Germany-sm.png")
-germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM.value)
 
-card_base.paste(germany_icon, Coordinates.NATION_EMBLEM.value, germany_icon)
-card_base.show()
+
+
+
+out = Image.alpha_composite(card_base, transparentEnablingOverlay)
+out.show()
