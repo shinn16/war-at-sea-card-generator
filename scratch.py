@@ -60,15 +60,39 @@ draw_layer.line([(436, 254), (436, 292)], TextColor.POINT_VALUE.value, 1)
 
 # Dynamic stuff
 transparentEnablingOverlay = Image.new("RGBA", card_base.size, (255, 255, 255, 0))
+TopOverlay = Image.new("RGBA", card_base.size, (255, 255, 255, 0))
 overlayDraw = ImageDraw.Draw(transparentEnablingOverlay)
+
+attack_icons = [
+    Image.open("assets/card-icons/Gunnery1-Ship.png"),
+    Image.open("assets/card-icons/Gunnery2.png"),
+    Image.open("assets/card-icons/Gunnery3.png"),
+    Image.open("assets/card-icons/Antiair.png"),
+    Image.open("assets/card-icons/Torpedo.png")
+]
 
 # 65
 base = 295
-width = 65
-attacks = 2
+width = 55
+attacks = 4
 for i in range(attacks):
+    # attack icon and box
     overlayDraw.rectangle([(56, base + 2), (210, base + width)], (0, 0, 0), None, 0)
+    # attack icons
+    current_icon = attack_icons[i]
+    w, h = attack_icons[i].size
+    current_icon = current_icon.resize((w * 2, h * 2))
+    w, h = current_icon.size
+    print(type(w))
+    x = int(((210+56)/2 - (w/2)))
+    y = int((base + i + 1))
+
+    print(str(w) + ", " + str(h))
+    TopOverlay.paste(current_icon, (x, y))
+
+    # green transparent background
     overlayDraw.rectangle([(210, base + 1), (513, base + width)], (0, 255, 0, 80), None, 0)
+    # attack vertical dividers
     overlayDraw.line([(286, base + 1), (286, base + width)], (0, 0, 0), 1)
     overlayDraw.line([(361, base + 1), (361, base + width)], (0, 0, 0), 1)
     overlayDraw.line([(436, base + 1), (436, base + width)], (0, 0, 0), 1)
@@ -88,8 +112,6 @@ overlayDraw.line([(210, 292), (210, base + 1)], TextColor.POINT_VALUE.value, 3)
 overlayDraw.line([(56, base + 1), (514, base + 1)], (137, 140, 141), 3)
 
 
-
-
-
-out = Image.alpha_composite(card_base, transparentEnablingOverlay)
+out = Image.alpha_composite(transparentEnablingOverlay, TopOverlay)
+out = Image.alpha_composite(card_base, out)
 out.show()
