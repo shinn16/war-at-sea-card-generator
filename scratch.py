@@ -55,10 +55,15 @@ draw_layer.line([(355, 254), (355, 292)], TextColor.POINT_VALUE.value, 1)
 draw_layer.line([(435, 254), (435, 292)], TextColor.POINT_VALUE.value, 1)
 
 # Dynamic stuff
-# draw_layer.rectangle([(65, 264), (210, 330)], (0, 0, 0), None, 0)
-# draw_layer.rectangle([(65, 330), (210, 396)], (0, 0, 0), None, 0)
-# draw_layer.rectangle([(65, 396), (210, 462)], (0, 0, 0), None, 0)
-# draw_layer.rectangle([(65, 462), (210, 528)], (0, 0, 0), None, 0)
+# draw_layer.rectangle([(56, 295), (210, 360)], (0, 0, 0), None, 0)
+
+# 65
+base = 295
+width = 65
+for i in range(2):
+    draw_layer.rectangle([(56, base), (210, base + width)], (0, 0, 0), None, 0)
+    base += width
+
 
 germany_icon = Image.open("assets/nation-emblems/Germany-sm.png")
 germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM.value)
