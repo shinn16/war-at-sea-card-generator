@@ -1,66 +1,62 @@
-from PIL import Image, ImageDraw, ImageFont
-from card_generator.generator import Coordinates, Resizing, TextColor, TextSize
+from PIL import Image, ImageDraw
+from card_generator.definitions import Coordinates, Resizing, Colors, Fonts, Values, DIVIDER_SPACING
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
 
 germany_icon = Image.open("assets/nation-emblems/Germany-sm.png")
-germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM.value)
+germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM)
 
-card_base.paste(germany_icon, Coordinates.NATION_EMBLEM.value, germany_icon)
+card_base.paste(germany_icon, Coordinates.NATION_EMBLEM, germany_icon)
 
-nameFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.SHIP_NAME.value)
-draw_layer.text(Coordinates.SHIP_NAME.value, "T27",
-                font=nameFont,
-                fill=TextColor.SHIP_NAME.value)
+draw_layer.text(Coordinates.SHIP_NAME, "T27",
+                font=Fonts.SHIP_NAME,
+                fill=Colors.SHIP_NAME)
 
-pointFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.POINT_VALUE.value)
-draw_layer.text(Coordinates.SINGLE_DIGIT_POINT_VALUE.value, "7",
-                font=pointFont,
-                fill=TextColor.POINT_VALUE.value)
+draw_layer.text(Coordinates.SINGLE_DIGIT_POINT_VALUE, "7",
+                font=Fonts.POINT_VALUE,
+                fill=Colors.POINT_VALUE)
 
-shipTypeFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.SHIP_TYPE_AND_YEAR.value)
-draw_layer.text(Coordinates.SHIP_TYPE.value, "Ship - Destroyer",
-                font=shipTypeFont,
-                fill=TextColor.SHIP_TYPE_AND_YEAR.value)
+draw_layer.text(Coordinates.SHIP_TYPE, "Ship - Destroyer",
+                font=Fonts.SHIP_TYPE_AND_YEAR,
+                fill=Colors.SHIP_TYPE_AND_YEAR)
 
-draw_layer.text(Coordinates.SHIP_YEAR.value, "1939",
-                font=shipTypeFont,
-                fill=TextColor.SHIP_TYPE_AND_YEAR.value)
-speedFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.SHIP_SPEED.value)
-draw_layer.text(Coordinates.SHIP_SPEED.value, "Speed - 2",
-                font=speedFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.SHIP_YEAR, "1939",
+                font=Fonts.SHIP_TYPE_AND_YEAR,
+                fill=Colors.SHIP_TYPE_AND_YEAR)
 
-attackArmorFont = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", TextSize.ATTACK_ARMOR_STATS.value)
-draw_layer.text((72, 257), "Attacks",
-                font=attackArmorFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.SHIP_SPEED, "Speed - 2",
+                font=Fonts.SHIP_SPEED,
+                fill=Colors.STATS)
 
-draw_layer.text((240, 257), "0",
-                font=attackArmorFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.ATTACK_HEADING, "Attacks",
+                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                fill=Colors.STATS)
 
-draw_layer.text((317, 257), "1",
-                font=attackArmorFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_0, "0",
+                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                fill=Colors.STATS)
 
-draw_layer.text((391, 257), "2",
-                font=attackArmorFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_1, "1",
+                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                fill=Colors.STATS)
 
-draw_layer.text((465, 257), "3",
-                font=attackArmorFont,
-                fill=TextColor.STATS.value)
+draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_2, "2",
+                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                fill=Colors.STATS)
 
-draw_layer.line([(210, 254), (210, 292)], TextColor.POINT_VALUE.value, 3)
-draw_layer.line([(286, 254), (286, 292)], TextColor.POINT_VALUE.value, 1)
-draw_layer.line([(361, 254), (361, 292)], TextColor.POINT_VALUE.value, 1)
-draw_layer.line([(436, 254), (436, 292)], TextColor.POINT_VALUE.value, 1)
+draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_3, "3",
+                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                fill=Colors.STATS)
 
-# Dynamic stuff
-transparentEnablingOverlay = Image.new("RGBA", card_base.size, (255, 255, 255, 0))
-TopOverlay = Image.new("RGBA", card_base.size, (255, 255, 255, 0))
+draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER, Colors.STATS, 3)
+draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_1, Colors.STATS, 1)
+draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_2, Colors.POINT_VALUE, 1)
+draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_3, Colors.POINT_VALUE, 1)
+
+# Dynamic stuff, done in its own overlay layers.
+transparentEnablingOverlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
+TopOverlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
 overlayDraw = ImageDraw.Draw(transparentEnablingOverlay)
 
 attack_icons = [
@@ -71,47 +67,103 @@ attack_icons = [
     Image.open("assets/card-icons/Torpedo.png")
 ]
 
+attack_values = ["10", "5", "3", "-"]
+
 # 65
-base = 295
-width = 55
-attacks = 4
+base = Values.ATTACK_RECTANGLE_START_Y
+width = Values.ATTACK_RECTANGLE_WIDTH
+attacks = 5
 for i in range(attacks):
     # attack icon and box
-    overlayDraw.rectangle([(56, base + 2), (210, base + width)], (0, 0, 0), None, 0)
+    overlayDraw.rectangle(
+        (
+            (Values.ATTACK_ICON_START_X, base + 2),
+            (Values.ATTACK_RECTANGLE_START_X, base + width)
+        ),
+        Colors.BLACK, None, 0)
     # attack icons
     current_icon = attack_icons[i]
     w, h = attack_icons[i].size
     current_icon = current_icon.resize((w * 2, h * 2))
     w, h = current_icon.size
-    print(type(w))
-    x = int(((210+56)/2 - (w/2)))
-    y = int((base + i + 1))
 
-    print(str(w) + ", " + str(h))
+    x = int(((Values.ATTACK_RECTANGLE_START_X + Values.ATTACK_ICON_START_X)/2 - (w/2)))
+    y = int((base + i + 2))
+
     TopOverlay.paste(current_icon, (x, y))
 
     # green transparent background
-    overlayDraw.rectangle([(210, base + 1), (513, base + width)], (0, 255, 0, 80), None, 0)
+    overlayDraw.rectangle(((Values.ATTACK_RECTANGLE_START_X, base + 1),
+                           (Values.ATTACK_RECTANGLE_END_X, base + width)),
+                          Colors.ATTACK_VALUE_BACKGROUND, None, 0)
     # attack vertical dividers
-    overlayDraw.line([(286, base + 1), (286, base + width)], (0, 0, 0), 1)
-    overlayDraw.line([(361, base + 1), (361, base + width)], (0, 0, 0), 1)
-    overlayDraw.line([(436, base + 1), (436, base + width)], (0, 0, 0), 1)
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_1, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_1, base + width)],
+                     Colors.BLACK, 1)
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_2, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_2, base + width)],
+                     Colors.BLACK, 1)
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_3, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_3, base + width)],
+                     Colors.BLACK, 1)
+
+    # render the attacks
+    for attack_range in range(4):
+        # dynamically find the size of the attack value text, so it can be centered
+        w, h = overlayDraw.textsize(attack_values[attack_range], font=Fonts.ATTACK_ARMOR_STATS)
+        current_x_middle = Values.ATTACK_RECTANGLE_START_X + (DIVIDER_SPACING/2) + (attack_range * DIVIDER_SPACING)
+        current_y_middle = base - 5 + (width/2)
+
+        overlayDraw.text(
+            (
+                current_x_middle - (w/2),
+                current_y_middle - (h/2)
+            ),
+            attack_values[attack_range],
+            font=Fonts.ATTACK_ARMOR_STATS,
+            fill=Colors.STATS)
+
     if i == 0:
         # no horizontal border needed
         pass
     else:
-        overlayDraw.line([(56, base + 1), (210,  base + 1)], TextColor.POINT_VALUE.value, 1)
-        overlayDraw.line([(211, base + 1), (513, base + 1)], (0, 0, 0), 1)
+        # attack icon dividers
+        overlayDraw.line(
+            [
+                (Values.ATTACK_ICON_START_X, base + 1),
+                (Values.ATTACK_RECTANGLE_START_X, base + 1)
+             ],
+            Colors.WHITE, 1)
+        # black horizontal grid lines
+        overlayDraw.line(
+            [
+                (Values.ATTACK_RECTANGLE_START_X, base + 1),
+                (Values.ATTACK_RECTANGLE_END_X, base + 1)
+            ],
+            Colors.BLACK, 1)
     base += width
 
 # black line outer border
-overlayDraw.line([(513, 296), (513, base + 1)], (0, 0, 0), 3)
+overlayDraw.line(
+    [
+        (Values.ATTACK_RECTANGLE_END_X, Values.ATTACK_HEADER_Y_END),
+        (Values.ATTACK_RECTANGLE_END_X, base + 1)
+    ],
+    Colors.BLACK, 3)
 # white line inner border
-overlayDraw.line([(210, 292), (210, base + 1)], TextColor.POINT_VALUE.value, 3)
+overlayDraw.line(
+    [
+        (Values.ATTACK_RECTANGLE_START_X, Values.ATTACK_HEADER_Y_END),
+        (Values.ATTACK_RECTANGLE_START_X, base + 1)
+    ],
+    Colors.POINT_VALUE, 3)
 # bottom grey border
-overlayDraw.line([(56, base + 1), (514, base + 1)], (137, 140, 141), 3)
-
+overlayDraw.line(
+    [
+        (Values.ATTACK_ICON_START_X, base + 1),
+        (Values.ATTACK_RECTANGLE_END_X + 1, base + 1)
+    ],
+    Colors.GREY, 3)
 
 out = Image.alpha_composite(transparentEnablingOverlay, TopOverlay)
 out = Image.alpha_composite(card_base, out)
+
 out.show()
+# out.save("out.png")
