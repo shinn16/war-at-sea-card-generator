@@ -1,6 +1,42 @@
-from PIL import ImageFont
+from PIL import Image, ImageFont
 
 DIVIDER_SPACING = 76
+
+class Resizing:
+    NATION_EMBLEM = (60, 60)
+
+
+class ICONS:
+    GUNNERY_1 = Image.open("assets/card-icons/Gunnery1-Ship.png")
+    GUNNERY_2 = Image.open("assets/card-icons/Gunnery2.png")
+    GUNNERY_3 = Image.open("assets/card-icons/Gunnery3.png")
+    ANTI_AIR = Image.open("assets/card-icons/Antiair.png")
+    TORPEOO = Image.open("assets/card-icons/Torpedo.png")
+    AIRCRAFT_GUNNERY = Image.open("assets/card-icons/Gunnery1-Aircraft.png")
+    BOMBS = Image.open("assets/card-icons/Bomb.png")
+
+    CARRIER = Image.open("assets/card-icons/Carrier.png")
+    FLAGSHIP = Image.open("assets/card-icons/Flagship.png")
+
+
+class NationEmblems:
+    GERMANY = Image.open("assets/nation-emblems/Germany-sm.png").resize(Resizing.NATION_EMBLEM)
+    ITALY = Image.open("assets/nation-emblems/Italy-sm.png").resize(Resizing.NATION_EMBLEM)
+    JAPAN = Image.open("assets/nation-emblems/Japan-sm.png").resize(Resizing.NATION_EMBLEM)
+    US = Image.open("assets/nation-emblems/United States-sm.png").resize(Resizing.NATION_EMBLEM)
+    UK = Image.open("assets/nation-emblems/United Kingdom-sm.png").resize(Resizing.NATION_EMBLEM)
+    CANADA = Image.open("assets/nation-emblems/Canada-sm.png").resize(Resizing.NATION_EMBLEM)
+    AUSTRALIA = Image.open("assets/nation-emblems/Australia-sm.png").resize(Resizing.NATION_EMBLEM)
+    FRANCE = Image.open("assets/nation-emblems/France-sm.png").resize(Resizing.NATION_EMBLEM)
+    GREECE = Image.open("assets/nation-emblems/Greece-sm.png").resize(Resizing.NATION_EMBLEM)
+    NETHERLANDS = Image.open("assets/nation-emblems/Netherlands-sm.png").resize(Resizing.NATION_EMBLEM)
+    SWEDEN = Image.open("assets/nation-emblems/Sweden-sm.png").resize(Resizing.NATION_EMBLEM)
+    USSR = Image.open("assets/nation-emblems/Soviet Union-sm.png").resize(Resizing.NATION_EMBLEM)
+    FINLAND = Image.open("assets/nation-emblems/Finland-sm.png").resize(Resizing.NATION_EMBLEM)
+    NEW_ZEALAND = Image.open("assets/nation-emblems/New Zealand-sm.png").resize(Resizing.NATION_EMBLEM)
+
+
+
 
 
 class Colors:
@@ -23,9 +59,6 @@ class Fonts:
     ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
     ATTACK_ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
 
-
-class Resizing:
-    NATION_EMBLEM = (60, 60)
 
 
 class Coordinates:

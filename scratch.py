@@ -1,13 +1,10 @@
 from PIL import Image, ImageDraw
-from card_generator.definitions import Coordinates, Resizing, Colors, Fonts, Values, DIVIDER_SPACING
+from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, ICONS, DIVIDER_SPACING
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
 
-germany_icon = Image.open("assets/nation-emblems/Germany-sm.png")
-germany_icon = germany_icon.resize(Resizing.NATION_EMBLEM)
-
-card_base.paste(germany_icon, Coordinates.NATION_EMBLEM, germany_icon)
+card_base.paste(NationEmblems.GERMANY, Coordinates.NATION_EMBLEM, NationEmblems.GERMANY)
 
 draw_layer.text(Coordinates.SHIP_NAME, "T27",
                 font=Fonts.SHIP_NAME,
@@ -69,16 +66,14 @@ attack_icons = [
 
 attack_values = ["10", "5", "3", "-"]
 
-# 65
 base = Values.ATTACK_RECTANGLE_START_Y
-width = Values.ATTACK_RECTANGLE_WIDTH
 attacks = 5
 for i in range(attacks):
     # attack icon and box
     overlayDraw.rectangle(
         (
             (Values.ATTACK_ICON_START_X, base + 2),
-            (Values.ATTACK_RECTANGLE_START_X, base + width)
+            (Values.ATTACK_RECTANGLE_START_X, base + Values.ATTACK_RECTANGLE_WIDTH)
         ),
         Colors.BLACK, None, 0)
     # attack icons
@@ -94,14 +89,14 @@ for i in range(attacks):
 
     # green transparent background
     overlayDraw.rectangle(((Values.ATTACK_RECTANGLE_START_X, base + 1),
-                           (Values.ATTACK_RECTANGLE_END_X, base + width)),
+                           (Values.ATTACK_RECTANGLE_END_X, base + Values.ATTACK_RECTANGLE_WIDTH)),
                           Colors.ATTACK_VALUE_BACKGROUND, None, 0)
     # attack vertical dividers
-    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_1, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_1, base + width)],
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_1, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_1, base + Values.ATTACK_RECTANGLE_WIDTH)],
                      Colors.BLACK, 1)
-    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_2, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_2, base + width)],
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_2, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_2, base + Values.ATTACK_RECTANGLE_WIDTH)],
                      Colors.BLACK, 1)
-    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_3, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_3, base + width)],
+    overlayDraw.line([(Values.ATTACK_VERTICAL_DIVIDER_3, base + 1), (Values.ATTACK_VERTICAL_DIVIDER_3, base + Values.ATTACK_RECTANGLE_WIDTH)],
                      Colors.BLACK, 1)
 
     # render the attacks
@@ -109,7 +104,7 @@ for i in range(attacks):
         # dynamically find the size of the attack value text, so it can be centered
         w, h = overlayDraw.textsize(attack_values[attack_range], font=Fonts.ATTACK_ARMOR_STATS)
         current_x_middle = Values.ATTACK_RECTANGLE_START_X + (DIVIDER_SPACING/2) + (attack_range * DIVIDER_SPACING)
-        current_y_middle = base - 5 + (width/2)
+        current_y_middle = base - 5 + (Values.ATTACK_RECTANGLE_WIDTH/2)
 
         overlayDraw.text(
             (
@@ -138,7 +133,7 @@ for i in range(attacks):
                 (Values.ATTACK_RECTANGLE_END_X, base + 1)
             ],
             Colors.BLACK, 1)
-    base += width
+    base += Values.ATTACK_RECTANGLE_WIDTH
 
 # black line outer border
 overlayDraw.line(
