@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw
-from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, ICONS, DIVIDER_SPACING
+from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, DIVIDER_SPACING
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
@@ -72,7 +72,7 @@ for i in range(attacks):
     # attack icon and box
     overlayDraw.rectangle(
         (
-            (Values.ATTACK_ICON_START_X, base + 2),
+            (Values.LEFT_CARD_BORDER, base + 2),
             (Values.ATTACK_RECTANGLE_START_X, base + Values.ATTACK_RECTANGLE_WIDTH)
         ),
         Colors.BLACK, None, 0)
@@ -82,7 +82,7 @@ for i in range(attacks):
     current_icon = current_icon.resize((w * 2, h * 2))
     w, h = current_icon.size
 
-    x = int(((Values.ATTACK_RECTANGLE_START_X + Values.ATTACK_ICON_START_X)/2 - (w/2)))
+    x = int(((Values.ATTACK_RECTANGLE_START_X + Values.LEFT_CARD_BORDER) / 2 - (w / 2)))
     y = int((base + i + 2))
 
     TopOverlay.paste(current_icon, (x, y))
@@ -122,7 +122,7 @@ for i in range(attacks):
         # attack icon dividers
         overlayDraw.line(
             [
-                (Values.ATTACK_ICON_START_X, base + 1),
+                (Values.LEFT_CARD_BORDER, base + 1),
                 (Values.ATTACK_RECTANGLE_START_X, base + 1)
              ],
             Colors.WHITE, 1)
@@ -152,10 +152,18 @@ overlayDraw.line(
 # bottom grey border
 overlayDraw.line(
     [
-        (Values.ATTACK_ICON_START_X, base + 1),
+        (Values.LEFT_CARD_BORDER, base + 1),
         (Values.ATTACK_RECTANGLE_END_X + 1, base + 1)
     ],
     Colors.GREY, 3)
+
+# Armor box
+overlayDraw.rectangle(
+    (
+        (Values.LEFT_CARD_BORDER, base + Values.ARMOR_ROW_TOP_MARGIN),
+        (Values.LEFT_CARD_BORDER + Values.ARMOR_ROW_WIDTH, base + Values.ARMOR_ROW_TOP_MARGIN + Values.ARMOR_ROW_HEIGHT)
+    ),
+    Colors.BLACK, None, 0)
 
 out = Image.alpha_composite(transparentEnablingOverlay, TopOverlay)
 out = Image.alpha_composite(card_base, out)

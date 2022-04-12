@@ -2,16 +2,38 @@ from PIL import Image, ImageFont
 
 DIVIDER_SPACING = 76
 
+
+class Values:
+    # card positions
+    LEFT_CARD_BORDER = 56
+
+    # specific elements
+    ATTACK_HEADER_Y_END = 296
+
+    ATTACK_RECTANGLE_START_Y = 295
+    ATTACK_RECTANGLE_START_X = 210
+    ATTACK_RECTANGLE_END_X = 513
+    ATTACK_RECTANGLE_WIDTH = 55
+
+    ATTACK_VERTICAL_DIVIDER_1 = 286
+    ATTACK_VERTICAL_DIVIDER_2 = ATTACK_VERTICAL_DIVIDER_1 + DIVIDER_SPACING
+    ATTACK_VERTICAL_DIVIDER_3 = ATTACK_VERTICAL_DIVIDER_2 + DIVIDER_SPACING
+
+    ARMOR_ROW_TOP_MARGIN = 15
+    ARMOR_ROW_HEIGHT = 40
+    ARMOR_ROW_WIDTH = 630
+
+
 class Resizing:
     NATION_EMBLEM = (60, 60)
 
 
-class ICONS:
+class Icons:
     GUNNERY_1 = Image.open("assets/card-icons/Gunnery1-Ship.png")
     GUNNERY_2 = Image.open("assets/card-icons/Gunnery2.png")
     GUNNERY_3 = Image.open("assets/card-icons/Gunnery3.png")
     ANTI_AIR = Image.open("assets/card-icons/Antiair.png")
-    TORPEOO = Image.open("assets/card-icons/Torpedo.png")
+    TORPEDO = Image.open("assets/card-icons/Torpedo.png")
     AIRCRAFT_GUNNERY = Image.open("assets/card-icons/Gunnery1-Aircraft.png")
     BOMBS = Image.open("assets/card-icons/Bomb.png")
 
@@ -36,9 +58,6 @@ class NationEmblems:
     NEW_ZEALAND = Image.open("assets/nation-emblems/New Zealand-sm.png").resize(Resizing.NATION_EMBLEM)
 
 
-
-
-
 class Colors:
     TRANSPARENT = (255, 255, 255, 0)
     BLACK = (0, 0, 0)
@@ -58,7 +77,6 @@ class Fonts:
     SHIP_SPEED = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 35)
     ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
     ATTACK_ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
-
 
 
 class Coordinates:
@@ -89,18 +107,3 @@ class Coordinates:
         (ATTACK_HEADING_DIVIDER_2[0][0] + DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[0][1]),
         (ATTACK_HEADING_DIVIDER_2[1][0] + DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[1][1])
     ]
-
-
-class Values:
-    ATTACK_HEADER_Y_END = 296
-
-    ATTACK_RECTANGLE_START_Y = 295
-    ATTACK_RECTANGLE_START_X = 210
-    ATTACK_RECTANGLE_END_X = 513
-    ATTACK_RECTANGLE_WIDTH = 55
-
-    ATTACK_ICON_START_X = 56
-
-    ATTACK_VERTICAL_DIVIDER_1 = 286
-    ATTACK_VERTICAL_DIVIDER_2 = ATTACK_VERTICAL_DIVIDER_1 + DIVIDER_SPACING
-    ATTACK_VERTICAL_DIVIDER_3 = ATTACK_VERTICAL_DIVIDER_2 + DIVIDER_SPACING
