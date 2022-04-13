@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw
 from card_generator.definitions import Coordinates, Colors, Fonts, Values, \
-    NationEmblems, Icons, center_text, BackgroundAssets
+    NationEmblems, Icons, center_text, get_center_text, BackgroundAssets
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
@@ -54,9 +54,10 @@ draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_2, Colors.POINT_VALUE, 1)
 draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_3, Colors.POINT_VALUE, 1)
 
 # Dynamic stuff, done in its own overlay layers.
-transparentEnablingOverlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
-topOverlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
-overlayDraw = ImageDraw.Draw(transparentEnablingOverlay)
+transparent_overlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
+top_overlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
+top_overlay_draw = ImageDraw.Draw(top_overlay)
+overlay_draw = ImageDraw.Draw(transparent_overlay)
 
 attack_icons = [
     Image.open("assets/card-icons/Gunnery1-Ship.png"),
@@ -72,7 +73,7 @@ base = Values.ATTACK_RECTANGLE_START_Y
 attacks = 5
 for i in range(attacks):
     # attack icon and box
-    overlayDraw.rectangle(
+    overlay_draw.rectangle(
         (
             (Values.LEFT_CARD_BORDER, base + 2),
             (Values.ATTACK_RECTANGLE_START_X, base + Values.ATTACK_RECTANGLE_WIDTH)
@@ -87,29 +88,29 @@ for i in range(attacks):
     x = int(((Values.ATTACK_RECTANGLE_START_X + Values.LEFT_CARD_BORDER) / 2 - (w / 2)))
     y = int((base + i + 2))
 
-    topOverlay.paste(current_icon, (x, y))
+    top_overlay.paste(current_icon, (x, y))
 
     # green transparent background
-    overlayDraw.rectangle(
+    overlay_draw.rectangle(
         (
             (Values.ATTACK_RECTANGLE_START_X, base + 1),
             (Values.ATTACK_RECTANGLE_END_X, base + Values.ATTACK_RECTANGLE_WIDTH)
         ),
         Colors.ATTACK_VALUE_BACKGROUND, None, 0)
     # attack vertical dividers
-    overlayDraw.line(
+    overlay_draw.line(
         [
             (Values.ATTACK_VERTICAL_DIVIDER_1, base + 1),
             (Values.ATTACK_VERTICAL_DIVIDER_1, base + Values.ATTACK_RECTANGLE_WIDTH)
         ],
         Colors.BLACK, 1)
-    overlayDraw.line(
+    overlay_draw.line(
         [
             (Values.ATTACK_VERTICAL_DIVIDER_2, base + 1),
             (Values.ATTACK_VERTICAL_DIVIDER_2, base + Values.ATTACK_RECTANGLE_WIDTH)
         ],
         Colors.BLACK, 1)
-    overlayDraw.line(
+    overlay_draw.line(
         [
             (Values.ATTACK_VERTICAL_DIVIDER_3, base + 1),
             (Values.ATTACK_VERTICAL_DIVIDER_3, base + Values.ATTACK_RECTANGLE_WIDTH)
@@ -119,18 +120,18 @@ for i in range(attacks):
     # render the attacks
     for attack_range in range(4):
         # dynamically find the size of the attack value text, so it can be centered
-        w, h = overlayDraw.textsize(attack_values[attack_range], font=Fonts.ATTACK_ARMOR_STATS)
+        w, h = overlay_draw.textsize(attack_values[attack_range], font=Fonts.ATTACK_STATS)
         current_x_middle = Values.ATTACK_RECTANGLE_START_X + (Values.DIVIDER_SPACING / 2) \
                            + (attack_range * Values.DIVIDER_SPACING)
         current_y_middle = base - 5 + (Values.ATTACK_RECTANGLE_WIDTH / 2)
 
-        overlayDraw.text(
+        overlay_draw.text(
             (
                 current_x_middle - (w / 2),
                 current_y_middle - (h / 2)
             ),
             attack_values[attack_range],
-            font=Fonts.ATTACK_ARMOR_STATS,
+            font=Fonts.ATTACK_STATS,
             fill=Colors.STATS)
 
     if i == 0:
@@ -138,14 +139,14 @@ for i in range(attacks):
         pass
     else:
         # attack icon dividers
-        overlayDraw.line(
+        overlay_draw.line(
             [
                 (Values.LEFT_CARD_BORDER, base + 1),
                 (Values.ATTACK_RECTANGLE_START_X, base + 1)
             ],
             Colors.WHITE, 1)
         # black horizontal grid lines
-        overlayDraw.line(
+        overlay_draw.line(
             [
                 (Values.ATTACK_RECTANGLE_START_X, base + 1),
                 (Values.ATTACK_RECTANGLE_END_X, base + 1)
@@ -154,21 +155,21 @@ for i in range(attacks):
     base += Values.ATTACK_RECTANGLE_WIDTH
 
 # black line outer border
-overlayDraw.line(
+overlay_draw.line(
     [
         (Values.ATTACK_RECTANGLE_END_X, Values.ATTACK_HEADER_Y_END),
         (Values.ATTACK_RECTANGLE_END_X, base + 1)
     ],
     Colors.BLACK, Values.BORDER_WIDTH)
 # white line inner border
-overlayDraw.line(
+overlay_draw.line(
     [
         (Values.ATTACK_RECTANGLE_START_X, Values.ATTACK_HEADER_Y_END),
         (Values.ATTACK_RECTANGLE_START_X, base + 1)
     ],
     Colors.POINT_VALUE, Values.BORDER_WIDTH)
 # bottom grey border
-overlayDraw.line(
+overlay_draw.line(
     [
         (Values.LEFT_CARD_BORDER, base + 1),
         (Values.ATTACK_RECTANGLE_END_X + 1, base + 1)
@@ -176,14 +177,14 @@ overlayDraw.line(
     Colors.LIGHT_GREY, Values.BORDER_WIDTH)
 
 # Armor box
-overlayDraw.rectangle(
+overlay_draw.rectangle(
     (
         (Values.LEFT_CARD_BORDER, base + Values.ARMOR_ROW_TOP_MARGIN),
         (Values.LEFT_CARD_BORDER + Values.ARMOR_ROW_WIDTH, base + Values.ARMOR_ROW_TOP_MARGIN + Values.ARMOR_ROW_HEIGHT)
     ),
     Colors.BLACK, None, 0)
 # Armor box upper border
-overlayDraw.line(
+overlay_draw.line(
     [
         (Values.LEFT_CARD_BORDER, base + Values.ARMOR_ROW_TOP_MARGIN),
         (Values.LEFT_CARD_BORDER + Values.ARMOR_ROW_WIDTH, base + Values.ARMOR_ROW_TOP_MARGIN)
@@ -191,7 +192,7 @@ overlayDraw.line(
     Colors.DARK_GREY, Values.BORDER_WIDTH)
 
 # Armor box lower border
-overlayDraw.line(
+overlay_draw.line(
     [
         (Values.LEFT_CARD_BORDER, base + Values.ARMOR_ROW_TOP_MARGIN + Values.ARMOR_ROW_HEIGHT),
         (Values.LEFT_CARD_BORDER + Values.ARMOR_ROW_WIDTH, base + Values.ARMOR_ROW_TOP_MARGIN + Values.ARMOR_ROW_HEIGHT)
@@ -200,11 +201,13 @@ overlayDraw.line(
 
 # Armor stats headings
 x_offset = Values.LEFT_CARD_BORDER
+
+armor_values = {"ARMOR": "5", "VITAL ARMOR": "10", "HULL POINTS": "3"}
 for entry in ["ARMOR", "VITAL ARMOR", "HULL POINTS"]:
     # dynamically find the size of the attack text, so it can be centered
-    w, h = overlayDraw.textsize(entry, font=Fonts.ATTACK_ARMOR_STATS_HEADINGS)
+    w, h = overlay_draw.textsize(entry, font=Fonts.ATTACK_ARMOR_STATS_HEADINGS)
     current_y_middle = base + Values.ARMOR_ROW_TOP_MARGIN + (Values.ARMOR_ROW_HEIGHT / 2) - 3
-    overlayDraw.text(
+    overlay_draw.text(
         (
             x_offset + Values.ARMOR_TEXT_LEFT_MARGIN,
             current_y_middle - (h / 2)
@@ -212,14 +215,24 @@ for entry in ["ARMOR", "VITAL ARMOR", "HULL POINTS"]:
         entry,
         font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
         fill=Colors.STATS)
-    topOverlay.paste(BackgroundAssets.HITPOINTS, )
     x_offset += w + Values.ARMOR_TEXT_LEFT_MARGIN + Values.ARMOR_TEXT_RIGHT_MARGIN
-
     # Add a box for the values
-    topOverlay.paste(BackgroundAssets.HITPOINTS, (x_offset,  base + Values.ARMOR_ROW_TOP_MARGIN + 1))
+    top_overlay.paste(BackgroundAssets.HITPOINTS, (x_offset,  base + Values.ARMOR_ROW_TOP_MARGIN + 1))
+    top_overlay_draw.text(
+        get_center_text(
+            x_offset, 
+            base + Values.ARMOR_ROW_TOP_MARGIN -6,
+            x_offset + 44,
+            base + Values.ARMOR_ROW_TOP_MARGIN + 45, 
+            armor_values[entry],
+            Fonts.ARMOR_STATS),
+        armor_values[entry],
+        font=Fonts.ARMOR_STATS,
+        fill=Colors.BLACK
+    )
     x_offset += 44
 
-out = Image.alpha_composite(transparentEnablingOverlay, topOverlay)
+out = Image.alpha_composite(transparent_overlay, top_overlay)
 out = Image.alpha_composite(card_base, out)
 
 out.show()

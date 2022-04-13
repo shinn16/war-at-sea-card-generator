@@ -111,7 +111,8 @@ class Fonts:
     SHIP_TYPE_AND_YEAR = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
     SHIP_SPEED = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 35)
     ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
-    ATTACK_ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
+    ATTACK_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
+    ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 50)
 
 
 class Coordinates:
