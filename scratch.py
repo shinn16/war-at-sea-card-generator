@@ -1,5 +1,5 @@
 from PIL import Image, ImageDraw
-from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, DIVIDER_SPACING
+from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, BackgroundAssets, DIVIDER_SPACING
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
@@ -164,6 +164,8 @@ overlayDraw.rectangle(
         (Values.LEFT_CARD_BORDER + Values.ARMOR_ROW_WIDTH, base + Values.ARMOR_ROW_TOP_MARGIN + Values.ARMOR_ROW_HEIGHT)
     ),
     Colors.BLACK, None, 0)
+
+TopOverlay.paste(BackgroundAssets.HITPOINTS, ( Values.LEFT_CARD_BORDER + 100, base + Values.ARMOR_ROW_TOP_MARGIN + 1))
 
 out = Image.alpha_composite(transparentEnablingOverlay, TopOverlay)
 out = Image.alpha_composite(card_base, out)

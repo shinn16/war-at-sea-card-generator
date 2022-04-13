@@ -20,8 +20,12 @@ class Values:
     ATTACK_VERTICAL_DIVIDER_3 = ATTACK_VERTICAL_DIVIDER_2 + DIVIDER_SPACING
 
     ARMOR_ROW_TOP_MARGIN = 15
-    ARMOR_ROW_HEIGHT = 40
+    ARMOR_ROW_HEIGHT = 45
     ARMOR_ROW_WIDTH = 630
+
+
+class BackgroundAssets:
+    HITPOINTS = Image.open("assets/hitpoints.png").resize((44,44))
 
 
 class Resizing:
