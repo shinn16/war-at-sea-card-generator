@@ -1,39 +1,21 @@
-from PIL import Image, ImageFont, ImageDraw
-DUMMY_IMAGE = Image.new("RGBA", (739, 1045), "white")
-
-
-def get_x_center(x1, x2):
-    return (x1 + x2)/2
-
-
-def get_x_center_text(x1, x2, text, font):
-    x = get_x_center(x1, x2)
-    w, h = ImageDraw.Draw(DUMMY_IMAGE).textsize(text=text, font=font)
-    return x - (w/2)
-
-
-def get_center(x1, y1, x2, y2):
-    return (x1 + x2)/2, (y1 + y2)/2
-
-
-def get_center_text(x1, y1, x2, y2, text, font):
-    w, h = ImageDraw.Draw(DUMMY_IMAGE).textsize(text=text, font=font)
-    x, y = get_center(x1, y1, x2, y2)
-    return (x - (w/2)), (y - (h/2))
-
-
-def center_text(center_point, text, font):
-    w, h = ImageDraw.Draw(DUMMY_IMAGE).textsize(text=text, font=font)
-    return (center_point[0] - (w / 2)), (center_point[1] - (h / 2))
+from PIL import ImageFont
+from card_generator.utils import *
 
 
 class Values:
+    """
+    Variety of values relating to element placement.
+    """
     # card positions
     LEFT_CARD_BORDER = 56
+
+    # border thicknesses
+    BORDER_WIDTH = 3
 
     # specific elements
     ATTACK_HEADER_Y_END = 296
 
+    # card stats and info placement
     ATTACK_RECTANGLE_START_Y = 295
     ATTACK_RECTANGLE_START_X = 170
     ATTACK_RECTANGLE_END_X = 513
@@ -48,18 +30,25 @@ class Values:
     ARMOR_ROW_TOP_MARGIN = 10
     ARMOR_ROW_HEIGHT = 45
     ARMOR_ROW_WIDTH = 630
-    ARMOR_TEXT_LEFT_MARGIN = 7
+    ARMOR_TEXT_LEFT_MARGIN = 6
     ARMOR_TEXT_RIGHT_MARGIN = 5
 
-    BORDER_WIDTH = 3
+    SPECIAL_ABILITY_LEFT_MARGIN = 90
+    SPECIAL_ABILITY_BOTTOM_MARGIN = 10
+    SPECIAL_ABILITY_TOP_MARGIN = 10
 
-
-class BackgroundAssets:
-    HITPOINTS = Image.open("assets/hitpoints.png").resize((44, 44))
+    SET_Y_OFFSET = 990
 
 
 class Resizing:
     NATION_EMBLEM = (60, 60)
+    HIT_POINTS = (44, 44)
+    FLAGSHIP = (33, 33)
+    CARRIER = (33, 33)
+
+
+class BackgroundAssets:
+    HIT_POINTS = Image.open("assets/hitpoints.png").resize(Resizing.HIT_POINTS)
 
 
 class Icons:
@@ -71,8 +60,8 @@ class Icons:
     AIRCRAFT_GUNNERY = Image.open("assets/card-icons/Gunnery1-Aircraft.png")
     BOMBS = Image.open("assets/card-icons/Bomb.png")
 
-    CARRIER = Image.open("assets/card-icons/Carrier.png")
-    FLAGSHIP = Image.open("assets/card-icons/Flagship.png")
+    CARRIER = Image.open("assets/card-icons/Carrier.png").resize(Resizing.CARRIER)
+    FLAGSHIP = Image.open("assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
 
 
 class NationEmblems:
@@ -108,45 +97,53 @@ class Colors:
 class Fonts:
     SHIP_NAME = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 75)
     POINT_VALUE = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 94)
+    FLAGSHIP = ImageFont.truetype("assets/RobotoSlab-Bold.ttf", 17)
     SHIP_TYPE_AND_YEAR = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
     SHIP_SPEED = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 35)
     ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
     ATTACK_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
     ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 50)
+    ABILITIES = ImageFont.truetype("assets/RobotoSlab-Regular.ttf", 25)
+    ABILITIES_TITLE = ImageFont.truetype("assets/RobotoSlab-Bold.ttf", 25)
+    SET_INFO = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 25)
 
 
 class Coordinates:
+    """
+    Coordinates for element placement.
+    """
     NATION_EMBLEM = (45, 165)
     SHIP_NAME = (78, 91)
+    FLAGSHIP = (330, 206)
     POINT_CIRCLE_CENTER = (646, 125)
     SHIP_TYPE = (128, 165)
     SHIP_YEAR = (510, 165)
     SHIP_SPEED = (130, 206)
 
-    ATTACK_HEADING = get_center_text(
+    ATTACK_HEADING = center_text(
         Values.LEFT_CARD_BORDER, 247, Values.ATTACK_RECTANGLE_START_X, 292,
         "Attacks",
         Fonts.ATTACK_ARMOR_STATS_HEADINGS
     )
-    ATTACK_RANGE_HEADING_0 = (get_x_center_text(Values.ATTACK_RECTANGLE_START_X,
-                                                Values.ATTACK_RECTANGLE_START_X + Values.DIVIDER_SPACING,
-                                                "0",
-                                                Fonts.ATTACK_ARMOR_STATS_HEADINGS),
+    ATTACK_RANGE_HEADING_0 = (x_center_text(Values.ATTACK_RECTANGLE_START_X,
+                                            Values.ATTACK_RECTANGLE_START_X + Values.DIVIDER_SPACING,
+                                            "0",
+                                            Fonts.ATTACK_ARMOR_STATS_HEADINGS),
                               ATTACK_HEADING[1])
-    ATTACK_RANGE_HEADING_1 = (get_x_center_text(Values.ATTACK_RECTANGLE_START_X + Values.DIVIDER_SPACING,
-                                                Values.ATTACK_RECTANGLE_START_X + (2 * Values.DIVIDER_SPACING),
-                                                "1",
-                                                Fonts.ATTACK_ARMOR_STATS_HEADINGS),
+    ATTACK_RANGE_HEADING_1 = (x_center_text(Values.ATTACK_RECTANGLE_START_X + Values.DIVIDER_SPACING,
+                                            Values.ATTACK_RECTANGLE_START_X + (2 * Values.DIVIDER_SPACING),
+                                            "1",
+                                            Fonts.ATTACK_ARMOR_STATS_HEADINGS),
                               ATTACK_HEADING[1])
-    ATTACK_RANGE_HEADING_2 = (get_x_center_text(Values.ATTACK_RECTANGLE_START_X + (2 * Values.DIVIDER_SPACING),
-                                                Values.ATTACK_RECTANGLE_START_X + (3 * Values.DIVIDER_SPACING),
-                                                "2",
-                                                Fonts.ATTACK_ARMOR_STATS_HEADINGS),
+    ATTACK_RANGE_HEADING_2 = (x_center_text(Values.ATTACK_RECTANGLE_START_X + (2 * Values.DIVIDER_SPACING),
+                                            Values.ATTACK_RECTANGLE_START_X + (3 * Values.DIVIDER_SPACING),
+                                            "2",
+                                            Fonts.ATTACK_ARMOR_STATS_HEADINGS),
                               ATTACK_HEADING[1])
-    ATTACK_RANGE_HEADING_3 = (get_x_center_text(Values.ATTACK_RECTANGLE_START_X + (3 * Values.DIVIDER_SPACING),
-                                                Values.ATTACK_RECTANGLE_START_X + (4 * Values.DIVIDER_SPACING),
-                                                "3",
-                                                Fonts.ATTACK_ARMOR_STATS_HEADINGS),
+    ATTACK_RANGE_HEADING_3 = (x_center_text(Values.ATTACK_RECTANGLE_START_X + (3 * Values.DIVIDER_SPACING),
+                                            Values.ATTACK_RECTANGLE_START_X + (4 * Values.DIVIDER_SPACING),
+                                            "3",
+                                            Fonts.ATTACK_ARMOR_STATS_HEADINGS),
                               ATTACK_HEADING[1])
 
     ATTACK_HEADING_DIVIDER = [(Values.ATTACK_RECTANGLE_START_X, 254), (Values.ATTACK_RECTANGLE_START_X, 292)]
