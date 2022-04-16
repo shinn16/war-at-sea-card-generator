@@ -83,11 +83,11 @@ draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_3, Colors.POINT_VALUE, 1)
 # Dynamic stuff, done in its own overlay layers.
 
 attack_icons = [
-    Image.open("assets/card-icons/Gunnery1-Ship.png"),
-    Image.open("assets/card-icons/Gunnery2.png"),
-    Image.open("assets/card-icons/Gunnery3.png"),
-    Image.open("assets/card-icons/Antiair.png"),
-    Image.open("assets/card-icons/Torpedo.png")
+    Image.open("assets/card-icons/MAIN1.png"),
+    Image.open("assets/card-icons/2.png"),
+    Image.open("assets/card-icons/3.png"),
+    Image.open("assets/card-icons/ASW2.png"),
+    Image.open("assets/card-icons/torpedo1.png")
 ]
 
 attack_values = ["10", "5", "3", "-"]
@@ -105,7 +105,7 @@ for i in range(attacks):
     # attack icons
     current_icon = attack_icons[i]
     w, h = attack_icons[i].size
-    current_icon = current_icon.resize((w * 2, h * 2))
+    # current_icon = current_icon.resize((w * 2, h * 2))
     w, h = current_icon.size
 
     x = int(((Values.ATTACK_RECTANGLE_START_X + Values.LEFT_CARD_BORDER) / 2 - (w / 2)))
@@ -281,17 +281,19 @@ for title, ability in sorted(abilities.items(), key=ability_sort):
     overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), title, font=Fonts.ABILITIES_TITLE,
                       fill=Colors.WHITE)
     first_line_offset = Fonts.ABILITIES_TITLE.getsize(title)[0]
+    # scale the width of the first line to accommodate the title text.
+    first_line_width = int(((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset)/Values.ATTACK_RECTANGLE_END_X) *
+                           Values.SPECIAL_ABILITY_TEXT_WIDTH)
     if ability is not None:
-        first_line = True
-        # TODO fix wrapping
-        for line in wrap(ability, width=40):
-            if first_line:
-                overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset, y_offset), line,
-                                  font=Fonts.ABILITIES, fill=Colors.WHITE)
-                first_line = False
-            else:
-                overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), line,
-                                  font=Fonts.ABILITIES, fill=Colors.WHITE)
+        text = wrap(ability, width=first_line_width)
+        first_line = text[0]
+        text = " ".join(text[1:])
+        overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset, y_offset), first_line,
+                          font=Fonts.ABILITIES, fill=Colors.WHITE)
+        y_offset += Fonts.ABILITIES.getsize(first_line)[1]
+        for line in wrap(text, width=Values.SPECIAL_ABILITY_TEXT_WIDTH):
+            overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), line,
+                              font=Fonts.ABILITIES, fill=Colors.WHITE)
             y_offset += Fonts.ABILITIES.getsize(line)[1]
     else:
         y_offset += Fonts.ABILITIES_TITLE.getsize(title)[1]
