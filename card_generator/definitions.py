@@ -9,6 +9,16 @@ class Values:
     # card positions
     LEFT_CARD_BORDER = 56
 
+    # flagship icon
+    FLAGSHIP_CENTER_OFFSET = 40
+    FLAGSHIP_VALUE_Y = 209
+
+    # carrier icons
+    CARRIER_START_X = 381
+    CARRIER_END_X = 500
+    CARRIER_Y = 206
+    CARRIER_ICON_SPACING = 44
+
     # border thicknesses
     BORDER_WIDTH = 3
 
@@ -53,9 +63,9 @@ class BackgroundAssets:
 
 
 class Icons:
-    GUNNERY_1 = Image.open("assets/card-icons/Gunnery1-Ship.png")
-    GUNNERY_2 = Image.open("assets/card-icons/Gunnery2.png")
-    GUNNERY_3 = Image.open("assets/card-icons/Gunnery3.png")
+    GUNNERY_1 = icon_resize(Image.open("assets/card-icons/Gunnery1-Ship.png"), 0.8)
+    GUNNERY_2 = icon_resize(Image.open("assets/card-icons/Gunnery2.png"), 0.7)
+    GUNNERY_3 = icon_resize(Image.open("assets/card-icons/Gunnery3.png"), 0.6)
     ANTI_AIR = Image.open("assets/card-icons/Antiair.png")
     TORPEDO = Image.open("assets/card-icons/Torpedo.png")
     AIRCRAFT_GUNNERY = Image.open("assets/card-icons/Gunnery1-Aircraft.png")

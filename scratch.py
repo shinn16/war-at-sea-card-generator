@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from textwrap import wrap
 from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, BackgroundAssets
-from card_generator.utils import center_text, x_center_text, ability_sort
+from card_generator.utils import center_image, center_text, x_center_text, ability_sort
 
 card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
@@ -36,11 +36,11 @@ draw_layer.text(Coordinates.SHIP_SPEED, "Speed - 2",
 top_overlay.paste(Icons.FLAGSHIP, Coordinates.FLAGSHIP)
 top_overlay_draw.text(
     (x_center_text(
-        Coordinates.FLAGSHIP[0], Coordinates.FLAGSHIP[0] + 44,
+        Coordinates.FLAGSHIP[0], Coordinates.FLAGSHIP[0] + Values.FLAGSHIP_CENTER_OFFSET,
         "1",
         Fonts.FLAGSHIP
     ),
-     208
+     Values.FLAGSHIP_VALUE_Y
     ),
     "1",
     font=Fonts.FLAGSHIP,
@@ -49,11 +49,11 @@ top_overlay_draw.text(
 
 # 381 is x min 500 is max
 carriers = 3
-spacing = (500 - 381) - (carriers * 44) + 5
-offset = 381
+spacing = (Values.CARRIER_END_X - Values.CARRIER_START_X) - (carriers * Values.CARRIER_ICON_SPACING) + 5
+offset = Values.CARRIER_START_X
 for carrier in range(carriers):
     top_overlay.paste(Icons.CARRIER, (offset, 206))
-    offset += 44 + spacing
+    offset += Values.CARRIER_ICON_SPACING + spacing
 
 draw_layer.text(Coordinates.ATTACK_HEADING, "Attacks",
                 font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
@@ -103,15 +103,14 @@ for i in range(attacks):
         ),
         Colors.BLACK, None, 0)
     # attack icons
-    current_icon = attack_icons[i]
-    w, h = attack_icons[i].size
-    # current_icon = current_icon.resize((w * 2, h * 2))
-    w, h = current_icon.size
-
-    x = int(((Values.ATTACK_RECTANGLE_START_X + Values.LEFT_CARD_BORDER) / 2 - (w / 2)))
-    y = int((y_offset + i + 2))
-
-    top_overlay.paste(current_icon, (x, y))
+    top_overlay.paste(attack_icons[i], center_image(Values.LEFT_CARD_BORDER,
+                                                    y_offset,
+                                                    Values.ATTACK_RECTANGLE_START_X,
+                                                    y_offset +
+                                                    Values.ATTACK_RECTANGLE_WIDTH + 4,
+                                                    attack_icons[i]
+                                                    )
+                      )
 
     # green transparent background
     overlay_draw.rectangle(
@@ -282,7 +281,7 @@ for title, ability in sorted(abilities.items(), key=ability_sort):
                       fill=Colors.WHITE)
     first_line_offset = Fonts.ABILITIES_TITLE.getsize(title)[0]
     # scale the width of the first line to accommodate the title text.
-    first_line_width = int(((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset)/Values.ATTACK_RECTANGLE_END_X) *
+    first_line_width = int(((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X) *
                            Values.SPECIAL_ABILITY_TEXT_WIDTH)
     if ability is not None:
         text = wrap(ability, width=first_line_width)
