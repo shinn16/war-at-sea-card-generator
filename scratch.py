@@ -48,7 +48,7 @@ top_overlay_draw.text(
 )
 
 # 381 is x min 500 is max
-carriers = 0
+carriers = 3
 spacing = (500 - 381) - (carriers * 44) + 5
 offset = 381
 for carrier in range(carriers):
@@ -83,11 +83,11 @@ draw_layer.line(Coordinates.ATTACK_HEADING_DIVIDER_3, Colors.POINT_VALUE, 1)
 # Dynamic stuff, done in its own overlay layers.
 
 attack_icons = [
-    Image.open("assets/card-icons/MAIN1.png"),
-    Image.open("assets/card-icons/2.png"),
-    Image.open("assets/card-icons/3.png"),
-    Image.open("assets/card-icons/ASW2.png"),
-    Image.open("assets/card-icons/torpedo1.png")
+    Icons.GUNNERY_1,
+    Icons.GUNNERY_2,
+    Icons.GUNNERY_3,
+    Icons.ANTI_AIR,
+    Icons.TORPEDO
 ]
 
 attack_values = ["10", "5", "3", "-"]
