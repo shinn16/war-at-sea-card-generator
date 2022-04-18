@@ -1,4 +1,7 @@
+from curses.ascii import US
+import re
 from PIL import ImageFont
+from card_generator.models.nation import Nation
 from card_generator.utils import *
 
 
@@ -90,6 +93,22 @@ class NationEmblems:
     USSR = Image.open("assets/nation-emblems/Soviet Union-sm.png").resize(Resizing.NATION_EMBLEM)
     FINLAND = Image.open("assets/nation-emblems/Finland-sm.png").resize(Resizing.NATION_EMBLEM)
     NEW_ZEALAND = Image.open("assets/nation-emblems/New Zealand-sm.png").resize(Resizing.NATION_EMBLEM)
+
+    NATION_MAPPING = {
+        "Australia":  AUSTRALIA ,
+        "United States":  US,
+        "Canada":  CANADA,
+        "United Kingdom":  UK,
+        "Soviet Union": USSR,
+        "France":  FRANCE,
+        "Germany":  GERMANY,
+        "Italy":  ITALY,
+        "Japan":  JAPAN
+    }
+    
+
+    def get_emblem(self, nation: Nation) -> Image.Image:
+        return self.NATION_MAPPING[nation.getName]
 
 
 class Colors:
