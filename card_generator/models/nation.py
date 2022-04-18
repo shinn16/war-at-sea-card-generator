@@ -1,4 +1,5 @@
-from models.alliance import Alliance
+from card_generator.models.alliance import Alliance
+
 
 class Nation:
     def __init__(self, name: str, alliance: Alliance) -> None:

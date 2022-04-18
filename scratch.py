@@ -1,9 +1,9 @@
 from PIL import Image, ImageDraw
 from textwrap import wrap
-from card_generator.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, BackgroundAssets
-from card_generator.utils import center_image, center_text, x_center_text, ability_sort
+from card_generator.models.definitions import Coordinates, Colors, Fonts, Values, NationEmblems, Icons, BackgroundAssets
+from card_generator.utils.helper_functions import center_image, center_text, x_center_text, ability_sort
 
-card_base = Image.open("assets/axis-card-base.png").convert("RGBA")
+card_base = Image.open("card_generator/assets/axis-card-base.png").convert("RGBA")
 draw_layer = ImageDraw.Draw(card_base, "RGBA")
 transparent_overlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
 overlay_draw = ImageDraw.Draw(transparent_overlay)
@@ -48,12 +48,11 @@ top_overlay_draw.text(
 )
 
 # 381 is x min 500 is max
-carriers = 3
-spacing = (Values.CARRIER_END_X - Values.CARRIER_START_X) - (carriers * Values.CARRIER_ICON_SPACING) + 5
+carriers = 4
 offset = Values.CARRIER_START_X
 for carrier in range(carriers):
-    top_overlay.paste(Icons.CARRIER, (offset, 206))
-    offset += Values.CARRIER_ICON_SPACING + spacing
+    top_overlay.paste(Icons.CARRIER, (offset, Values.CARRIER_Y))
+    offset += Values.CARRIER_ICON_SPACING
 
 draw_layer.text(Coordinates.ATTACK_HEADING, "Attacks",
                 font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,

@@ -1,8 +1,6 @@
-from curses.ascii import US
-import re
 from PIL import ImageFont
 from card_generator.models.nation import Nation
-from card_generator.utils import *
+from card_generator.utils.helper_functions import *
 
 
 class Values:
@@ -20,7 +18,7 @@ class Values:
     CARRIER_START_X = 381
     CARRIER_END_X = 500
     CARRIER_Y = 206
-    CARRIER_ICON_SPACING = 44
+    CARRIER_ICON_SPACING = 38
 
     # border thicknesses
     BORDER_WIDTH = 3
@@ -62,53 +60,49 @@ class Resizing:
 
 
 class BackgroundAssets:
-    HIT_POINTS = Image.open("assets/hitpoints.png").resize(Resizing.HIT_POINTS)
+    HIT_POINTS = Image.open("card_generator/assets/hitpoints.png").resize(Resizing.HIT_POINTS)
 
 
 class Icons:
-    GUNNERY_1 = icon_resize(Image.open("assets/card-icons/Gunnery1-Ship.png"), 0.8)
-    GUNNERY_2 = icon_resize(Image.open("assets/card-icons/Gunnery2.png"), 0.7)
-    GUNNERY_3 = icon_resize(Image.open("assets/card-icons/Gunnery3.png"), 0.6)
-    ANTI_AIR = Image.open("assets/card-icons/Antiair.png")
-    TORPEDO = Image.open("assets/card-icons/Torpedo.png")
-    AIRCRAFT_GUNNERY = Image.open("assets/card-icons/Gunnery1-Aircraft.png")
-    BOMBS = Image.open("assets/card-icons/Bomb.png")
+    GUNNERY_1 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery1-Ship.png"), 0.8)
+    GUNNERY_2 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery2.png"), 0.7)
+    GUNNERY_3 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery3.png"), 0.6)
+    ANTI_AIR = Image.open("card_generator/assets/card-icons/Antiair.png")
+    TORPEDO = Image.open("card_generator/assets/card-icons/Torpedo.png")
+    AIRCRAFT_GUNNERY = Image.open("card_generator/assets/card-icons/Gunnery1-Aircraft.png")
+    BOMBS = Image.open("card_generator/assets/card-icons/Bomb.png")
 
-    CARRIER = Image.open("assets/card-icons/Carrier.png").resize(Resizing.CARRIER)
-    FLAGSHIP = Image.open("assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
+    CARRIER = Image.open("card_generator/assets/card-icons/Carrier.png").resize(Resizing.CARRIER)
+    FLAGSHIP = Image.open("card_generator/assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
 
 
 class NationEmblems:
-    GERMANY = Image.open("assets/nation-emblems/Germany-sm.png").resize(Resizing.NATION_EMBLEM)
-    ITALY = Image.open("assets/nation-emblems/Italy-sm.png").resize(Resizing.NATION_EMBLEM)
-    JAPAN = Image.open("assets/nation-emblems/Japan-sm.png").resize(Resizing.NATION_EMBLEM)
-    US = Image.open("assets/nation-emblems/United States-sm.png").resize(Resizing.NATION_EMBLEM)
-    UK = Image.open("assets/nation-emblems/United Kingdom-sm.png").resize(Resizing.NATION_EMBLEM)
-    CANADA = Image.open("assets/nation-emblems/Canada-sm.png").resize(Resizing.NATION_EMBLEM)
-    AUSTRALIA = Image.open("assets/nation-emblems/Australia-sm.png").resize(Resizing.NATION_EMBLEM)
-    FRANCE = Image.open("assets/nation-emblems/France-sm.png").resize(Resizing.NATION_EMBLEM)
-    GREECE = Image.open("assets/nation-emblems/Greece-sm.png").resize(Resizing.NATION_EMBLEM)
-    NETHERLANDS = Image.open("assets/nation-emblems/Netherlands-sm.png").resize(Resizing.NATION_EMBLEM)
-    SWEDEN = Image.open("assets/nation-emblems/Sweden-sm.png").resize(Resizing.NATION_EMBLEM)
-    USSR = Image.open("assets/nation-emblems/Soviet Union-sm.png").resize(Resizing.NATION_EMBLEM)
-    FINLAND = Image.open("assets/nation-emblems/Finland-sm.png").resize(Resizing.NATION_EMBLEM)
-    NEW_ZEALAND = Image.open("assets/nation-emblems/New Zealand-sm.png").resize(Resizing.NATION_EMBLEM)
+    GERMANY = Image.open("card_generator/assets/nation-emblems/Germany-sm.png").resize(Resizing.NATION_EMBLEM)
+    ITALY = Image.open("card_generator/assets/nation-emblems/Italy-sm.png").resize(Resizing.NATION_EMBLEM)
+    JAPAN = Image.open("card_generator/assets/nation-emblems/Japan-sm.png").resize(Resizing.NATION_EMBLEM)
+    US = Image.open("card_generator/assets/nation-emblems/United States-sm.png").resize(Resizing.NATION_EMBLEM)
+    UK = Image.open("card_generator/assets/nation-emblems/United Kingdom-sm.png").resize(Resizing.NATION_EMBLEM)
+    CANADA = Image.open("card_generator/assets/nation-emblems/Canada-sm.png").resize(Resizing.NATION_EMBLEM)
+    AUSTRALIA = Image.open("card_generator/assets/nation-emblems/Australia-sm.png").resize(Resizing.NATION_EMBLEM)
+    FRANCE = Image.open("card_generator/assets/nation-emblems/France-sm.png").resize(Resizing.NATION_EMBLEM)
+    GREECE = Image.open("card_generator/assets/nation-emblems/Greece-sm.png").resize(Resizing.NATION_EMBLEM)
+    NETHERLANDS = Image.open("card_generator/assets/nation-emblems/Netherlands-sm.png").resize(Resizing.NATION_EMBLEM)
+    SWEDEN = Image.open("card_generator/assets/nation-emblems/Sweden-sm.png").resize(Resizing.NATION_EMBLEM)
+    USSR = Image.open("card_generator/assets/nation-emblems/Soviet Union-sm.png").resize(Resizing.NATION_EMBLEM)
+    FINLAND = Image.open("card_generator/assets/nation-emblems/Finland-sm.png").resize(Resizing.NATION_EMBLEM)
+    NEW_ZEALAND = Image.open("card_generator/assets/nation-emblems/New Zealand-sm.png").resize(Resizing.NATION_EMBLEM)
 
     NATION_MAPPING = {
-        "Australia":  AUSTRALIA ,
-        "United States":  US,
-        "Canada":  CANADA,
-        "United Kingdom":  UK,
+        "Australia": AUSTRALIA,
+        "United States": US,
+        "Canada": CANADA,
+        "United Kingdom": UK,
         "Soviet Union": USSR,
-        "France":  FRANCE,
-        "Germany":  GERMANY,
-        "Italy":  ITALY,
-        "Japan":  JAPAN
+        "France": FRANCE,
+        "Germany": GERMANY,
+        "Italy": ITALY,
+        "Japan": JAPAN
     }
-    
-
-    def get_emblem(self, nation: Nation) -> Image.Image:
-        return self.NATION_MAPPING[nation.getName]
 
 
 class Colors:
@@ -125,17 +119,17 @@ class Colors:
 
 
 class Fonts:
-    SHIP_NAME = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 75)
-    POINT_VALUE = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 94)
-    FLAGSHIP = ImageFont.truetype("assets/RobotoSlab-Bold.ttf", 17)
-    SHIP_TYPE_AND_YEAR = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
-    SHIP_SPEED = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 35)
-    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 30)
-    ATTACK_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 70)
-    ARMOR_STATS = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 50)
-    ABILITIES = ImageFont.truetype("assets/RobotoSlab-Regular.ttf", 25)
-    ABILITIES_TITLE = ImageFont.truetype("assets/RobotoSlab-Bold.ttf", 25)
-    SET_INFO = ImageFont.truetype("assets/Komet - Flicker - B52-Regular.ttf", 25)
+    SHIP_NAME = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 75)
+    POINT_VALUE = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 94)
+    FLAGSHIP = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", 17)
+    SHIP_TYPE_AND_YEAR = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 30)
+    SHIP_SPEED = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 35)
+    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 30)
+    ATTACK_STATS = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 70)
+    ARMOR_STATS = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 50)
+    ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", 25)
+    ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", 25)
+    SET_INFO = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 25)
 
 
 class Coordinates:
@@ -189,3 +183,7 @@ class Coordinates:
         (ATTACK_HEADING_DIVIDER_2[0][0] + Values.DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[0][1]),
         (ATTACK_HEADING_DIVIDER_2[1][0] + Values.DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[1][1])
     ]
+
+
+def get_emblem(nation: Nation) -> Image.Image:
+    return NationEmblems.NATION_MAPPING[nation.getName]

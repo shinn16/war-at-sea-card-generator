@@ -2,9 +2,9 @@ from time import sleep
 import requests
 import json
 from bs4 import BeautifulSoup
-from models.unit import Unit
-from models.nation import NATION_LIST
-from models.utils import ModelJsonEncoder
+from card_generator.models.unit import Unit
+from card_generator.models.nation import NATION_LIST
+from card_generator.models.utils import ModelJsonEncoder
 
 BASE_URL = "http://was.tamgc.net/"
 FACTION_PARAMETER = "query.php?faction="
@@ -42,25 +42,25 @@ for nation in NATION_LIST:
         # process ship info
         rows = ship_info_table.find_all("tr")
         unit_columns = rows[1].find_all("td") # first row is a picture, second is the name and points
-        unit.withName(unit_columns[0].get_text())
-        unit.withPointValue(int(unit_columns[1].get_text()))
+        unit.with_name(unit_columns[0].get_text())
+        unit.with_point_value(int(unit_columns[1].get_text()))
 
         unit_columns = rows[2].find_all("td")
         unit_spans = unit_columns[1].find_all("span")
-        unit.withType(unit_spans[0].get_text())
-        unit.withYear(int(unit_spans[1].get_text()))
+        unit.with_type(unit_spans[0].get_text())
+        unit.with_year(int(unit_spans[1].get_text()))
 
         unit_columns = rows[3].find_all("td")
-        unit.withSpeed(unit_columns[0].get_text().split("-")[1].strip())
+        unit.with_speed(unit_columns[0].get_text().split("-")[1].strip())
 
         flagshipStat = unit_columns[1].get_text()
         carrierCapacityStat = unit_columns[2].find_all("img")
 
         if flagshipStat != "":
-            unit.withFlagShipValue(int(flagshipStat))
+            unit.with_flagship_value(int(flagshipStat))
         
         if len(carrierCapacityStat) > 0:
-            unit.withPlaneCapacity(len(carrierCapacityStat))
+            unit.with_plane_capacity(len(carrierCapacityStat))
 
         # process attack stats
         rows = ship_attack_stats_table.find_all("tr")[1:]
@@ -72,30 +72,30 @@ for nation in NATION_LIST:
                 attackVector.append(attack.get_text())
 
             if   attackType == "Gunnery1-Ship":
-                unit.withMainGunneryAttack(attackVector)
+                unit.with_main_gunnery_attack(attackVector)
             elif attackType == "Gunnery1-Aircraft":
-                unit.withAircraftGunneryAttack(attackVector)
+                unit.with_aircraft_gunnery_attack(attackVector)
             elif attackType == "Gunnery2":
-                unit.withSecondaryGunneryAttack(attackVector)
+                unit.with_secondary_gunnery_attack(attackVector)
             elif attackType == "Gunnery3":
-                unit.withTertiaryGunneryAttack(attackVector)
+                unit.with_tertiary_gunnery_attack(attackVector)
             elif attackType == "Antiair":
-                unit.withAntiAirAttack(attackVector)
+                unit.with_anti_air_attack(attackVector)
             elif attackType == "ASW":
-                unit.withAntiSubmarineAttack(attackVector)
+                unit.with_anti_submarine_attack(attackVector)
             elif attackType == "Torpedo":
-                unit.withTorpedoAttack(attackVector)
+                unit.with_torpedo_attack(attackVector)
             elif attackType == "Bomb":
-                unit.withBombAttack(attackVector)
+                unit.with_bomb_attack(attackVector)
             else:
                 print(attackType)
 
         # process armor and hull points
         rows = ship_armor_table.find("tr")
         columns = rows.find_all("td")
-        unit.withArmor(int(columns[1].get_text()))
-        unit.withVitalArmor(int(columns[3].get_text()))
-        unit.withHullPoints(int(columns[5].get_text()))
+        unit.with_armor(int(columns[1].get_text()))
+        unit.with_vital_armor(int(columns[3].get_text()))
+        unit.with_hull_points(int(columns[5].get_text()))
 
         # process abilities
         rows = ship_abilits.find_all("tr")
@@ -109,12 +109,12 @@ for nation in NATION_LIST:
                 abilities[data.get_text()] = None
             else:
                 title = data.get_text().strip("-")
-        unit.withSpecialAbilities(abilities)
+        unit.with_special_abilities(abilities)
 
         set_info = rows[len(rows) - 1].find("td").get_text().split("-")
-        unit.withSet(set_info[0])
-        unit.withSetNumber(set_info[1])
-        unit.withRarity(set_info[2])
+        unit.with_set(set_info[0])
+        unit.with_set_number(set_info[1])
+        unit.with_rarity(set_info[2])
 
         nation.addUnit(unit)
         current_record += 1
