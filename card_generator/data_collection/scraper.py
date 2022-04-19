@@ -10,26 +10,25 @@ BASE_URL = "http://was.tamgc.net/"
 FACTION_PARAMETER = "query.php?faction="
 UNIT_PARAMETER = "unit.php?ID="
 
-
 total_records = 0
 for nation in NATION_LIST:
     current_record = 1
-    html_text = requests.get(BASE_URL + FACTION_PARAMETER + nation.getName()).text
+    html_text = requests.get(BASE_URL + FACTION_PARAMETER + nation.get_name()).text
     nations_page = BeautifulSoup(html_text, "html.parser")
     records = int(nations_page.find(class_="first").get_text().split(" ")[0])
 
-    print(nation.getName() + ": " + str(records))
+    print(nation.get_name() + ": " + str(records))
     total_records += records
 
     nation_content = nations_page.find("div", {"id": "content"})
-    unit_rows = nation_content.find("table").find_all("tr")[1:] # skip the header row
+    unit_rows = nation_content.find("table").find_all("tr")[1:]  # skip the header row
     for row in unit_rows:
         print("Processing record " + str(current_record) + " of " + str(records))
         columns = row.find_all("td")
         unit_id = columns[0].find_all("a")[0]["href"].split("=")[1]
         unit_html = requests.get(BASE_URL + UNIT_PARAMETER + str(unit_id)).text
         unit_page = BeautifulSoup(unit_html, "html.parser")
-       
+
         unit_contents = unit_page.find("div", {"id": "content"}).find_all("table")
 
         ship_info_table = unit_contents[0]
@@ -41,7 +40,7 @@ for nation in NATION_LIST:
 
         # process ship info
         rows = ship_info_table.find_all("tr")
-        unit_columns = rows[1].find_all("td") # first row is a picture, second is the name and points
+        unit_columns = rows[1].find_all("td")  # first row is a picture, second is the name and points
         unit.with_name(unit_columns[0].get_text())
         unit.with_point_value(int(unit_columns[1].get_text()))
 
@@ -58,7 +57,7 @@ for nation in NATION_LIST:
 
         if flagshipStat != "":
             unit.with_flagship_value(int(flagshipStat))
-        
+
         if len(carrierCapacityStat) > 0:
             unit.with_plane_capacity(len(carrierCapacityStat))
 
@@ -71,7 +70,7 @@ for nation in NATION_LIST:
             for attack in row[1:5]:
                 attackVector.append(attack.get_text())
 
-            if   attackType == "Gunnery1-Ship":
+            if attackType == "Gunnery1-Ship":
                 unit.with_main_gunnery_attack(attackVector)
             elif attackType == "Gunnery1-Aircraft":
                 unit.with_aircraft_gunnery_attack(attackVector)
@@ -87,8 +86,6 @@ for nation in NATION_LIST:
                 unit.with_torpedo_attack(attackVector)
             elif attackType == "Bomb":
                 unit.with_bomb_attack(attackVector)
-            else:
-                print(attackType)
 
         # process armor and hull points
         rows = ship_armor_table.find("tr")
@@ -101,26 +98,26 @@ for nation in NATION_LIST:
         rows = ship_abilits.find_all("tr")
         abilities = dict()
         title = ""
-        for row in rows[:len(rows)]: # last row is not a stat but is rather the card rarity and such
-            data = row.find_all("td")[0] 
+        for row in rows[:len(rows)]:  # last row is not a stat but is rather the card rarity and such
+            data = row.find_all("td")[0]
             if data["class"].__contains__("alt3") and data["class"].__contains__("ability"):
                 abilities[title] = data.get_text()
-            elif data["class"].__contains__("alt3"):
-                abilities[data.get_text()] = None
+            elif data["class"].__contains__("alt3"):  # title with no ability text
+                abilities[data.contents[0].strip("-").strip(" ")] = None
             else:
-                title = data.get_text().strip("-")
+                title = data.get_text().strip("-").strip(" ")
         unit.with_special_abilities(abilities)
 
         set_info = rows[len(rows) - 1].find("td").get_text().split("-")
-        unit.with_set(set_info[0])
-        unit.with_set_number(set_info[1])
-        unit.with_rarity(set_info[2])
+        unit.with_set(set_info[0].strip(" "))
+        unit.with_set_number(set_info[1].strip(" "))
+        unit.with_rarity(set_info[2].strip(" "))
 
-        nation.addUnit(unit)
+        nation.add_unit(unit)
         current_record += 1
         sleep(2)
 
-outputFile = open("../War_at_Sea.json", "w")
+outputFile = open("../../War_at_Sea.json", "w")
 outputFile.writelines(json.dumps(NATION_LIST, cls=ModelJsonEncoder, indent=4))
 outputFile.close()
 print("Total records: " + str(total_records))

@@ -15,19 +15,18 @@ class ModelJsonEncoder(JSONEncoder):
         return super().default(o)
 
 
-def load_json(json):
-    populated_nations = NATION_LIST
+def load_json(json) -> list:
+    populated_nations = list()
     for nation in json:
         current_nation = Nation(nation["name"], nation["alliance"])
         for unit in nation["units"]:
             current_unit = Unit() \
-                .with_nation(current_nation) \
                 .with_name(unit["name"]) \
                 .with_flagship_value(unit["flagship"]) \
                 .with_point_value(unit["points"]) \
                 .with_year(unit["year"]) \
                 .with_type(unit["type"]).with_speed(unit["speed"]) \
-                .with_plane_capacity(unit["plane_capacity"]) \
+                .with_plane_capacity(unit["planes"]) \
                 .with_main_gunnery_attack(unit["main_gunnery_attack"]) \
                 .with_secondary_gunnery_attack(unit["secondary_gunnery_attack"]) \
                 .with_tertiary_gunnery_attack(unit["tertiary_gunnery_attack"]) \
@@ -42,5 +41,6 @@ def load_json(json):
                 .with_set(unit["set"]) \
                 .with_set_number(unit["set_number"]) \
                 .with_rarity(unit["rarity"])
-            current_nation.addUnit(current_unit)
+            current_nation.add_unit(current_unit)
+        populated_nations.append(current_nation)
     return populated_nations

@@ -4,7 +4,7 @@ from card_generator.models.nation import Nation
 class Unit:
     def __init__(self) -> None:
         self.name = None
-        self.nation = None
+        # self.nation = None
         self.flagship = None
         self.points = None
         self.year = None
@@ -31,9 +31,9 @@ class Unit:
         self.name = name
         return self
 
-    def with_nation(self, nation: Nation):
-        self.nation = nation
-        return self
+    # def with_nation(self, nation: Nation):
+    #     self.nation = nation
+    #     return self
 
     def with_flagship_value(self, flagship_points: int):
         self.flagship = flagship_points
@@ -118,6 +118,42 @@ class Unit:
     def with_rarity(self, rarity: str):
         self.rarity = rarity
         return self
+
+    def get_attacks(self) -> tuple:
+        number_of_attacks = 0
+        attacks = list()
+        if len(self.aircraft_gunnery_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "aircraft_gunnery", "value": self.aircraft_gunnery_attack})
+        if len(self.main_gunnery_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "main_gunnery", "value": self.main_gunnery_attack})
+        if len(self.secondary_gunnery_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "secondary_gunnery", "value": self.secondary_gunnery_attack})
+        if len(self.tertiary_gunnery_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "tertiary_gunnery", "value": self.tertiary_gunnery_attack})
+        if len(self.anti_aircraft_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "anti-air", "value": self.anti_aircraft_attack})
+        if len(self.bomb_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "bomb", "value": self.bomb_attack})
+        if len(self.anti_submarine_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "asw", "value": self.anti_submarine_attack})
+        if len(self.torpedo_attack) > 0:
+            number_of_attacks += 1
+            attacks.append({"name": "torpedo", "value": self.torpedo_attack})
+        return number_of_attacks, attacks
+
+    def get_armor(self) -> dict:
+        return {
+            "ARMOR": str(self.armor),
+            "VITAL ARMOR": str(self.vital_armor),
+            "HULL POINTS": str(self.hull_points)
+        }
 
     def __str__(self):
         elements = self.__dict__.keys()

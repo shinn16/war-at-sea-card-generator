@@ -7,17 +7,24 @@ class Nation:
         self.name = name
         self.alliance = alliance
 
-    def getAlliance(self) -> Alliance:
+    def get_alliance(self) -> Alliance:
         return self.alliance
 
-    def getName(self) -> str:
+    def get_name(self) -> str:
         return self.name
 
-    def getUnits(self) -> list:
+    def get_units(self) -> list:
         return self.units
 
-    def addUnit(self, unit: int) -> None:
+    def add_unit(self, unit) -> None:
         self.units.append(unit)
+
+    def __str__(self):
+        units_string = ""
+        for unit in self.units:
+            units_string += str(unit) + "\n"
+        string = "Name: {}, Alliance: {}, Units: \n{}".format(self.name, self.alliance, units_string)
+        return string
 
 
 NATION_LIST = [

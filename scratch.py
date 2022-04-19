@@ -12,7 +12,7 @@ top_overlay_draw = ImageDraw.Draw(top_overlay)
 
 card_base.paste(NationEmblems.GERMANY, Coordinates.NATION_EMBLEM, NationEmblems.GERMANY)
 
-draw_layer.text(Coordinates.SHIP_NAME, "T27",
+draw_layer.text((0, 0), "T27",
                 font=Fonts.SHIP_NAME,
                 fill=Colors.SHIP_NAME)
 
@@ -46,6 +46,9 @@ top_overlay_draw.text(
     font=Fonts.FLAGSHIP,
     fill=Colors.BLACK
 )
+
+draw_layer.point([575, 97], Colors.WHITE)
+draw_layer.point([575, 159], Colors.WHITE)
 
 # 381 is x min 500 is max
 carriers = 4

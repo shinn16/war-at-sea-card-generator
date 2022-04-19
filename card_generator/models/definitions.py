@@ -10,6 +10,12 @@ class Values:
     # card positions
     LEFT_CARD_BORDER = 56
 
+    # ship name
+    SHIP_NAME_START_X = 78
+    SHIP_NAME_END_X = 575
+    SHIP_NAME_START_Y = 97
+    SHIP_NAME_END_Y = 159
+
     # flagship icon
     FLAGSHIP_CENTER_OFFSET = 40
     FLAGSHIP_VALUE_Y = 209
@@ -47,13 +53,13 @@ class Values:
     SPECIAL_ABILITY_LEFT_MARGIN = 90
     SPECIAL_ABILITY_BOTTOM_MARGIN = 10
     SPECIAL_ABILITY_TOP_MARGIN = 10
-    SPECIAL_ABILITY_TEXT_WIDTH = 57
+    SPECIAL_ABILITY_TEXT_WIDTH = 50
 
     SET_Y_OFFSET = 990
 
 
 class Resizing:
-    NATION_EMBLEM = (60, 60)
+    NATION_EMBLEM = (61, 61)
     HIT_POINTS = (44, 44)
     FLAGSHIP = (33, 33)
     CARRIER = (33, 33)
@@ -64,6 +70,7 @@ class BackgroundAssets:
 
 
 class Icons:
+    # attack icons
     GUNNERY_1 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery1-Ship.png"), 0.8)
     GUNNERY_2 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery2.png"), 0.7)
     GUNNERY_3 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery3.png"), 0.6)
@@ -71,9 +78,25 @@ class Icons:
     TORPEDO = Image.open("card_generator/assets/card-icons/Torpedo.png")
     AIRCRAFT_GUNNERY = Image.open("card_generator/assets/card-icons/Gunnery1-Aircraft.png")
     BOMBS = Image.open("card_generator/assets/card-icons/Bomb.png")
+    ASW = Image.open("card_generator/assets/card-icons/ASW.png")
 
+    # special icons
     CARRIER = Image.open("card_generator/assets/card-icons/Carrier.png").resize(Resizing.CARRIER)
     FLAGSHIP = Image.open("card_generator/assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
+
+    # set icons
+    STARTER_SET = Image.open("card_generator/assets/card-icons/Flagship.png").resize((24, 24))
+    CONDITION_ZEBRA = Image.open("card_generator/assets/card-icons/condition_zebra.png").resize((24, 24))
+    FLANK_SPEED = Image.open("card_generator/assets/card-icons/flank_speed.png").resize((24, 24))
+    SURFACE_ACTION = Image.open("card_generator/assets/card-icons/surface_action.png").resize((24, 24))
+    TASK_FORCE = Image.open("card_generator/assets/card-icons/task_force.png").resize((24, 24))
+    SET_V = Image.open("card_generator/assets/card-icons/set V.png").resize((24, 24))
+    WAR_AT_SEA = Image.open("card_generator/assets/card-icons/war_at_sea.png").resize((24, 24))
+
+    # rarity icons
+    RARE = Image.open("card_generator/assets/card-icons/rare.png").resize((24, 24))
+    UNCOMMON = Image.open("card_generator/assets/card-icons/uncommon.png").resize((24, 24))
+    COMMON = Image.open("card_generator/assets/card-icons/common.png").resize((24, 24))
 
 
 class NationEmblems:
@@ -119,7 +142,7 @@ class Colors:
 
 
 class Fonts:
-    SHIP_NAME = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 75)
+    SHIP_NAME = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 60)
     POINT_VALUE = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 94)
     FLAGSHIP = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", 17)
     SHIP_TYPE_AND_YEAR = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 30)
@@ -136,8 +159,7 @@ class Coordinates:
     """
     Coordinates for element placement.
     """
-    NATION_EMBLEM = (45, 165)
-    SHIP_NAME = (78, 91)
+    NATION_EMBLEM = (44, 164)
     FLAGSHIP = (330, 206)
     POINT_CIRCLE_CENTER = (646, 125)
     SHIP_TYPE = (128, 165)
@@ -186,4 +208,65 @@ class Coordinates:
 
 
 def get_emblem(nation: Nation) -> Image.Image:
-    return NationEmblems.NATION_MAPPING[nation.getName]
+    return NationEmblems.NATION_MAPPING[nation.get_name()]
+
+
+def get_icon(attack: str) -> Image.Image:
+    if attack == "aircraft_gunnery":
+        return Icons.AIRCRAFT_GUNNERY
+    if attack == "main_gunnery":
+        return Icons.GUNNERY_1
+    if attack == "secondary_gunnery":
+        return Icons.GUNNERY_2
+    if attack == "tertiary_gunnery":
+        return Icons.GUNNERY_3
+    if attack == "anti-air":
+        return Icons.ANTI_AIR
+    if attack == "bomb":
+        return Icons.BOMBS
+    if attack == "asw":
+        return Icons.ASW
+    if attack == "torpedo":
+        return Icons.TORPEDO
+
+
+def get_header_font(text: str) -> ImageFont.FreeTypeFont:
+    correct = False
+    font_size = 60
+    max_size = Values.SHIP_NAME_END_X - Values.SHIP_NAME_START_X
+    while not correct:
+        font = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", font_size)
+        width = font.getsize(text)[0]
+        correct = width <= max_size
+        if not correct:
+            font_size -= 1
+            print("Default size is too large, trying {}".format(font_size))
+    return ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", font_size)
+
+
+def get_set_icon(set_name: str):
+    if set_name == "Starter Set":
+        return Icons.STARTER_SET
+    if set_name == "Flank Speed":
+        return Icons.FLANK_SPEED
+    if set_name == "Condition Zebra":
+        return Icons.CONDITION_ZEBRA
+    if set_name == "Set V":
+        return Icons.SET_V
+    if set_name == "Surface Action":
+        return Icons.SURFACE_ACTION
+    if set_name == "War At Sea":
+        return Icons.WAR_AT_SEA
+    if set_name == "Task Force":
+        return Icons.TASK_FORCE
+
+
+def get_rarity_icon(rarity: str):
+    if rarity == "Common":
+        return Icons.COMMON
+    if rarity == "Uncommon":
+        return Icons.UNCOMMON
+    if rarity == "Rare":
+        return Icons.RARE
+    else:
+        return None
