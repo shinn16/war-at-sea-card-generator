@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 from textwrap import wrap
 from card_generator.models.definitions import Coordinates, Colors, Fonts, Values, get_emblem, get_header_font, \
-    get_icon, get_rarity_icon, get_set_icon, Icons, BackgroundAssets
+    get_attack_icon, get_rarity_icon, get_set_icon, Icons, BackgroundAssets
 from card_generator.models.alliance import Alliance
 from card_generator.utils.helper_functions import center_text, x_center_text, y_center_text, center_image, ability_sort
 from card_generator.models.nation import Nation
@@ -106,7 +106,7 @@ class Generator:
             number_of_attacks, attacks = self.unit.get_attacks()
             for i in range(number_of_attacks):
                 # attack icon and box
-                icon = get_icon(attacks[i]["name"])
+                icon = get_attack_icon(attacks[i]["name"])
                 current_attack = attacks[i]["value"]
                 transparent_overlay_draw.rectangle(
                     (
@@ -324,4 +324,4 @@ class Generator:
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
         out = Image.alpha_composite(self.card_base, out)
-        out.show()
+        out.save("card_generator/cards/{}.png".format(self.unit.name))

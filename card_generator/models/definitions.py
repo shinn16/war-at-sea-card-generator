@@ -71,27 +71,30 @@ class BackgroundAssets:
 
 class Icons:
     # attack icons
-    GUNNERY_1 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery1-Ship.png"), 0.8)
-    GUNNERY_2 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery2.png"), 0.7)
-    GUNNERY_3 = icon_resize(Image.open("card_generator/assets/card-icons/Gunnery3.png"), 0.6)
-    ANTI_AIR = Image.open("card_generator/assets/card-icons/Antiair.png")
-    TORPEDO = Image.open("card_generator/assets/card-icons/Torpedo.png")
-    AIRCRAFT_GUNNERY = Image.open("card_generator/assets/card-icons/Gunnery1-Aircraft.png")
-    BOMBS = Image.open("card_generator/assets/card-icons/Bomb.png")
-    ASW = Image.open("card_generator/assets/card-icons/ASW.png")
+    ATTACK_ICONS = {
+        "aircraft_gunnery": Image.open("card_generator/assets/card-icons/Gunnery1-Aircraft.png"),
+        "main_gunnery": icon_resize(Image.open("card_generator/assets/card-icons/Gunnery1-Ship.png"), 0.8),
+        "secondary_gunnery": icon_resize(Image.open("card_generator/assets/card-icons/Gunnery2.png"), 0.7),
+        "tertiary_gunnery": icon_resize(Image.open("card_generator/assets/card-icons/Gunnery3.png"), 0.6),
+        "anti-air": Image.open("card_generator/assets/card-icons/Antiair.png"),
+        "bomb": Image.open("card_generator/assets/card-icons/Bomb.png"),
+        "asw": Image.open("card_generator/assets/card-icons/ASW.png"),
+        "torpedo": Image.open("card_generator/assets/card-icons/Torpedo.png")
+    }
+
+    SET_ICONS = {
+        "Starter Set": Image.open("card_generator/assets/card-icons/Flagship.png").resize((24, 24)),
+        "War At Sea": Image.open("card_generator/assets/card-icons/war_at_sea.png").resize((24, 24)),
+        "Task Force": Image.open("card_generator/assets/card-icons/task_force.png").resize((24, 24)),
+        "Flank Speed":  Image.open("card_generator/assets/card-icons/flank_speed.png").resize((24, 24)),
+        "Condition Zebra": Image.open("card_generator/assets/card-icons/condition_zebra.png").resize((24, 24)),
+        "Set V": Image.open("card_generator/assets/card-icons/set V.png").resize((24, 24)),
+        "Surface Action": Image.open("card_generator/assets/card-icons/surface_action.png").resize((24, 24))
+    }
 
     # special icons
     CARRIER = Image.open("card_generator/assets/card-icons/Carrier.png").resize(Resizing.CARRIER)
     FLAGSHIP = Image.open("card_generator/assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
-
-    # set icons
-    STARTER_SET = Image.open("card_generator/assets/card-icons/Flagship.png").resize((24, 24))
-    CONDITION_ZEBRA = Image.open("card_generator/assets/card-icons/condition_zebra.png").resize((24, 24))
-    FLANK_SPEED = Image.open("card_generator/assets/card-icons/flank_speed.png").resize((24, 24))
-    SURFACE_ACTION = Image.open("card_generator/assets/card-icons/surface_action.png").resize((24, 24))
-    TASK_FORCE = Image.open("card_generator/assets/card-icons/task_force.png").resize((24, 24))
-    SET_V = Image.open("card_generator/assets/card-icons/set V.png").resize((24, 24))
-    WAR_AT_SEA = Image.open("card_generator/assets/card-icons/war_at_sea.png").resize((24, 24))
 
     # rarity icons
     RARE = Image.open("card_generator/assets/card-icons/rare.png").resize((24, 24))
@@ -211,23 +214,8 @@ def get_emblem(nation: Nation) -> Image.Image:
     return NationEmblems.NATION_MAPPING[nation.get_name()]
 
 
-def get_icon(attack: str) -> Image.Image:
-    if attack == "aircraft_gunnery":
-        return Icons.AIRCRAFT_GUNNERY
-    if attack == "main_gunnery":
-        return Icons.GUNNERY_1
-    if attack == "secondary_gunnery":
-        return Icons.GUNNERY_2
-    if attack == "tertiary_gunnery":
-        return Icons.GUNNERY_3
-    if attack == "anti-air":
-        return Icons.ANTI_AIR
-    if attack == "bomb":
-        return Icons.BOMBS
-    if attack == "asw":
-        return Icons.ASW
-    if attack == "torpedo":
-        return Icons.TORPEDO
+def get_attack_icon(attack: str) -> Image.Image:
+    return Icons.ATTACK_ICONS[attack]
 
 
 def get_header_font(text: str) -> ImageFont.FreeTypeFont:
@@ -245,20 +233,7 @@ def get_header_font(text: str) -> ImageFont.FreeTypeFont:
 
 
 def get_set_icon(set_name: str):
-    if set_name == "Starter Set":
-        return Icons.STARTER_SET
-    if set_name == "Flank Speed":
-        return Icons.FLANK_SPEED
-    if set_name == "Condition Zebra":
-        return Icons.CONDITION_ZEBRA
-    if set_name == "Set V":
-        return Icons.SET_V
-    if set_name == "Surface Action":
-        return Icons.SURFACE_ACTION
-    if set_name == "War At Sea":
-        return Icons.WAR_AT_SEA
-    if set_name == "Task Force":
-        return Icons.TASK_FORCE
+    return Icons.SET_ICONS[set_name]
 
 
 def get_rarity_icon(rarity: str):

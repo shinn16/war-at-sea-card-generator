@@ -9,8 +9,9 @@ class MyTestCase(unittest.TestCase):
         data_file = open("War_at_Sea.json")
         data = json.load(data_file)
         axis_and_allies_deck = load_json(data)
-        print(str(axis_and_allies_deck[0]))
-        Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[30]).generate()
+        for nation in axis_and_allies_deck:
+            for unit in nation.get_units():
+                Generator(nation, unit).generate()
         data_file.close()
 
 
