@@ -1,9 +1,12 @@
-from PIL import Image, ImageDraw
+import os
+
+from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
 from card_generator.models.definitions import Coordinates, Colors, Fonts, Values, get_emblem, get_header_font, \
     get_attack_icon, get_rarity_icon, get_set_icon, Icons, BackgroundAssets
 from card_generator.models.alliance import Alliance
-from card_generator.utils.helper_functions import center_text, x_center_text, y_center_text, center_image, ability_sort
+from card_generator.utils.helper_functions import center_text, x_center_text, y_center_text, center_image, ability_sort \
+    , draw_text_psd_style
 from card_generator.models.nation import Nation
 from card_generator.models.unit import Unit
 
@@ -18,6 +21,7 @@ class Generator:
             self.card_base = Image.open("card_generator/assets/axis-card-base.png").convert("RGBA")
 
     def generate(self) -> None:
+        print("{}/{}".format(self.nation.name, self.unit.name))
         y_offset = Values.ATTACK_RECTANGLE_START_Y
         base_draw_layer = ImageDraw.Draw(self.card_base, "RGBA")
         transparent_overlay = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
@@ -38,10 +42,11 @@ class Generator:
                                  font=ship_name_font,
                                  fill=Colors.SHIP_NAME)
 
-            base_draw_layer.text(center_text(Coordinates.POINT_CIRCLE_CENTER, str(self.unit.points), Fonts.POINT_VALUE),
-                                 str(self.unit.points),
-                                 font=Fonts.POINT_VALUE,
-                                 fill=Colors.POINT_VALUE)
+            draw_text_psd_style(base_draw_layer,
+                                center_text(Coordinates.POINT_CIRCLE_CENTER, str(self.unit.points), Fonts.POINT_VALUE),
+                                str(self.unit.points),
+                                Fonts.POINT_VALUE,
+                                tracking=-100, leading=0, fill=Colors.POINT_VALUE)
 
             base_draw_layer.text(Coordinates.SHIP_TYPE, self.unit.type,
                                  font=Fonts.SHIP_TYPE_AND_YEAR,
@@ -270,33 +275,75 @@ class Generator:
 
         def populate_abilities():
             nonlocal y_offset
-            y_offset += Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
+            current_y_offset = y_offset
+            correct_size = False
+            font_size = 25
+            # dry run until we get the right size
+            while not correct_size:
+                ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", font_size)
+                ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", font_size)
+                y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
+                for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
+                    if ability is not None:
+                        title = title + " - "
+                    first_line_offset = ABILITIES_TITLE.getsize(title)[0]
+                    # scale the width of the first line to accommodate the title text.
+                    first_line_width = int(
+                        (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                        (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))
+                    text = ability
+                    if ability is not None:
+                        if first_line_width > 0:
+                            text = wrap(text, width=first_line_width)
+                            first_line = text[0]
+                            text = " ".join(text[1:])
+                            y_offset += ABILITIES.getsize(first_line)[1]
+                        else:
+                            y_offset += ABILITIES.getsize(title)[1]
+                        for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))):
+                            y_offset += ABILITIES.getsize(line)[1]
+                    else:
+                        y_offset += ABILITIES_TITLE.getsize(title)[1]
+                    y_offset += Values.SPECIAL_ABILITY_BOTTOM_MARGIN
+                if y_offset < 980:
+                    correct_size = True
+                else:
+                    font_size -= 1
+
+            # real run
+            y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
+            ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", font_size)
+            ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", font_size)
             for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
                 if ability is not None:
                     title = title + " - "
                 transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), title,
-                                              font=Fonts.ABILITIES_TITLE,
+                                              font=ABILITIES_TITLE,
                                               fill=Colors.WHITE)
-                first_line_offset = Fonts.ABILITIES_TITLE.getsize(title)[0]
+                first_line_offset = ABILITIES_TITLE.getsize(title)[0]
                 # scale the width of the first line to accommodate the title text.
                 first_line_width = int(
                     (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
-                    Values.SPECIAL_ABILITY_TEXT_WIDTH)
+                    (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))
+                text = ability
                 if ability is not None:
-                    text = wrap(ability, width=first_line_width)
-                    print(first_line_width)
-                    first_line = text[0]
-                    text = " ".join(text[1:])
-                    transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset, y_offset),
-                                                  first_line,
-                                                  font=Fonts.ABILITIES, fill=Colors.WHITE)
-                    y_offset += Fonts.ABILITIES.getsize(first_line)[1]
-                    for line in wrap(text, width=Values.SPECIAL_ABILITY_TEXT_WIDTH):
+                    if first_line_width > 0:
+                        text = wrap(text, width=first_line_width)
+                        first_line = text[0]
+                        text = " ".join(text[1:])
+                        transparent_overlay_draw.text(
+                            (Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset, y_offset),
+                            first_line,
+                            font=ABILITIES, fill=Colors.WHITE)
+                        y_offset += ABILITIES.getsize(first_line)[1]
+                    else:
+                        y_offset += ABILITIES.getsize(title)[1]
+                    for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))):
                         transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), line,
-                                                      font=Fonts.ABILITIES, fill=Colors.WHITE)
-                        y_offset += Fonts.ABILITIES.getsize(line)[1]
+                                                      font=ABILITIES, fill=Colors.WHITE)
+                        y_offset += ABILITIES.getsize(line)[1]
                 else:
-                    y_offset += Fonts.ABILITIES_TITLE.getsize(title)[1]
+                    y_offset += ABILITIES_TITLE.getsize(title)[1]
                 y_offset += Values.SPECIAL_ABILITY_BOTTOM_MARGIN
 
         def populate_set():
@@ -324,4 +371,9 @@ class Generator:
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
         out = Image.alpha_composite(self.card_base, out)
-        out.save("card_generator/cards/{}.png".format(self.unit.name))
+        card_path = (os.path.join(os.getcwd(), "cards", self.nation.name))
+        try:
+            out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
+        except FileNotFoundError:
+            os.makedirs(card_path, exist_ok=True)
+            out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
