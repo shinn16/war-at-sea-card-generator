@@ -61,7 +61,7 @@ def center_image(x1: int, y1: int, x2: int, y2: int, image: Image.Image) -> tupl
 
 
 # thanks https://stackoverflow.com/questions/49530282/python-pil-decrease-letter-spacing
-def draw_text_psd_style(draw, xy, text, font, tracking=0, leading=None, **kwargs):
+def draw_text_psd_style(draw, xy, text, font, tracking=0, leading=None, center_x=False, **kwargs):
     """
     usage: draw_text_psd_style(draw, (0, 0), "Test",
                 tracking=-0.1, leading=32, fill="Blue")
@@ -88,10 +88,11 @@ def draw_text_psd_style(draw, xy, text, font, tracking=0, leading=None, **kwargs
     x, y = xy
     font_size = font.size
     lines = text.splitlines()
-    x_offset = (tracking / 1000) * font_size * (len(text) - 1)
     if leading is None:
         leading = font.size * 1.2
-    x -= x_offset/2
+    if center_x: # add size adjustment to maintain horizontal centering
+        x_offset = (tracking / 1000) * font_size * (len(text) - 1)
+        x -= x_offset/2
     for line in lines:
         for a, b in stutter_chunk(line, 2, 1, ' '):
             w = font.getlength(a + b) - font.getlength(b)

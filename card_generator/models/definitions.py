@@ -15,6 +15,7 @@ class Values:
     SHIP_NAME_END_X = 575
     SHIP_NAME_START_Y = 97
     SHIP_NAME_END_Y = 159
+    SHIP_NAME_FONT_TRACKING = -125
 
     # flagship icon
     FLAGSHIP_CENTER_OFFSET = 40
@@ -218,13 +219,13 @@ def get_attack_icon(attack: str) -> Image.Image:
     return Icons.ATTACK_ICONS[attack]
 
 
-def get_header_font(text: str) -> ImageFont.FreeTypeFont:
+def get_header_font(text: str, tracking: int = 0) -> ImageFont.FreeTypeFont:
     correct = False
     font_size = 60
     max_size = Values.SHIP_NAME_END_X - Values.SHIP_NAME_START_X
     while not correct:
         font = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", font_size)
-        width = font.getsize(text)[0]
+        width = font.getsize(text)[0] + ((tracking / 1000) * font_size * (len(text) - 1))
         correct = width <= max_size
         if not correct:
             font_size -= 1

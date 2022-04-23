@@ -20,7 +20,7 @@ class Generator:
         else:
             self.card_base = Image.open("card_generator/assets/axis-card-base.png").convert("RGBA")
 
-    def generate(self) -> None:
+    def generate(self, display: bool = False) -> None:
         print("{}/{}".format(self.nation.name, self.unit.name))
         y_offset = Values.ATTACK_RECTANGLE_START_Y
         base_draw_layer = ImageDraw.Draw(self.card_base, "RGBA")
@@ -33,20 +33,23 @@ class Generator:
             self.card_base.paste(get_emblem(self.nation), Coordinates.NATION_EMBLEM,
                                  get_emblem(self.nation))
 
-            ship_name_font = get_header_font(self.unit.name)
+            ship_name_font = get_header_font(self.unit.name, tracking=Values.SHIP_NAME_FONT_TRACKING)
             ship_name_y = y_center_text(Values.SHIP_NAME_END_Y,
                                         Values.SHIP_NAME_START_Y,
                                         self.unit.name, ship_name_font
                                         )
-            base_draw_layer.text((Values.SHIP_NAME_START_X, ship_name_y), self.unit.name,
-                                 font=ship_name_font,
-                                 fill=Colors.SHIP_NAME)
+
+            draw_text_psd_style(base_draw_layer,
+                                (Values.SHIP_NAME_START_X, ship_name_y),
+                                self.unit.name,
+                                ship_name_font,
+                                tracking=Values.SHIP_NAME_FONT_TRACKING, leading=0, fill=Colors.SHIP_NAME)
 
             draw_text_psd_style(base_draw_layer,
                                 center_text(Coordinates.POINT_CIRCLE_CENTER, str(self.unit.points), Fonts.POINT_VALUE),
                                 str(self.unit.points),
                                 Fonts.POINT_VALUE,
-                                tracking=-100, leading=0, fill=Colors.POINT_VALUE)
+                                tracking=-100, leading=0, center_x=True, fill=Colors.POINT_VALUE)
 
             base_draw_layer.text(Coordinates.SHIP_TYPE, self.unit.type,
                                  font=Fonts.SHIP_TYPE_AND_YEAR,
@@ -83,9 +86,11 @@ class Generator:
 
         def populate_attack():
             nonlocal y_offset
-            base_draw_layer.text(Coordinates.ATTACK_HEADING, "Attacks",
-                                 font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
-                                 fill=Colors.STATS)
+            draw_text_psd_style(base_draw_layer,
+                                Coordinates.ATTACK_HEADING,
+                                "Attacks",
+                                font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
+                                tracking=-50, leading=0, center_x=True, fill=Colors.STATS)
 
             base_draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_0, "0",
                                  font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
@@ -371,6 +376,8 @@ class Generator:
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
         out = Image.alpha_composite(self.card_base, out)
+        if display:
+            out.show()
         card_path = (os.path.join(os.getcwd(), "cards", self.nation.name))
         try:
             out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
