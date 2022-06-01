@@ -450,7 +450,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "12/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "LST"
             },
             {
                 "name": "P-40E Warhawk",
@@ -613,7 +614,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "17/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "PT Boat"
             },
             {
                 "name": "SB2C Helldiver",
@@ -713,7 +715,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "13/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Victory"
             },
             {
                 "name": "SS Jeremiah O'Brien",
@@ -745,7 +748,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "19/64",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Liberty"
             },
             {
                 "name": "TBD Devastator",
@@ -936,7 +940,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "11/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Alaska"
             },
             {
                 "name": "USS Allen M. Sumner (DD 692)",
@@ -984,7 +989,8 @@
                 },
                 "set": "Condition Zebra",
                 "set_number": "17/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Sumner"
             },
             {
                 "name": "USS Archerfish",
@@ -1017,7 +1023,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "21/60",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Balao"
             },
             {
                 "name": "USS Arizona (BB 39)",
@@ -1067,7 +1074,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "12/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Pennsylvania"
             },
             {
                 "name": "USS Atlanta (CL 51)",
@@ -1108,7 +1116,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "21/64",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Atlanta"
             },
             {
                 "name": "USS Bagley (DD 386)",
@@ -1155,7 +1164,8 @@
                 },
                 "set": "Set V",
                 "set_number": "11/39",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Bagley"
             },
             {
                 "name": "USS Baltimore (CA 68)",
@@ -1197,7 +1207,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "22/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Baltimore"
             },
             {
                 "name": "USS Barb (SS 220)",
@@ -1229,7 +1240,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "23/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Gato"
             },
             {
                 "name": "USS Boise (CL 47)",
@@ -1270,7 +1282,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "24/64",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Brooklyn"
             },
             {
                 "name": "USS California (BB 44)",
@@ -1314,7 +1327,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "22/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Tennessee"
             },
             {
                 "name": "USS Cleveland (CL 55)",
@@ -1357,7 +1371,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "23/60",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Cleveland"
             },
             {
                 "name": "USS Edsall (DD-219)",
@@ -1405,7 +1420,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "14/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Clemson"
             },
             {
                 "name": "USS Enterprise (CV 6)",
@@ -1445,7 +1461,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "25/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Yorktown"
             },
             {
                 "name": "USS Essex (CV 9)",
@@ -1485,7 +1502,8 @@
                 },
                 "set": "Set V",
                 "set_number": "12/39",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Essex"
             },
             {
                 "name": "USS Fletcher (DD 445)",
@@ -1531,7 +1549,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "26/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Fletcher"
             },
             {
                 "name": "USS Guadalcanal (CVE-60)",
@@ -1570,7 +1589,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "15/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Casablanca"
             },
             {
                 "name": "USS Gunston Hall (LSD 5)",
@@ -1607,7 +1627,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "13/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Ashland"
             },
             {
                 "name": "USS Hoel (DD 533)",
@@ -1655,7 +1676,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "24/60",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Fletcher"
             },
             {
                 "name": "USS Hornet (CV8)",
@@ -1693,7 +1715,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "16/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Yorktown"
             },
             {
                 "name": "USS Houston (CA 30)",
@@ -1736,7 +1759,8 @@
                 },
                 "set": "Condition Zebra",
                 "set_number": "18/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Northampton"
             },
             {
                 "name": "USS Intrepid (CV II)",
@@ -1775,7 +1799,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "14/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Essex"
             },
             {
                 "name": "USS Iowa (BB 61)",
@@ -1819,7 +1844,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "27/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Iowa"
             },
             {
                 "name": "USS John C. Butler (DE 339)",
@@ -1867,7 +1893,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "25/60",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "John C. Butler"
             },
             {
                 "name": "USS Kidd (DD 661)",
@@ -1914,7 +1941,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "15/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Fletcher"
             },
             {
                 "name": "USS Laffey (DD 724)",
@@ -1962,7 +1990,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "26/60",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Sumner"
             },
             {
                 "name": "USS Lexington (CV 2)",
@@ -2002,7 +2031,8 @@
                 },
                 "set": "Condition Zebra",
                 "set_number": "19/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Lexington"
             },
             {
                 "name": "USS Massachusetts (BB 59)",
@@ -2045,7 +2075,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "27/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "South Dakota"
             },
             {
                 "name": "USS Missouri (BB 63)",
@@ -2090,7 +2121,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "28/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Iowa"
             },
             {
                 "name": "USS Montana (BB 67)",
@@ -2134,7 +2166,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "17/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Montana"
             },
             {
                 "name": "USS Montpelier (CL 57)",
@@ -2178,7 +2211,8 @@
                 },
                 "set": "Starter Set",
                 "set_number": "4/8",
-                "rarity": "Pre"
+                "rarity": "Pre",
+                "class": "Cleveland"
             },
             {
                 "name": "USS Nevada (BB 36)",
@@ -2227,7 +2261,8 @@
                 },
                 "set": "Set V",
                 "set_number": "13/39",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Nevada"
             },
             {
                 "name": "USS New Jersey (BB62)",
@@ -2272,7 +2307,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "18/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Iowa"
             },
             {
                 "name": "USS North Carolina (BB 55)",
@@ -2317,7 +2353,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "16/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "North Carolina"
             },
             {
                 "name": "USS Phelps (DD 360)",
@@ -2365,7 +2402,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "17/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Porter"
             },
             {
                 "name": "USS Phoenix (CL 46)",
@@ -2408,7 +2446,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "19/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Brooklyn"
             },
             {
                 "name": "USS Princeton (CVL 23)",
@@ -2446,7 +2485,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "28/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Independence"
             },
             {
                 "name": "USS Quincy (CA 71)",
@@ -2489,7 +2529,8 @@
                 },
                 "set": "Set V",
                 "set_number": "14/39",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Baltimore"
             },
             {
                 "name": "USS Richmond (CL 9)",
@@ -2532,7 +2573,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "18/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Omaha"
             },
             {
                 "name": "USS S-37 (SS 132)",
@@ -2564,7 +2606,8 @@
                 },
                 "set": "Condition Zebra",
                 "set_number": "20/40",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "S"
             },
             {
                 "name": "USS Salt Lake City (CA 25)",
@@ -2605,7 +2648,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "29/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Pensacola"
             },
             {
                 "name": "USS Samuel B. Roberts",
@@ -2653,7 +2697,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "30/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "John C. Butler"
             },
             {
                 "name": "USS San Diego (CL 53)",
@@ -2695,7 +2740,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "19/40",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Atlanta"
             },
             {
                 "name": "USS San Francisco (CA 38)",
@@ -2738,7 +2784,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "29/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "New Orleans"
             },
             {
                 "name": "USS Saratoga (CV 3)",
@@ -2782,7 +2829,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "30/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Lexington"
             },
             {
                 "name": "USS St. Lo (CVE 63)",
@@ -2819,7 +2867,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "31/64",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Casablanca"
             },
             {
                 "name": "USS Taylor (DD 468)",
@@ -2866,7 +2915,8 @@
                 },
                 "set": "Starter Set",
                 "set_number": "2/8",
-                "rarity": "Pre"
+                "rarity": "Pre",
+                "class": "Fletcher"
             },
             {
                 "name": "USS Tennessee (BB 43)",
@@ -2909,7 +2959,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "32/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Tennessee"
             },
             {
                 "name": "USS Washington (BB 56)",
@@ -2953,7 +3004,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "33/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "North Carolina"
             },
             {
                 "name": "USS Wasp (CV 7)",
@@ -2992,7 +3044,8 @@
                 },
                 "set": "Surface Action",
                 "set_number": "20/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Wasp"
             },
             {
                 "name": "USS West Virginia (BB 48)",
@@ -3041,7 +3094,8 @@
                 },
                 "set": "Condition Zebra",
                 "set_number": "21/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Colorado"
             },
             {
                 "name": "USS Yorktown (CV 5)",
@@ -3080,7 +3134,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "31/60",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Yorktown"
             }
         ],
         "name": "United States",
@@ -9202,7 +9257,8 @@
                 },
                 "set": "Flank Speed",
                 "set_number": "34/40",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "Aoba"
             },
             {
                 "name": "Atago",

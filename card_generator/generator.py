@@ -84,6 +84,21 @@ class Generator:
                     transparent_overlay.paste(Icons.CARRIER, (offset, Values.CARRIER_Y))
                     offset += Values.CARRIER_ICON_SPACING
 
+            # silhouette
+            if self.unit.ship_class is not None:
+                silhouette = Image.open("card_generator/assets/silhouettes/{}".format(self.unit.ship_class.lower() +
+                                                                                      ".png")).convert("RGBA")
+                w, h = silhouette.size
+                scale = 380/w
+                scaled_height = 98 - int(h * scale)
+                if scaled_height < 0:
+                    scaled_height = 0
+                silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                transparent_overlay.paste(silhouette, (65, scaled_height))
+            else:
+                # TODO planes
+                pass
+
         def populate_attack():
             nonlocal y_offset
             draw_text_psd_style(base_draw_layer,

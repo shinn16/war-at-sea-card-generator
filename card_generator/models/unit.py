@@ -26,6 +26,7 @@ class Unit:
         self.set = None
         self.set_number = None
         self.rarity = None
+        self.ship_class = None
 
     def with_name(self, name: str):
         self.name = name
@@ -117,6 +118,10 @@ class Unit:
 
     def with_rarity(self, rarity: str):
         self.rarity = rarity
+        return self
+
+    def with_ship_class(self, ship_class: str):
+        self.ship_class = ship_class
         return self
 
     def get_attacks(self) -> tuple:

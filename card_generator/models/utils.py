@@ -41,6 +41,10 @@ def load_json(json) -> list:
                 .with_set(unit["set"]) \
                 .with_set_number(unit["set_number"]) \
                 .with_rarity(unit["rarity"])
+            try:
+                current_unit = current_unit.with_ship_class(unit["class"])
+            except KeyError:
+                pass
             current_nation.add_unit(current_unit)
         populated_nations.append(current_nation)
     return populated_nations
