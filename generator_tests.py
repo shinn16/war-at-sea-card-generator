@@ -14,6 +14,14 @@ class MyTestCase(unittest.TestCase):
                 Generator(nation, unit).generate()
         data_file.close()
 
+    def generate_country(self):
+        country = 0
+        data_file = open("War_at_Sea.json")
+        data = json.load(data_file)
+        axis_and_allies_deck = load_json(data)
+        for unit in axis_and_allies_deck[country].get_units():
+            Generator(axis_and_allies_deck[country], unit).generate()
+
     def generate_single(self):
         data_file = open("War_at_Sea.json")
         data = json.load(data_file)

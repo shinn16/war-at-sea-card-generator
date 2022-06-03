@@ -46,7 +46,8 @@
                 },
                 "set": "Task Force",
                 "set_number": "1/60",
-                "rarity": "Common"
+                "rarity": "Common",
+                "class": "Arunta"
             },
             {
                 "name": "HMAS Australia",
@@ -84,7 +85,8 @@
                 },
                 "set": "Set V",
                 "set_number": "1/39",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "County"
             },
             {
                 "name": "HMAS Canberra",
@@ -123,7 +125,8 @@
                 "special_abilities": {},
                 "set": "War At Sea",
                 "set_number": "1/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class": "County"
             },
             {
                 "name": "HMAS Nizam",
@@ -170,7 +173,8 @@
                 },
                 "set": "Starter Set",
                 "set_number": "1/8",
-                "rarity": "Pre"
+                "rarity": "Pre",
+                "class": "N"
             },
             {
                 "name": "HMAS Sydney",
@@ -211,7 +215,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "2/64",
-                "rarity": "Uncommon"
+                "rarity": "Uncommon",
+                "class": "Leander"
             }
         ],
         "name": "Australia",
