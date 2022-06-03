@@ -86,18 +86,22 @@ class Generator:
 
             # silhouette
             if self.unit.ship_class is not None:
-                silhouette = Image.open("card_generator/assets/silhouettes/{}".format(self.unit.ship_class.lower() +
-                                                                                      ".png")).convert("RGBA")
+                silhouette = Image.open("card_generator/assets/silhouettes/ships/{}/{}".format(
+                    self.nation.name,
+                    self.unit.ship_class.lower() + ".png")).convert("RGBA")
                 w, h = silhouette.size
                 scale = 380/w
-                scaled_height = 98 - int(h * scale)
+                scaled_height = 97 - int(h * scale)
                 if scaled_height < 0:
                     scaled_height = 0
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 transparent_overlay.paste(silhouette, (65, scaled_height))
             else:
-                # TODO planes
-                pass
+                silhouette = Image.open("card_generator/assets/silhouettes/planes/{}/{}".format(
+                    self.nation.name,
+                    self.unit.name.lower() + ".png")).convert("RGBA")
+                height = 85 - silhouette.size[1]
+                transparent_overlay.paste(silhouette, (65, height))
 
         def populate_attack():
             nonlocal y_offset
