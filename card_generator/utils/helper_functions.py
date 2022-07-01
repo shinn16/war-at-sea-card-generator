@@ -100,3 +100,13 @@ def draw_text_psd_style(draw, xy, text, font, tracking=0, leading=None, center_x
             x += w + (tracking / 1000) * font_size
         y += leading
         x = xy[0]
+
+
+def expand_transparent_area(x_scale: float, y_scale: float, img: Image.Image) -> Image.Image:
+    x, y = img.size
+    x = int(x * x_scale)
+    y = int(y * y_scale)
+
+    final_image = Image.new("RGBA", (x, y), (255, 255, 255, 0))
+    final_image.paste(img, center_image(0, 0, x, y, img))
+    return final_image

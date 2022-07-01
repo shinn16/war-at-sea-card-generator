@@ -1,8 +1,12 @@
 import unittest
 import json
 from card_generator.models.utils import load_json
+from card_generator.utils.helper_functions import expand_transparent_area
 from card_generator.generator import Generator
-
+import os
+import pathlib
+import shutil
+from PIL import Image
 
 class MyTestCase(unittest.TestCase):
     def generate_all(self):
@@ -28,6 +32,14 @@ class MyTestCase(unittest.TestCase):
         axis_and_allies_deck = load_json(data)
         Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[4]).generate(display=True)
         data_file.close()
+
+    def expand_transparent_area(self):
+        DIR = "/Users/shinn/Github/war_at_sea_card_generator/card_generator/assets/silhouettes/planes/United States/"
+        for item in os.listdir(DIR):
+            current_path = os.path.join(DIR, item)
+            img = Image.open(current_path)
+            img = expand_transparent_area(1.15, 1.2, img)
+            img.save(current_path)
 
 if __name__ == '__main__':
     unittest.main()

@@ -90,17 +90,21 @@ class Generator:
                     self.nation.name,
                     self.unit.ship_class.lower() + ".png")).convert("RGBA")
                 w, h = silhouette.size
-                scale = 380/w
+                scale = (380 + 90)/w
                 scaled_height = 97 - int(h * scale)
                 if scaled_height < 0:
                     scaled_height = 0
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
-                transparent_overlay.paste(silhouette, (65, scaled_height))
+                w, h = silhouette.size
+                transparent_overlay.paste(silhouette, (65 - 45, 97 - h))
             else:
                 silhouette = Image.open("card_generator/assets/silhouettes/planes/{}/{}".format(
                     self.nation.name,
                     self.unit.name.lower() + ".png")).convert("RGBA")
-                height = 85 - silhouette.size[1]
+                w, h = silhouette.size
+                scale = 95 / h
+                silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                height = center_image(0, 0, 0, 100, silhouette)[1]
                 transparent_overlay.paste(silhouette, (65, height))
 
         def populate_attack():
