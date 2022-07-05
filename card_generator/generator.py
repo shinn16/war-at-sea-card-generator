@@ -24,6 +24,7 @@ class Generator:
         print("{}/{}".format(self.nation.name, self.unit.name))
         y_offset = Values.ATTACK_RECTANGLE_START_Y
         base_draw_layer = ImageDraw.Draw(self.card_base, "RGBA")
+        blueprint_layer = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
         transparent_overlay = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
         transparent_overlay_draw = ImageDraw.Draw(transparent_overlay)
         top_overlay = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
@@ -90,10 +91,7 @@ class Generator:
                     self.nation.name,
                     self.unit.ship_class.lower() + ".png")).convert("RGBA")
                 w, h = silhouette.size
-                scale = (380 + 90)/w
-                scaled_height = 97 - int(h * scale)
-                if scaled_height < 0:
-                    scaled_height = 0
+                scale = (380 + 150) / w
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 w, h = silhouette.size
                 transparent_overlay.paste(silhouette, (65 - 45, 97 - h))
@@ -109,6 +107,16 @@ class Generator:
 
         def populate_attack():
             nonlocal y_offset
+            # blueprint first
+            blueprint = Image.open("card_generator/assets/silhouettes/ships/{}/{}".format(
+                self.nation.name,
+                self.unit.ship_class.lower() + " blueprint.png")).convert("RGBA")
+            w, h = blueprint.size
+            scale = 380 / w
+            blueprint = blueprint.resize((int(w * scale), int(h * scale)))
+            blueprint_layer.paste(blueprint, (350, center_image(0, y_offset, 0,
+                                                                y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH *
+                                                                            self.unit.get_attacks()[0]), blueprint)[1]))
             draw_text_psd_style(base_draw_layer,
                                 Coordinates.ATTACK_HEADING,
                                 "Attacks",
@@ -317,8 +325,9 @@ class Generator:
                     first_line_offset = ABILITIES_TITLE.getsize(title)[0]
                     # scale the width of the first line to accommodate the title text.
                     first_line_width = int(
-                        (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
-                        (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))
+                        (1.2 - ((
+                                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                        (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                     text = ability
                     if ability is not None:
                         if first_line_width > 0:
@@ -328,7 +337,7 @@ class Generator:
                             y_offset += ABILITIES.getsize(first_line)[1]
                         else:
                             y_offset += ABILITIES.getsize(title)[1]
-                        for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))):
+                        for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))):
                             y_offset += ABILITIES.getsize(line)[1]
                     else:
                         y_offset += ABILITIES_TITLE.getsize(title)[1]
@@ -352,7 +361,7 @@ class Generator:
                 # scale the width of the first line to accommodate the title text.
                 first_line_width = int(
                     (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
-                    (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))
+                    (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                 text = ability
                 if ability is not None:
                     if first_line_width > 0:
@@ -366,7 +375,7 @@ class Generator:
                         y_offset += ABILITIES.getsize(first_line)[1]
                     else:
                         y_offset += ABILITIES.getsize(title)[1]
-                    for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25/font_size)))):
+                    for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))):
                         transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), line,
                                                       font=ABILITIES, fill=Colors.WHITE)
                         y_offset += ABILITIES.getsize(line)[1]
@@ -398,6 +407,7 @@ class Generator:
         populate_abilities()
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
+        out = Image.alpha_composite(blueprint_layer, out)
         out = Image.alpha_composite(self.card_base, out)
         if display:
             out.show()
