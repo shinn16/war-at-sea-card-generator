@@ -12,6 +12,9 @@ from card_generator.models.unit import Unit
 
 
 class Generator:
+    """
+    Card generator for a single unit.
+    """
     def __init__(self, nation: Nation, unit: Unit) -> None:
         self.nation = nation
         self.unit = unit
@@ -21,6 +24,10 @@ class Generator:
             self.card_base = Image.open("card_generator/assets/axis-card-base.png").convert("RGBA")
 
     def generate(self, display: bool = False) -> None:
+        """
+        Generate the card for the current unit.
+        :param display: if set to true, will display the card instead of writing it out as an image. Defaults to false.
+        """
         print("{}/{}".format(self.nation.name, self.unit.name))
         y_offset = Values.ATTACK_RECTANGLE_START_Y
         base_draw_layer = ImageDraw.Draw(self.card_base, "RGBA")
