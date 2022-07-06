@@ -47,3 +47,6 @@ not have rights to redistribute, as such, it is not included here. If anyone kno
 please feel free to suggest it. Otherwise, you will either need to purchase the font (currently $10) or change the font
 defined in /card_generator/models/definitions. The license on the font allows for images produced to be distributed, but
 the TTF file itself for the font cannot be.
+
+## How to Contribute
+If you are interested in contributing, please join our discord server at https://discord.gg/EeWxsBqy.
