@@ -28,7 +28,8 @@ set in stone.
 
 ## What Needs Done?
 **ASSET GENERATION**. Asset creation is the longest and most tedious part of this process. There are nearly 300 units defined
-in the current data set, which require roughly 200 unique assets be created in the form of unit outlines. At the moment,
+in the current data set, which require roughly 200 unique assets be created in the form of unit outlines. Asset tracking is done
+via a [shared spreadsheet](https://docs.google.com/spreadsheets/d/1MUwMda_RZZ0Y9FLbD3wuyJa0KsISesgDZR7cqAH8kMs/edit?usp=sharing). At the moment,
 assets exist for all US and HMAS units, however they are incomplete. Some need cleaning up, most need back-lighting and blueprints generated.
 Anyone with any inclination towards graphic design feel free to lend a hand. I have been using GIMP up to this point to 
 modify images from [Ship bucket](http://www.shipbucket.com/) (huge shout out for saving my sanity).

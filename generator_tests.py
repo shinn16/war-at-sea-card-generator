@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
         data_file.close()
 
     def generate_country(self):
-        country = 0
+        country = 2
         data_file = open("War_at_Sea.json")
         data = json.load(data_file)
         axis_and_allies_deck = load_json(data)
@@ -41,5 +41,19 @@ class MyTestCase(unittest.TestCase):
             img = expand_transparent_area(1.15, 1.2, img)
             img.save(current_path)
 
+    def json_to_csv(self):
+        entities = list()
+        entities.append("Nation,Unit,Class\n")
+        data_file = open("War_at_Sea.json")
+        data = json.load(data_file)
+        axis_and_allies_deck = load_json(data)
+        for nation in axis_and_allies_deck:
+            for unit in nation.get_units():
+                entities.append("{},{},{}\n".format(nation.name, unit.name, unit.ship_class))
+
+        output = open("units.csv", "w+")
+        output.writelines(entities)
+        output.close()
+        data_file.close()
 if __name__ == '__main__':
     unittest.main()

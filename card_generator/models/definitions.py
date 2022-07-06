@@ -84,13 +84,13 @@ class Icons:
     }
 
     SET_ICONS = {
-        "Starter Set": Image.open("card_generator/assets/card-icons/Flagship.png").resize((24, 24)),
-        "War At Sea": Image.open("card_generator/assets/card-icons/war_at_sea.png").resize((24, 24)),
-        "Task Force": Image.open("card_generator/assets/card-icons/task_force.png").resize((24, 24)),
-        "Flank Speed":  Image.open("card_generator/assets/card-icons/flank_speed.png").resize((24, 24)),
-        "Condition Zebra": Image.open("card_generator/assets/card-icons/condition_zebra.png").resize((24, 24)),
-        "Set V": Image.open("card_generator/assets/card-icons/set V.png").resize((24, 24)),
-        "Surface Action": Image.open("card_generator/assets/card-icons/surface_action.png").resize((24, 24))
+        "Starter Set": Image.open("card_generator/assets/card-icons/Flagship.png").resize((30, 30)),
+        "War At Sea": Image.open("card_generator/assets/card-icons/war_at_sea.png").resize((30, 30)),
+        "Task Force": Image.open("card_generator/assets/card-icons/task_force.png").resize((30, 30)),
+        "Flank Speed":  Image.open("card_generator/assets/card-icons/flank_speed.png").resize((30, 30)),
+        "Condition Zebra": Image.open("card_generator/assets/card-icons/condition_zebra.png").resize((30, 30)),
+        "Set V": Image.open("card_generator/assets/card-icons/set V.png").resize((30, 30)),
+        "Surface Action": Image.open("card_generator/assets/card-icons/surface_action.png").resize((30, 30))
     }
 
     # special icons
@@ -98,9 +98,9 @@ class Icons:
     FLAGSHIP = Image.open("card_generator/assets/card-icons/Flagship.png").resize(Resizing.FLAGSHIP)
 
     # rarity icons
-    RARE = Image.open("card_generator/assets/card-icons/rare.png").resize((24, 24))
-    UNCOMMON = Image.open("card_generator/assets/card-icons/uncommon.png").resize((24, 24))
-    COMMON = Image.open("card_generator/assets/card-icons/common.png").resize((24, 24))
+    RARE = Image.open("card_generator/assets/card-icons/rare.png").resize((30, 30))
+    UNCOMMON = Image.open("card_generator/assets/card-icons/uncommon.png").resize((30, 30))
+    COMMON = Image.open("card_generator/assets/card-icons/common.png").resize((30, 30))
 
 
 class NationEmblems:
@@ -156,7 +156,7 @@ class Fonts:
     ARMOR_STATS = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 50)
     ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", 25)
     ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", 25)
-    SET_INFO = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 25)
+    SET_INFO = ImageFont.truetype("card_generator/assets/Komet - Flicker - B52-Regular.ttf", 35)
 
 
 class Coordinates:
