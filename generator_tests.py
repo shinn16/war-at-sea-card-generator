@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
         data_file = open("War_at_Sea.json")
         data = json.load(data_file)
         axis_and_allies_deck = load_json(data)
-        Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[50]).generate(display=True)
+        Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[50]).generate()
         data_file.close()
 
     def expand_transparent_area(self):
