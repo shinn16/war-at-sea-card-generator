@@ -4,8 +4,6 @@ from card_generator.models.utils import load_json
 from card_generator.utils.helper_functions import expand_transparent_area
 from card_generator.generator import Generator
 import os
-import pathlib
-import shutil
 from PIL import Image
 
 class MyTestCase(unittest.TestCase):
