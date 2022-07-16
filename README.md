@@ -51,3 +51,4 @@ the TTF file itself for the font cannot be.
 
 ## How to Contribute
 If you are interested in contributing, please join our discord server at https://discord.gg/EeWxsBqy.
+There is also a [guide](War%20at%20Sea%20Card%20Generator%20Silhouette%20Tutorial.pdf) on how to create assets for the cards.
