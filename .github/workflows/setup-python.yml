@@ -1,4 +1,4 @@
-name: Build Decks
+name: setup-python
 on:
   workflow_call:
     inputs:
