@@ -16,7 +16,7 @@ the unit definitions, along with some additional assets (icons, fonts, etc), and
 set of cards released with the starter pack. Below is an example of the original USS North Carolina card (left) and 
 the reproduced card using this generator (right)
 
-<img src="welcome-images/original-nc.jpg"> <img src="welcome-images/USS North Carolina (BB 55).png" width="196">
+<img src="readme-resources/original-nc.jpg"> <img src="readme-resources/USS North Carolina (BB 55).png" width="196">
 
 ## What is Working Right Now
 Currently, card generations for ships and submarines is working and is essentially finished. The only remaining work is to finish 
@@ -51,4 +51,4 @@ the TTF file itself for the font cannot be.
 
 ## How to Contribute
 If you are interested in contributing, please join our discord server at https://discord.gg/EeWxsBqy.
-There is also a [guide](War%20at%20Sea%20Card%20Generator%20Silhouette%20Tutorial.pdf) on how to create assets for the cards.
+There is also a [guide](readme-resources/War%20at%20Sea%20Card%20Generator%20Silhouette%20Tutorial.pdf) on how to create assets for the cards.
