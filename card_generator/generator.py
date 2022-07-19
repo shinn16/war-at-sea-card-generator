@@ -293,7 +293,7 @@ class Generator:
             for entry in ["ARMOR", "VITAL ARMOR", "HULL POINTS"]:
                 # dynamically find the size of the attack text, so it can be centered
                 w, h = transparent_overlay_draw.textsize(entry, font=Fonts.ATTACK_ARMOR_STATS_HEADINGS)
-                current_y_middle = y_offset + Values.ARMOR_ROW_TOP_MARGIN + (Values.ARMOR_ROW_HEIGHT / 2) - 3
+                current_y_middle = y_offset + Values.ARMOR_ROW_TOP_MARGIN + (Values.ARMOR_ROW_HEIGHT / 2) - 5
                 transparent_overlay_draw.text(
                     (
                         x_offset + Values.ARMOR_TEXT_LEFT_MARGIN,
@@ -308,8 +308,8 @@ class Generator:
                 top_overlay_draw.text(
                     center_text(
                         x_offset,
-                        y_offset + Values.ARMOR_ROW_TOP_MARGIN - 6,
-                        x_offset + 44,
+                        y_offset + Values.ARMOR_ROW_TOP_MARGIN - 13,
+                        x_offset + 48,
                         y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45,
                         armor_values[entry],
                         Fonts.ARMOR_STATS),
