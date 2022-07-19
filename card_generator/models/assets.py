@@ -30,7 +30,7 @@ class Values:
     SHIP_NAME_END_X = 575
     SHIP_NAME_START_Y = 97
     SHIP_NAME_END_Y = 159
-    SHIP_NAME_FONT_TRACKING = -125
+    SHIP_NAME_FONT_TRACKING = 0
 
     # flagship icon
     FLAGSHIP_CENTER_OFFSET = 40
@@ -168,7 +168,6 @@ class Icons:
     UNCOMMON = Image.open(io.BytesIO((RESOURCES / "card-icons" / "uncommon.png").read_bytes())).resize((30, 30))
     COMMON = Image.open(io.BytesIO((RESOURCES / "card-icons" / "common.png").read_bytes())).resize((30, 30))
 
-
     @staticmethod
     def get_set_icon(set_name: str):
         """
@@ -275,14 +274,14 @@ class Fonts:
     """
     Predefined fonts for the various card text.
     """
-    POINT_VALUE = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 94)
+    POINT_VALUE = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 94)
     FLAGSHIP = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()), 17)
-    SHIP_TYPE_AND_YEAR = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 30)
-    SHIP_SPEED = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 35)
-    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 30)
-    ATTACK_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 70)
-    ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 50)
-    SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 35)
+    SHIP_TYPE_AND_YEAR = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 30)
+    SHIP_SPEED = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 35)
+    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 30)
+    ATTACK_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 60)
+    ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 50)
+    SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 35)
 
     @staticmethod
     def get_abilities_font(unit: Unit, y_offset: int) -> [ImageFont.FreeTypeFont, ImageFont.FreeTypeFont, int]:
@@ -345,13 +344,13 @@ class Fonts:
         font_size = 60
         max_size = Values.SHIP_NAME_END_X - Values.SHIP_NAME_START_X
         while not correct:
-            font = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), font_size)
+            font = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), font_size)
             width = font.getsize(text)[0] + ((tracking / 1000) * font_size * (len(text) - 1))
             correct = width <= max_size
             if not correct:
                 font_size -= 1
                 logger.debug("Default size is too large, trying {}".format(font_size))
-        return ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), font_size)
+        return ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), font_size)
 
 
 class Coordinates:
@@ -360,10 +359,10 @@ class Coordinates:
     """
     NATION_EMBLEM = (44, 164)
     FLAGSHIP = (330, 206)
-    POINT_CIRCLE_CENTER = (646, 125)
-    SHIP_TYPE = (128, 165)
-    SHIP_YEAR = (510, 165)
-    SHIP_SPEED = (130, 206)
+    POINT_CIRCLE_CENTER = (650, 120)
+    SHIP_TYPE = (128, 160)
+    SHIP_YEAR = (510, 160)
+    SHIP_SPEED = (130, 200)
 
     ATTACK_HEADING = center_text(
         Values.LEFT_CARD_BORDER, 247, Values.ATTACK_RECTANGLE_START_X, 292,

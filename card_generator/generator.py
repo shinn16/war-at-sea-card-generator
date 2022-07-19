@@ -62,7 +62,7 @@ class Generator:
                                 center_text(Coordinates.POINT_CIRCLE_CENTER, str(self.unit.points), Fonts.POINT_VALUE),
                                 str(self.unit.points),
                                 Fonts.POINT_VALUE,
-                                tracking=-100, leading=0, center_x=True, fill=Colors.POINT_VALUE)
+                                tracking=0, leading=0, center_x=True, fill=Colors.POINT_VALUE)
 
             base_draw_layer.text(Coordinates.SHIP_TYPE, self.unit.type,
                                  font=Fonts.SHIP_TYPE_AND_YEAR,
@@ -121,7 +121,7 @@ class Generator:
             # blueprint first
             blueprint = Background.get_blueprint(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
             w, h = blueprint.size
-            scale = 380 / w
+            scale = Values.SILHOUETTE_BASE_WIDTH / w
             blueprint = blueprint.resize((int(w * scale), int(h * scale)))
             blueprint_layer.paste(blueprint, (350, center_image(0, y_offset, 0,
                                                                 y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH *
@@ -131,7 +131,7 @@ class Generator:
                                 Coordinates.ATTACK_HEADING,
                                 "Attacks",
                                 font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
-                                tracking=-50, leading=0, center_x=True, fill=Colors.STATS)
+                                tracking=-30, leading=0, center_x=True, fill=Colors.STATS)
 
             base_draw_layer.text(Coordinates.ATTACK_RANGE_HEADING_0, "0",
                                  font=Fonts.ATTACK_ARMOR_STATS_HEADINGS,
@@ -208,7 +208,7 @@ class Generator:
                     w, h = transparent_overlay_draw.textsize(current_attack[attack_range], font=Fonts.ATTACK_STATS)
                     current_x_middle = Values.ATTACK_RECTANGLE_START_X + (Values.DIVIDER_SPACING / 2) \
                                        + (attack_range * Values.DIVIDER_SPACING)
-                    current_y_middle = y_offset - 5 + (Values.ATTACK_RECTANGLE_WIDTH / 2)
+                    current_y_middle = y_offset - 8 + (Values.ATTACK_RECTANGLE_WIDTH / 2)
 
                     transparent_overlay_draw.text(
                         (
@@ -363,7 +363,7 @@ class Generator:
                                       )
 
             set_offset += Icons.get_set_icon(self.unit.set).size[0]
-            base_draw_layer.text((set_offset + 10, Values.SET_Y_OFFSET - 2), self.unit.set_number, font=Fonts.SET_INFO,
+            base_draw_layer.text((set_offset + 10, Values.SET_Y_OFFSET - 8), self.unit.set_number, font=Fonts.SET_INFO,
                                  fill=Colors.WHITE)
             set_offset += Fonts.SET_INFO.getsize(self.unit.set_number)[0] + 18
 
