@@ -2,26 +2,25 @@ import os
 
 from PIL import Image, ImageDraw, ImageFont
 from textwrap import wrap
-from card_generator.models.definitions import Coordinates, Colors, Fonts, Values, get_emblem, get_header_font, \
-    get_attack_icon, get_rarity_icon, get_set_icon, Icons, BackgroundAssets
+from card_generator.models.assets import *
 from card_generator.models.alliance import Alliance
-from card_generator.utils.helper_functions import center_text, x_center_text, y_center_text, center_image, ability_sort \
-    , draw_text_psd_style
+from card_generator.utils.helper_functions import *
 from card_generator.models.nation import Nation
-from card_generator.models.unit import Unit
+from card_generator.models.unit import Unit, UnitType
 
 
 class Generator:
     """
     Card generator for a single unit.
     """
+
     def __init__(self, nation: Nation, unit: Unit) -> None:
         self.nation = nation
         self.unit = unit
         if self.nation.get_alliance() == Alliance.Allies.value:
-            self.card_base = Image.open("card_generator/assets/allies-card-base.png").convert("RGBA")
+            self.card_base = Background.ALLIES_BASE
         else:
-            self.card_base = Image.open("card_generator/assets/axis-card-base.png").convert("RGBA")
+            self.card_base = Background.AXIS_BASE
 
     def generate(self, display: bool = False) -> None:
         """
@@ -94,18 +93,14 @@ class Generator:
 
             # silhouette
             if self.unit.ship_class is not None:
-                silhouette = Image.open("card_generator/assets/silhouettes/ships/{}/{}".format(
-                    self.nation.name,
-                    self.unit.ship_class.lower() + ".png")).convert("RGBA")
+                silhouette = get_silhouette(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
                 w, h = silhouette.size
                 scale = (380 + 150) / w
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 w, h = silhouette.size
                 transparent_overlay.paste(silhouette, (65 - 45, 97 - h))
             else:
-                silhouette = Image.open("card_generator/assets/silhouettes/planes/{}/{}".format(
-                    self.nation.name,
-                    self.unit.name.lower() + ".png")).convert("RGBA")
+                silhouette = get_silhouette(UnitType.PLANE, self.nation.name, self.unit.name.lower())
                 w, h = silhouette.size
                 scale = 95 / h
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
@@ -115,15 +110,14 @@ class Generator:
         def populate_attack():
             nonlocal y_offset
             # blueprint first
-            blueprint = Image.open("card_generator/assets/silhouettes/ships/{}/{}".format(
-                self.nation.name,
-                self.unit.ship_class.lower() + " blueprint.png")).convert("RGBA")
+            blueprint = get_blueprint(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
             w, h = blueprint.size
             scale = 380 / w
             blueprint = blueprint.resize((int(w * scale), int(h * scale)))
             blueprint_layer.paste(blueprint, (350, center_image(0, y_offset, 0,
                                                                 y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH *
-                                                                            self.unit.get_attacks()[0]), blueprint)[1]))
+                                                                                 self.unit.get_attacks()[0]),
+                                                                blueprint)[1]))
             draw_text_psd_style(base_draw_layer,
                                 Coordinates.ATTACK_HEADING,
                                 "Attacks",
@@ -301,7 +295,7 @@ class Generator:
                     fill=Colors.STATS)
                 x_offset += w + Values.ARMOR_TEXT_LEFT_MARGIN + Values.ARMOR_TEXT_RIGHT_MARGIN
                 # Add a box for the values
-                top_overlay.paste(BackgroundAssets.HIT_POINTS, (x_offset, y_offset + Values.ARMOR_ROW_TOP_MARGIN + 1))
+                top_overlay.paste(Background.HIT_POINTS, (x_offset, y_offset + Values.ARMOR_ROW_TOP_MARGIN + 1))
                 top_overlay_draw.text(
                     center_text(
                         x_offset,
@@ -323,17 +317,17 @@ class Generator:
             font_size = 25
             # dry run until we get the right size
             while not correct_size:
-                ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", font_size)
-                ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", font_size)
+                abilities = ImageFont.truetype(get_abilities_font(), font_size)
+                abilities_title = ImageFont.truetype(get_abilities_title_font(), font_size)
                 y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
                 for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
                     if ability is not None:
                         title = title + " - "
-                    first_line_offset = ABILITIES_TITLE.getsize(title)[0]
+                    first_line_offset = abilities_title.getsize(title)[0]
                     # scale the width of the first line to accommodate the title text.
                     first_line_width = int(
                         (1.2 - ((
-                                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
                         (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                     text = ability
                     if ability is not None:
@@ -341,13 +335,13 @@ class Generator:
                             text = wrap(text, width=first_line_width)
                             first_line = text[0]
                             text = " ".join(text[1:])
-                            y_offset += ABILITIES.getsize(first_line)[1]
+                            y_offset += abilities.getsize(first_line)[1]
                         else:
-                            y_offset += ABILITIES.getsize(title)[1]
+                            y_offset += abilities.getsize(title)[1]
                         for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))):
-                            y_offset += ABILITIES.getsize(line)[1]
+                            y_offset += abilities.getsize(line)[1]
                     else:
-                        y_offset += ABILITIES_TITLE.getsize(title)[1]
+                        y_offset += abilities_title.getsize(title)[1]
                     y_offset += Values.SPECIAL_ABILITY_BOTTOM_MARGIN
                 if y_offset < 980:
                     correct_size = True
@@ -356,15 +350,15 @@ class Generator:
 
             # real run
             y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
-            ABILITIES = ImageFont.truetype("card_generator/assets/RobotoSlab-Regular.ttf", font_size)
-            ABILITIES_TITLE = ImageFont.truetype("card_generator/assets/RobotoSlab-Bold.ttf", font_size)
+            abilities = ImageFont.truetype(get_abilities_font(), font_size)
+            abilities_title = ImageFont.truetype(get_abilities_title_font(), font_size)
             for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
                 if ability is not None:
                     title = title + " - "
                 transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), title,
-                                              font=ABILITIES_TITLE,
+                                              font=abilities_title,
                                               fill=Colors.WHITE)
-                first_line_offset = ABILITIES_TITLE.getsize(title)[0]
+                first_line_offset = abilities_title.getsize(title)[0]
                 # scale the width of the first line to accommodate the title text.
                 first_line_width = int(
                     (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
@@ -378,29 +372,29 @@ class Generator:
                         transparent_overlay_draw.text(
                             (Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset, y_offset),
                             first_line,
-                            font=ABILITIES, fill=Colors.WHITE)
-                        y_offset += ABILITIES.getsize(first_line)[1]
+                            font=abilities, fill=Colors.WHITE)
+                        y_offset += abilities.getsize(first_line)[1]
                     else:
-                        y_offset += ABILITIES.getsize(title)[1]
+                        y_offset += abilities.getsize(title)[1]
                     for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))):
                         transparent_overlay_draw.text((Values.SPECIAL_ABILITY_LEFT_MARGIN, y_offset), line,
-                                                      font=ABILITIES, fill=Colors.WHITE)
-                        y_offset += ABILITIES.getsize(line)[1]
+                                                      font=abilities, fill=Colors.WHITE)
+                        y_offset += abilities.getsize(line)[1]
                 else:
-                    y_offset += ABILITIES_TITLE.getsize(title)[1]
+                    y_offset += abilities_title.getsize(title)[1]
                 y_offset += Values.SPECIAL_ABILITY_BOTTOM_MARGIN
 
         def populate_set():
-            set_offset = 10 + Values.LEFT_CARD_BORDER
+            set_offset = Values.LEFT_CARD_BORDER
             transparent_overlay.paste(get_set_icon(self.unit.set),
                                       (set_offset, Values.SET_Y_OFFSET),
                                       get_set_icon(self.unit.set)
                                       )
 
-            set_offset += get_set_icon(self.unit.set).size[0] + 5
-            base_draw_layer.text((set_offset + 10, Values.SET_Y_OFFSET), self.unit.set_number, font=Fonts.SET_INFO,
+            set_offset += get_set_icon(self.unit.set).size[0]
+            base_draw_layer.text((set_offset + 10, Values.SET_Y_OFFSET - 2), self.unit.set_number, font=Fonts.SET_INFO,
                                  fill=Colors.WHITE)
-            set_offset += Fonts.SET_INFO.getsize(self.unit.set_number)[0] + 25
+            set_offset += Fonts.SET_INFO.getsize(self.unit.set_number)[0] + 18
 
             if get_rarity_icon(self.unit.rarity) is not None:
                 transparent_overlay.paste(get_rarity_icon(self.unit.rarity),

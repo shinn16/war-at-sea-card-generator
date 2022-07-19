@@ -1,4 +1,9 @@
-from card_generator.models.nation import Nation
+import enum
+
+
+class UnitType(enum.Enum):
+    SHIP = 0,
+    PLANE = 1
 
 
 class Unit:
