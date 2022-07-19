@@ -25,4 +25,6 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Build Decks of Completed Countries
         run: |
+          pwd
+          ls
           python -m ${GITHUB_WORKSPACE}/card_generator/generator generate_from_file -f ${GITHUB_WORKSPACE}/finished-countries.txt
