@@ -467,6 +467,18 @@ def generate_country(country: str, output_folder: str = None):
         print(e)
 
 
+def generate_from_file(file: str, output_folder: str = None):
+    """
+    Generates units for countries listed in a new line delimited text file.
+    :param file: files containing countries to generate for.
+    :param output_folder: folder to dump the cards to, defaults to the current directory.
+    """
+    countries_file = open(file, "r")
+    for country in countries_file:
+        generate_country(country.strip(), output_folder)
+    countries_file.close()
+
+
 # TODO make this more friendly.
 def generate_single(self):
     data_file = get_war_at_sea_json()
@@ -479,7 +491,8 @@ def generate_single(self):
 if __name__ == '__main__':
     commands = {
         "generate_all": generate_all,
-        "generate_country": generate_country
+        "generate_country": generate_country,
+        "generate_from_file": generate_from_file
     }
 
     parser = argparse.ArgumentParser(prog="War at Sea Card Generator",
@@ -498,6 +511,15 @@ if __name__ == '__main__':
     generate_country_command.add_argument("-o", "--output-folder",
                                           help="Location to output the generated cards to, defaults to the current "
                                                "directory.")
+
+    generate_from_file_command = subparsers.add_parser("generate_from_file")
+    generate_from_file_command.description = "Generate all units for all countries specified in a new line delimited" \
+                                             " text file."
+    generate_from_file_command.add_argument("-f", "--file", required=True,
+                                            help="countries file")
+    generate_from_file_command.add_argument("-o", "--output-folder",
+                                            help="Location to output the generated cards to, defaults to the current "
+                                                 "directory.")
     args = parser.parse_args()
     # lookup the command
     command = commands[args.command]
