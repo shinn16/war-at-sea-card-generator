@@ -78,9 +78,9 @@ class Background:
     with pkg_resources.path(assets, "hitpoints.png") as resource:
         HIT_POINTS = Image.open(resource).resize(Resizing.HIT_POINTS)
     with pkg_resources.path(assets, "axis-card-base.png") as resource:
-        AXIS_BASE = Image.open(resource).convert("RGBA")
+        AXIS_BASE = resource
     with pkg_resources.path(assets, "allies-card-base.png") as resource:
-        ALLIES_BASE = Image.open(resource).convert("RGBA")
+        ALLIES_BASE = resource
 
 
 class Icons:
@@ -195,13 +195,13 @@ class Fonts:
     ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 50)
     SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 35)
 
+    @staticmethod
+    def get_abilities_font():
+        return io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes())
 
-def get_abilities_font():
-    return io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes())
-
-
-def get_abilities_title_font():
-    return io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes())
+    @staticmethod
+    def get_abilities_title_font():
+        return io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes())
 
 
 class Coordinates:

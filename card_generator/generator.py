@@ -1,10 +1,14 @@
 import os
+import json
+import argparse
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageDraw
 from textwrap import wrap
+
 from card_generator.models.assets import *
 from card_generator.models.alliance import Alliance
 from card_generator.utils.helper_functions import *
+from card_generator.models.utils import load_json
 from card_generator.models.nation import Nation
 from card_generator.models.unit import Unit, UnitType
 
@@ -18,14 +22,15 @@ class Generator:
         self.nation = nation
         self.unit = unit
         if self.nation.get_alliance() == Alliance.Allies.value:
-            self.card_base = Background.ALLIES_BASE
+            self.card_base = Image.open(Background.ALLIES_BASE).convert("RGBA")
         else:
-            self.card_base = Background.AXIS_BASE
+            self.card_base = Image.open(Background.AXIS_BASE).convert("RGBA")
 
-    def generate(self, display: bool = False) -> None:
+    def generate(self, display: bool = False, output_folder: str = None) -> None:
         """
         Generate the card for the current unit.
         :param display: if set to true, will display the card instead of writing it out as an image. Defaults to false.
+        :param output_folder: folder to dump the cards to, defaults to the current directory.
         """
         print("{}/{}".format(self.nation.name, self.unit.name))
         y_offset = Values.ATTACK_RECTANGLE_START_Y
@@ -317,8 +322,8 @@ class Generator:
             font_size = 25
             # dry run until we get the right size
             while not correct_size:
-                abilities = ImageFont.truetype(get_abilities_font(), font_size)
-                abilities_title = ImageFont.truetype(get_abilities_title_font(), font_size)
+                abilities = ImageFont.truetype(Fonts.get_abilities_font(), font_size)
+                abilities_title = ImageFont.truetype(Fonts.get_abilities_title_font(), font_size)
                 y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
                 for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
                     if ability is not None:
@@ -327,7 +332,7 @@ class Generator:
                     # scale the width of the first line to accommodate the title text.
                     first_line_width = int(
                         (1.2 - ((
-                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                                        Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
                         (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                     text = ability
                     if ability is not None:
@@ -350,8 +355,8 @@ class Generator:
 
             # real run
             y_offset = current_y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
-            abilities = ImageFont.truetype(get_abilities_font(), font_size)
-            abilities_title = ImageFont.truetype(get_abilities_title_font(), font_size)
+            abilities = ImageFont.truetype(Fonts.get_abilities_font(), font_size)
+            abilities_title = ImageFont.truetype(Fonts.get_abilities_title_font(), font_size)
             for title, ability in sorted(self.unit.special_abilities.items(), key=ability_sort):
                 if ability is not None:
                     title = title + " - "
@@ -412,9 +417,92 @@ class Generator:
         out = Image.alpha_composite(self.card_base, out)
         if display:
             out.show()
-        card_path = (os.path.join(os.getcwd(), "cards", self.nation.name))
+        if output_folder is not None:
+            card_path = (os.path.join(output_folder, "cards", self.nation.name))
+        else:
+            card_path = (os.path.join(os.getcwd(), "cards", self.nation.name))
         try:
             out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
+            print("saved to {}".format(card_path))
         except FileNotFoundError:
             os.makedirs(card_path, exist_ok=True)
             out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
+
+
+def generate_all(output_folder: str = None):
+    """
+    Generates all units that are present in the included War at Sea data file.
+    :param output_folder: folder to dump the cards to, defaults to the current directory.
+    """
+    data_file = get_war_at_sea_json()
+    data = json.load(data_file)
+    axis_and_allies_deck = load_json(data)
+    for nation in axis_and_allies_deck:
+        for unit in nation.get_units():
+            Generator(nation, unit).generate(output_folder=output_folder)
+    data_file.close()
+
+
+def generate_country(country: str, output_folder: str = None):
+    """
+    Generates all units for a given country.
+    :param country: name of the nation to generate units for.
+    :param output_folder: folder to dump the cards to, defaults to the current directory.
+    """
+    data_file = get_war_at_sea_json()
+    data = json.load(data_file)
+    axis_and_allies_deck = load_json(data)
+    try:
+        index = 0
+        for candidate_country in axis_and_allies_deck:
+            if candidate_country.name == country:
+                break
+            else:
+                index += 1
+        if index == len(axis_and_allies_deck):
+            raise ValueError("\"{}\" does not exist in the default countries".format(country))
+        for unit in axis_and_allies_deck[index].get_units():
+            Generator(axis_and_allies_deck[index], unit).generate(output_folder=output_folder)
+    except ValueError as e:
+        print(e)
+
+
+# TODO make this more friendly.
+def generate_single(self):
+    data_file = get_war_at_sea_json()
+    data = json.load(data_file)
+    axis_and_allies_deck = load_json(data)
+    Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[32]).generate(display=True)
+    data_file.close()
+
+
+if __name__ == '__main__':
+    commands = {
+        "generate_all": generate_all,
+        "generate_country": generate_country
+    }
+
+    parser = argparse.ArgumentParser(prog="War at Sea Card Generator",
+                                     description="Generate unit cards for the Axis and Allies War at Sea Naval "
+                                                 "Miniatures game.")
+    subparsers = parser.add_subparsers(dest="command")
+    generate_all_command = subparsers.add_parser("generate_all")
+    generate_all_command.description = "Generate all units for all countries in the included War at Sea data set."
+    generate_all_command.add_argument("-o", "--output-folder",
+                                      help="Location to output the generated cards to, defaults to the current "
+                                           "directory.")
+    generate_country_command = subparsers.add_parser("generate_country")
+    generate_country_command.description = "Generate all units for a specific country"
+    generate_country_command.add_argument("-c", "--country", required=True,
+                                          help="name of the country to generate units for")
+    generate_country_command.add_argument("-o", "--output-folder",
+                                          help="Location to output the generated cards to, defaults to the current "
+                                               "directory.")
+    args = parser.parse_args()
+    # lookup the command
+    command = commands[args.command]
+    # store all arguments, then remove the command
+    args = vars(args)
+    del args["command"]
+    # pass all remaining args as keyword args.
+    command(**args)
