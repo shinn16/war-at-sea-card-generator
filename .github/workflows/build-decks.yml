@@ -14,6 +14,8 @@ jobs:
           python-version: "3.10"
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install zip
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
@@ -26,3 +28,12 @@ jobs:
       - name: Build Decks of Completed Countries
         run: |
           PYTHONPATH=$(pwd) python card_generator/generator.py generate_from_file -f finished-countries.txt
+      - name: Archive Cards
+        run: zip -r cards.zip ./cards
+      - name: Upload to gdrive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.credentials }}
+          filename: "cards.zip"
+          folderId: ${{ secrets.folder }}
+          overwrite: "true"
