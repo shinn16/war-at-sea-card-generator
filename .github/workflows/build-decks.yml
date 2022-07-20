@@ -1,6 +1,8 @@
 name: Build Decks
 on:
-  push
+  push:
+    branches:
+      - master
 
 jobs:
   build-decks:
