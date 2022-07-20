@@ -27,6 +27,7 @@ class Nation:
         return string
 
 
+#: default list of nations and their alliance mappings.
 NATION_LIST = [
     Nation("Australia", Alliance.Allies),
     Nation("United States", Alliance.Allies),

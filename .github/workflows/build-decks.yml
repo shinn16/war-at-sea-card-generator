@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+
 jobs:
   build-decks:
     runs-on: ubuntu-22.04
@@ -16,11 +17,16 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Lint with flake8
+      - name: Build Decks of Completed Countries
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          PYTHONPATH=$(pwd) python card_generator/generator.py generate_from_file -f finished-countries.txt
+      - name: Archive Cards
+        run: zip -r cards.zip ./cards
+      - name: Upload to gdrive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.credentials }}
+          filename: "cards.zip"
+          folderId: ${{ secrets.folder_id }}
+          overwrite: "true"

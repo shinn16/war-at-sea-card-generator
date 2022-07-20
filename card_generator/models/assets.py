@@ -1,14 +1,21 @@
+"""
+Contains various attributes and assets relating to fonts, card icons, and icon placement.
+"""
 import io
+import importlib.resources as pkg_resources
+from textwrap import wrap
+from typing import BinaryIO
+import logging
 
 from PIL import ImageFont
 from card_generator.models.nation import Nation
-from card_generator.models.unit import UnitType
+from card_generator.models.unit import UnitType, Unit
 from card_generator.utils.helper_functions import *
-import importlib.resources as pkg_resources
 from card_generator import assets
 
 
 RESOURCES = pkg_resources.files(assets)
+logger = logging.getLogger(__name__)
 
 
 class Values:
@@ -23,7 +30,7 @@ class Values:
     SHIP_NAME_END_X = 575
     SHIP_NAME_START_Y = 97
     SHIP_NAME_END_Y = 159
-    SHIP_NAME_FONT_TRACKING = -125
+    SHIP_NAME_FONT_TRACKING = 0
 
     # flagship icon
     FLAGSHIP_CENTER_OFFSET = 40
@@ -47,7 +54,7 @@ class Values:
     ATTACK_RECTANGLE_END_X = 513
     ATTACK_RECTANGLE_WIDTH = 55
 
-    DIVIDER_SPACING = (ATTACK_RECTANGLE_END_X - ATTACK_RECTANGLE_START_X) / 4
+    DIVIDER_SPACING = int((ATTACK_RECTANGLE_END_X - ATTACK_RECTANGLE_START_X) / 4)
 
     ATTACK_VERTICAL_DIVIDER_1 = ATTACK_RECTANGLE_START_X + DIVIDER_SPACING
     ATTACK_VERTICAL_DIVIDER_2 = ATTACK_VERTICAL_DIVIDER_1 + DIVIDER_SPACING
@@ -66,8 +73,18 @@ class Values:
 
     SET_Y_OFFSET = 990
 
+    SILHOUETTE_SECTION_HEIGHT = 97
+    SILHOUETTE_X_MARGIN = 65
+    SILHOUETTE_BASE_WIDTH = 380
+    DROP_SHADOW_GROWTH = 150  # the true growth is only 90, but additional padding is added
+    DROP_SHADOW_OFFSET = 45   # half of the true growth
+    AIRCRAFT_SILHOUETTE_MAX_HEIGHT = 95
+
 
 class Resizing:
+    """
+    Definitions for icon resizing.
+    """
     NATION_EMBLEM = (61, 61)
     HIT_POINTS = (44, 44)
     FLAGSHIP = (33, 33)
@@ -75,16 +92,40 @@ class Resizing:
 
 
 class Background:
+    """
+    Background assets
+    """
     with pkg_resources.path(assets, "hitpoints.png") as resource:
         HIT_POINTS = Image.open(resource).resize(Resizing.HIT_POINTS)
     with pkg_resources.path(assets, "axis-card-base.png") as resource:
-        AXIS_BASE = Image.open(resource).convert("RGBA")
+        AXIS_BASE = resource
     with pkg_resources.path(assets, "allies-card-base.png") as resource:
-        ALLIES_BASE = Image.open(resource).convert("RGBA")
+        ALLIES_BASE = resource
+
+    @staticmethod
+    def get_silhouette(unit_type: UnitType, nation: str, unit: str) -> Image.Image:
+        if unit_type == UnitType.SHIP:
+            resource = (RESOURCES / "silhouettes" / "ships" / nation / "{}.png".format(unit)).read_bytes()
+        else:
+            resource = (RESOURCES / "silhouettes" / "planes" / nation / "{}.png".format(unit)).read_bytes()
+        resource = io.BytesIO(resource)
+        return Image.open(resource).convert("RGBA")
+
+    @staticmethod
+    def get_blueprint(unit_type: UnitType, nation: str, unit: str) -> Image.Image:
+        if unit_type == UnitType.SHIP:
+            resource = (RESOURCES / "silhouettes" / "ships" / nation / "{} blueprint.png".format(unit)).read_bytes()
+        else:
+            resource = (RESOURCES / "silhouettes" / "planes" / nation / "{} blueprint.png".format(
+                unit)).read_bytes()
+        resource = io.BytesIO(resource)
+        return Image.open(resource).convert("RGBA")
 
 
 class Icons:
-    # attack icons
+    """
+    Icons including attacks, sets, and rarities.
+    """
     ATTACK_ICONS = {
         "aircraft_gunnery": Image.open(io.BytesIO((RESOURCES / "card-icons" / "Gunnery1-Aircraft.png").read_bytes())),
         "main_gunnery": icon_resize(
@@ -127,8 +168,46 @@ class Icons:
     UNCOMMON = Image.open(io.BytesIO((RESOURCES / "card-icons" / "uncommon.png").read_bytes())).resize((30, 30))
     COMMON = Image.open(io.BytesIO((RESOURCES / "card-icons" / "common.png").read_bytes())).resize((30, 30))
 
+    @staticmethod
+    def get_set_icon(set_name: str):
+        """
+        Gets the icon associated with the specified set.
+        :param set_name: set to get the icon for.
+        :return: the set icon.
+        :raises: KeyError in the event that the set is not recognized.
+        """
+        return Icons.SET_ICONS[set_name]
+
+    @staticmethod
+    def get_rarity_icon(rarity: str) -> [Image.Image | None]:
+        """
+        Returns the icon correlating to the specified rarity.
+        :param rarity: rarity, can be Common, Uncommon, or Rare.
+        :return: the associated rarity icon, or None if there is not one.
+
+        """
+        if rarity == "Common":
+            return Icons.COMMON
+        if rarity == "Uncommon":
+            return Icons.UNCOMMON
+        if rarity == "Rare":
+            return Icons.RARE
+        return None
+
+    @staticmethod
+    def get_attack_icon(attack: str) -> Image.Image:
+        """
+        Gets the icon associated with the attack type.
+        :param attack: attack type.
+        :return: sttack icon.
+        """
+        return Icons.ATTACK_ICONS[attack]
+
 
 class NationEmblems:
+    """
+    Emblems and mappings relating to the various nations.
+    """
     GERMANY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Germany-sm.png").read_bytes()))\
         .resize(Resizing.NATION_EMBLEM)
     ITALY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Italy-sm.png").read_bytes()))\
@@ -170,8 +249,15 @@ class NationEmblems:
         "Japan": JAPAN
     }
 
+    @staticmethod
+    def get_emblem(nation: Nation) -> Image.Image:
+        return NationEmblems.NATION_MAPPING[nation.get_name()]
+
 
 class Colors:
+    """
+    Colors and predefined element coloring.
+    """
     TRANSPARENT = (255, 255, 255, 0)
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -185,23 +271,86 @@ class Colors:
 
 
 class Fonts:
-    SHIP_NAME = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 60)
-    POINT_VALUE = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 94)
+    """
+    Predefined fonts for the various card text.
+    """
+    POINT_VALUE = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 94)
     FLAGSHIP = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()), 17)
-    SHIP_TYPE_AND_YEAR = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 30)
-    SHIP_SPEED = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 35)
-    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 30)
-    ATTACK_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 70)
-    ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 50)
-    SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), 35)
+    SHIP_TYPE_AND_YEAR = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 30)
+    SHIP_SPEED = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 35)
+    ATTACK_ARMOR_STATS_HEADINGS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 30)
+    ATTACK_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 60)
+    ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 50)
+    SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 35)
 
+    @staticmethod
+    def get_abilities_font(unit: Unit, y_offset: int) -> [ImageFont.FreeTypeFont, ImageFont.FreeTypeFont, int]:
+        """
+        Gets the fonts for the ability text and header.
 
-def get_abilities_font():
-    return io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes())
+        Given that the abilities font is dynamically sized to fit the available space in the abilities section of the
+        card, the font itself cannot be determined without first checking the size that will fit within the bounds of
+        the section.
+        :return: a tuple where index 0 is the ability text font, index 1 is the ability title font, and index 2 is the
+                 font size.
+        """
+        correct_size = False
+        font_size = 25
+        # dry run until we get the right size
+        while not correct_size:
+            abilities = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes()), font_size)
+            abilities_title = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()), font_size)
+            current_y_offset = y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
+            for title, ability in sorted(unit.special_abilities.items(), key=ability_sort):
+                if ability is not None:
+                    title = title + " - "
+                first_line_offset = abilities_title.getsize(title)[0]
+                # scale the width of the first line to accommodate the title text.
+                first_line_width = int(
+                    (1.2 - ((
+                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                    (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
+                text = ability
+                if ability is not None:
+                    if first_line_width > 0:
+                        text = wrap(text, width=first_line_width)
+                        first_line = text[0]
+                        text = " ".join(text[1:])
+                        current_y_offset += abilities.getsize(first_line)[1]
+                    else:
+                        current_y_offset += abilities.getsize(title)[1]
+                    for line in wrap(text, width=int((Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))):
+                        current_y_offset += abilities.getsize(line)[1]
+                else:
+                    current_y_offset += abilities_title.getsize(title)[1]
+                current_y_offset += Values.SPECIAL_ABILITY_BOTTOM_MARGIN
+            if current_y_offset < 980:
+                correct_size = True
+            else:
+                font_size -= 1
+        return (ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes()), font_size),
+                ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()), font_size),
+                font_size)
 
-
-def get_abilities_title_font():
-    return io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes())
+    @staticmethod
+    def get_header_font(text: str, tracking: int = 0) -> ImageFont.FreeTypeFont:
+        """
+        Sizes the card title font appropriately.
+        :param text: text to size
+        :param tracking: reduces the space between the individual characters by a factor of x/1000.
+        :return: appropriately sized header text.
+        """
+        correct = False
+        font_size = 60
+        max_size = Values.SHIP_NAME_END_X - Values.SHIP_NAME_START_X
+        while not correct:
+            font = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), font_size)
+            width = font.getsize(text)[0] + ((tracking / 1000) * font_size * (len(text) - 1))
+            correct = width <= max_size
+            if not correct:
+                font_size -= 1
+                logger.debug("Default size is too large, trying {}".format(font_size))
+        return ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), font_size)
 
 
 class Coordinates:
@@ -210,10 +359,10 @@ class Coordinates:
     """
     NATION_EMBLEM = (44, 164)
     FLAGSHIP = (330, 206)
-    POINT_CIRCLE_CENTER = (646, 125)
-    SHIP_TYPE = (128, 165)
-    SHIP_YEAR = (510, 165)
-    SHIP_SPEED = (130, 206)
+    POINT_CIRCLE_CENTER = (650, 120)
+    SHIP_TYPE = (128, 160)
+    SHIP_YEAR = (510, 160)
+    SHIP_SPEED = (130, 200)
 
     ATTACK_HEADING = center_text(
         Values.LEFT_CARD_BORDER, 247, Values.ATTACK_RECTANGLE_START_X, 292,
@@ -256,60 +405,9 @@ class Coordinates:
     ]
 
 
-def get_emblem(nation: Nation) -> Image.Image:
-    return NationEmblems.NATION_MAPPING[nation.get_name()]
-
-
-def get_attack_icon(attack: str) -> Image.Image:
-    return Icons.ATTACK_ICONS[attack]
-
-
-def get_silhouette(unit_type: UnitType, nation: str, unit: str) -> Image.Image:
-    if unit_type == UnitType.SHIP:
-        resource = (RESOURCES / "silhouettes" / "ships" / nation / "{}.png".format(unit)).read_bytes()
-    else:
-        resource = (RESOURCES / "silhouettes" / "planes" / nation / "{}.png".format(unit)).read_bytes()
-    resource = io.BytesIO(resource)
-    return Image.open(resource).convert("RGBA")
-
-
-def get_blueprint(unit_type: UnitType, nation: str, unit: str) -> Image.Image:
-    if unit_type == UnitType.SHIP:
-        resource = (RESOURCES / "silhouettes" / "ships" / nation / "{} blueprint.png".format(unit)).read_bytes()
-    else:
-        resource = (RESOURCES / "silhouettes" / "planes" / nation / "{} blueprint.png".format(unit)).read_bytes()
-    resource = io.BytesIO(resource)
-    return Image.open(resource).convert("RGBA")
-
-
-def get_header_font(text: str, tracking: int = 0) -> ImageFont.FreeTypeFont:
-    correct = False
-    font_size = 60
-    max_size = Values.SHIP_NAME_END_X - Values.SHIP_NAME_START_X
-    while not correct:
-        font = ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), font_size)
-        width = font.getsize(text)[0] + ((tracking / 1000) * font_size * (len(text) - 1))
-        correct = width <= max_size
-        if not correct:
-            font_size -= 1
-            print("Default size is too large, trying {}".format(font_size))
-    return ImageFont.truetype(io.BytesIO((RESOURCES / "B52-Regular.ttf").read_bytes()), font_size)
-
-
-def get_set_icon(set_name: str):
-    return Icons.SET_ICONS[set_name]
-
-
-def get_rarity_icon(rarity: str):
-    if rarity == "Common":
-        return Icons.COMMON
-    if rarity == "Uncommon":
-        return Icons.UNCOMMON
-    if rarity == "Rare":
-        return Icons.RARE
-    else:
-        return None
-
-
-def get_war_at_sea_json() -> 'BinaryIO':
+def get_war_at_sea_json() -> BinaryIO:
+    """
+    Gets the built-in War At Sea data set as an open file ready for reading.
+    :return: War at Sea JSON file opened for reading.
+    """
     return pkg_resources.open_binary(assets, "War_at_Sea.json")
