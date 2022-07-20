@@ -36,18 +36,9 @@ modify images from [Ship bucket](http://www.shipbucket.com/) (huge shout out for
 
 
 ## How to Generate the Units
-Right now there is no single script that is meant to run the generator and create the cards yet, there are however
-three test cases (see generator_tests.py) designed to:
-1. Generate a card for a single unit
-2. Generate all cards for a given nation
-3. Generate all cards for all available units
+The cards are automatically generated when new assets are added and countries are added to the finished-countries.txt file. The cards can be found in
+the [War at Sea Cards Folder](https://drive.google.com/drive/folders/1xM3eKRPzZV-jcOPVUXc73TjGes5XbRj8?usp=sharing) on Google Drive.
 
-This is only meant for testing at present, later on a proper script will be added when the project is more mature.
-**Please note that some assets are not included in the repo**. The font used for most of the card is a paid font that I do
-not have rights to redistribute, as such, it is not included here. If anyone knows of a good replaced for https://www.fonts.com/font/komet-flicker/bomber/regular,
-please feel free to suggest it. Otherwise, you will either need to purchase the font (currently $10) or change the font
-defined in /card_generator/models/definitions. The license on the font allows for images produced to be distributed, but
-the TTF file itself for the font cannot be.
 
 ## How to Contribute
 If you are interested in contributing, please join our discord server at https://discord.gg/EeWxsBqy.
