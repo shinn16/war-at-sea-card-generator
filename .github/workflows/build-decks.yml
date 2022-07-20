@@ -35,5 +35,5 @@ jobs:
         with:
           credentials: ${{ secrets.credentials }}
           filename: "cards.zip"
-          folderId: ${{ secrets.folder }}
+          folderId: ${{ secrets.folder_id }}
           overwrite: "true"
