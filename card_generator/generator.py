@@ -2,7 +2,9 @@ import os
 import json
 import argparse
 
+import numpy
 from PIL import ImageDraw
+from blend_modes.blending_functions import screen
 
 from card_generator.models.assets import *
 from card_generator.models.alliance import Alliance
@@ -105,6 +107,7 @@ class Generator:
                 scale = (Values.SILHOUETTE_BASE_WIDTH + Values.DROP_SHADOW_GROWTH) / w
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 w, h = silhouette.size
+                # Todo the silhouettes need to be scaled vertically too if they are too tall.
                 transparent_overlay.paste(silhouette,
                                           (Values.SILHOUETTE_X_MARGIN - Values.DROP_SHADOW_OFFSET,
                                            Values.SILHOUETTE_SECTION_HEIGHT - h))
@@ -119,11 +122,14 @@ class Generator:
         def populate_attack():
             nonlocal y_offset
             # blueprint first
-            blueprint = Background.get_blueprint(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
+            if self.unit.ship_class is None:
+                blueprint = Background.get_blueprint(UnitType.PLANE, self.nation.name, self.unit.name.lower())
+            else:
+                blueprint = Background.get_blueprint(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
             w, h = blueprint.size
-            scale = Values.SILHOUETTE_BASE_WIDTH / w
+            scale = 275 / w
             blueprint = blueprint.resize((int(w * scale), int(h * scale)))
-            blueprint_layer.paste(blueprint, (350, center_image(0, y_offset, 0,
+            blueprint_layer.paste(blueprint, (425, center_image(0, y_offset, 0,
                                                                 y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH *
                                                                                  self.unit.get_attacks()[0]),
                                                                 blueprint)[1]))
@@ -379,8 +385,14 @@ class Generator:
         populate_abilities()
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
-        out = Image.alpha_composite(blueprint_layer, out)
-        out = Image.alpha_composite(self.card_base, out)
+        base = numpy.array(self.card_base)
+        base = base.astype(float)
+        blueprint_layer = numpy.array(blueprint_layer)
+        blueprint_layer = blueprint_layer.astype(float)
+        base = screen(base, blueprint_layer, 1.0)
+        base = numpy.uint8(base)
+        base = Image.fromarray(base)
+        out = Image.alpha_composite(base, out)
         if display:
             out.show()
         if output_folder is not None:
