@@ -683,7 +683,12 @@
                 },
                 "set": "War At Sea",
                 "set_number": "18/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "blue_print_settings":{
+                    "max_width":   220,
+                    "x_placement": 517,
+                    "y_placement": 230
+                }
             },
             {
                 "name": "SS American Victory",
@@ -1247,6 +1252,45 @@
                 "set_number": "23/64",
                 "rarity": "Common",
                 "class": "Gato"
+            },
+             {
+                "name": "USS Cod (SS 224)",
+                "flagship": null,
+                "points": 12,
+                "year": 1942,
+                "type": "Submarine",
+                "speed": "1",
+                "planes": null,
+                "main_gunnery_attack": [],
+                "aircraft_gunnery_attack": [],
+                "secondary_gunnery_attack": [],
+                "tertiary_gunnery_attack": [],
+                "anti_aircraft_attack": [],
+                "anti_submarine_attack": [],
+                "torpedo_attack": [
+                    "3",
+                    "3",
+                    "1",
+                    "-"
+                ],
+                "bomb_attack": [],
+                "armor": 3,
+                "vital_armor": 6,
+                "hull_points": 2,
+                "special_abilities": {
+                    "Audacious Attack": "Once per game, this unit can make two Torpedo attacks during your Torpedo Attack step.  The targets must be in different sectors.",
+                    "Submerged Shot": "This unit can make Torpedo attacks against local enemy Submarines."
+                },
+                "set": "War At Sea",
+                "set_number": "23/64",
+                "rarity": "Common",
+                "class": "Gato",
+                "blue_print_settings":{
+                    "max_width":   300,
+                    "x_placement": 430,
+                    "y_placement": 250,
+                    "file_name": "cod"
+                }
             },
             {
                 "name": "USS Boise (CL 47)",

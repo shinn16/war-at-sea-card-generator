@@ -123,16 +123,40 @@ class Generator:
             nonlocal y_offset
             # blueprint first
             if self.unit.ship_class is None:
-                blueprint = Background.get_blueprint(UnitType.PLANE, self.nation.name, self.unit.name.lower())
+                if self.unit.blue_print_settings.file_name is not None:
+                    blueprint = Background.get_blueprint(UnitType.PLANE,
+                                                         self.nation.name,
+                                                         self.unit.blue_print_settings.file_name)
+                else:
+                    blueprint = Background.get_blueprint(UnitType.PLANE,
+                                                         self.nation.name,
+                                                         self.unit.name.lower())
             else:
-                blueprint = Background.get_blueprint(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
+                if self.unit.blue_print_settings.file_name is not None:
+                    blueprint = Background.get_blueprint(UnitType.SHIP,
+                                                         self.nation.name,
+                                                         self.unit.blue_print_settings.file_name)
+                else:
+                    blueprint = Background.get_blueprint(UnitType.SHIP,
+                                                         self.nation.name,
+                                                         self.unit.ship_class.lower())
             w, h = blueprint.size
-            scale = 275 / w
+            if self.unit.blue_print_settings.max_width is not None:
+                scale = self.unit.blue_print_settings.max_width / w
+            else:
+                scale = 300 / w
             blueprint = blueprint.resize((int(w * scale), int(h * scale)))
-            blueprint_layer.paste(blueprint, (425, center_image(0, y_offset, 0,
-                                                                y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH *
-                                                                                 self.unit.get_attacks()[0]),
-                                                                blueprint)[1]))
+            if self.unit.blue_print_settings.x_placement is not None:
+                x = self.unit.blue_print_settings.x_placement
+            else:
+                x = 425
+            if self.unit.blue_print_settings.y_placement is not None:
+                y = self.unit.blue_print_settings.y_placement
+            else:
+                y = center_image(0, y_offset,
+                                 0, y_offset - 10 + (Values.ATTACK_RECTANGLE_WIDTH * self.unit.get_attacks()[0]),
+                                 blueprint)[1]
+            blueprint_layer.paste(blueprint, (x, y))
             draw_text_psd_style(base_draw_layer,
                                 Coordinates.ATTACK_HEADING,
                                 "Attacks",

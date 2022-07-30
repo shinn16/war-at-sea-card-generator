@@ -45,6 +45,10 @@ def load_json(json) -> list:
                 current_unit = current_unit.with_ship_class(unit["class"])
             except KeyError:
                 pass
+            try:
+                current_unit = current_unit.with_blueprint_settings(unit["blue_print_settings"])
+            except KeyError:
+                current_unit = current_unit.with_blueprint_settings(dict())
             current_nation.add_unit(current_unit)
         populated_nations.append(current_nation)
     return populated_nations
