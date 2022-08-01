@@ -89,6 +89,7 @@ class Resizing:
     HIT_POINTS = (44, 44)
     FLAGSHIP = (33, 33)
     CARRIER = (33, 33)
+    SET_ICONS = (30, 30)
 
 
 class Background:
@@ -142,19 +143,21 @@ class Icons:
 
     SET_ICONS = {
         "Starter Set": Image.open(io.BytesIO((RESOURCES / "card-icons" / "Flagship.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "War At Sea": Image.open(io.BytesIO((RESOURCES / "card-icons" / "war_at_sea.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "Task Force": Image.open(io.BytesIO((RESOURCES / "card-icons" / "task_force.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "Flank Speed": Image.open(io.BytesIO((RESOURCES / "card-icons" / "flank_speed.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "Condition Zebra": Image.open(io.BytesIO((RESOURCES / "card-icons" / "condition_zebra.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "Set V": Image.open(io.BytesIO((RESOURCES / "card-icons" / "set V.png").read_bytes()))
-        .resize((30, 30)),
+        .resize(Resizing.SET_ICONS),
         "Surface Action": Image.open(io.BytesIO((RESOURCES / "card-icons" / "surface_action.png").read_bytes()))
-        .resize((30, 30))
+        .resize(Resizing.SET_ICONS),
+        "Custom": Image.open(io.BytesIO((RESOURCES / "card-icons" / "custom.png").read_bytes()))
+        .resize(Resizing.SET_ICONS)
     }
 
     # special icons
