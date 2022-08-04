@@ -48,7 +48,9 @@ class Unit:
         self.set_number = None
         self.rarity = None
         self.ship_class = None
+        self.manufacturer = None
         self.blue_print_settings = None
+        self.back_text = ""
 
     def with_name(self, name: str):
         self.name = name
@@ -148,6 +150,14 @@ class Unit:
 
     def with_blueprint_settings(self, settings: dict):
         self.blue_print_settings = BlueprintSettings(settings)
+        return self
+
+    def with_manufacturer(self, manufacturer: str):
+        self.manufacturer = manufacturer
+        return this
+
+    def with_back_text(self, text: str):
+        self.back_text = text
         return self
 
     def get_attacks(self) -> tuple:

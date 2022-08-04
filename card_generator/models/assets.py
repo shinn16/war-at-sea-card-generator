@@ -80,6 +80,8 @@ class Values:
     DROP_SHADOW_OFFSET = 45   # half of the true growth
     AIRCRAFT_SILHOUETTE_MAX_HEIGHT = 95
 
+    BACK_TEXT_WIDTH = 85
+    BLUEPRINT_MAX_WIDTH_BACK = 883
 
 class Resizing:
     """
@@ -96,12 +98,16 @@ class Background:
     """
     Background assets
     """
-    with pkg_resources.path(assets, "hitpoints.png") as resource:
-        HIT_POINTS = Image.open(resource).resize(Resizing.HIT_POINTS)
-    with pkg_resources.path(assets, "axis-card-base.png") as resource:
-        AXIS_BASE = resource
-    with pkg_resources.path(assets, "allies-card-base.png") as resource:
-        ALLIES_BASE = resource
+    with pkg_resources.path(assets, "hitpoints.png") as _resource:
+        HIT_POINTS = Image.open(_resource).resize(Resizing.HIT_POINTS)
+    with pkg_resources.path(assets, "axis-card-base.png") as _resource:
+        AXIS_BASE = _resource
+    with pkg_resources.path(assets, "axis-card-back.png") as _resource:
+        AXIS_BACK = _resource
+    with pkg_resources.path(assets, "allies-card-base.png") as _resource:
+        ALLIES_BASE = _resource
+    with pkg_resources.path(assets, "allies-card-back.png") as _resource:
+        ALLIES_BACK = _resource
 
     @staticmethod
     def get_silhouette(unit_type: UnitType, nation: str, unit: str) -> Image.Image:
@@ -285,6 +291,7 @@ class Fonts:
     ATTACK_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 60)
     ARMOR_STATS = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 50)
     SET_INFO = ImageFont.truetype(io.BytesIO((RESOURCES / "Norfolk.otf").read_bytes()), 35)
+    BACK_TEXT = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes()), 20)
 
     @staticmethod
     def get_abilities_font(unit: Unit, y_offset: int) -> [ImageFont.FreeTypeFont, ImageFont.FreeTypeFont, int]:
@@ -406,6 +413,25 @@ class Coordinates:
         (ATTACK_HEADING_DIVIDER_2[0][0] + Values.DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[0][1]),
         (ATTACK_HEADING_DIVIDER_2[1][0] + Values.DIVIDER_SPACING, ATTACK_HEADING_DIVIDER[1][1])
     ]
+
+    # back side of the card placement values
+    NATION_EMBLEM_BACK = (23, 159)
+    SHIP_TYPE_BACK = (100, 156)
+    SHIP_YEAR_BACK = (630, 156)
+    _DEFAULT_BLUEPRINT_BACK = (110, 720)
+    BACK_TEXT = (100, 200)
+
+    @staticmethod
+    def get_default_blueprint_back_coordinates(blueprint: Image.Image) -> [int, int]:
+        """
+        Get the coordinates for placing the image at the bottom of the card, default placement.
+        :param blueprint: image to get coords for
+        :return tuple of x, y coordinate.
+        """
+        w, h = blueprint.size
+        print(h)
+        return (Coordinates._DEFAULT_BLUEPRINT_BACK[0], Coordinates._DEFAULT_BLUEPRINT_BACK[1] - h)
+
 
 
 def get_war_at_sea_json() -> BinaryIO:

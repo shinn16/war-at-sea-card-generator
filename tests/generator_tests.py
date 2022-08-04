@@ -14,7 +14,7 @@ class MyTestCase(unittest.TestCase):
         axis_and_allies_deck = load_json(data)
         for nation in axis_and_allies_deck:
             for unit in nation.get_units():
-                Generator(nation, unit).generate()
+                Generator(nation, unit).generate_front()
         data_file.close()
 
     def generate_country(self):
@@ -23,13 +23,13 @@ class MyTestCase(unittest.TestCase):
         data = json.load(data_file)
         axis_and_allies_deck = load_json(data)
         for unit in axis_and_allies_deck[country].get_units():
-            Generator(axis_and_allies_deck[country], unit).generate()
+            Generator(axis_and_allies_deck[country], unit).generate_front()
 
     def generate_single(self):
         data_file = get_war_at_sea_json()
         data = json.load(data_file)
         axis_and_allies_deck = load_json(data)
-        Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[32]).generate(display=True)
+        Generator(axis_and_allies_deck[1], axis_and_allies_deck[1].get_units()[32]).generate_front(display=True)
         data_file.close()
 
     def expand_transparent_area(self):

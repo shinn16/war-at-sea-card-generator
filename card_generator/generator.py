@@ -24,28 +24,28 @@ class Generator:
     def __init__(self, nation: Nation, unit: Unit) -> None:
         self.nation = nation
         self.unit = unit
-        if self.nation.get_alliance() == Alliance.Allies.value:
-            self.card_base = Image.open(Background.ALLIES_BASE).convert("RGBA")
-        else:
-            self.card_base = Image.open(Background.AXIS_BASE).convert("RGBA")
 
-    def generate(self, display: bool = False, output_folder: str = None) -> None:
+    def generate_front(self, display: bool = False, output_folder: str = None) -> None:
         """
         Generate the card for the current unit.
         :param display: if set to true, will display the card instead of writing it out as an image. Defaults to false.
         :param output_folder: folder to dump the cards to, defaults to the current directory.
         """
         logger.info("{}/{}".format(self.nation.name, self.unit.name))
+        if self.nation.get_alliance() == Alliance.Allies.value:
+            card_base = Image.open(Background.ALLIES_BASE).convert("RGBA")
+        else:
+            card_base = Image.open(Background.AXIS_BASE).convert("RGBA")
         y_offset = Values.ATTACK_RECTANGLE_START_Y
-        base_draw_layer = ImageDraw.Draw(self.card_base, "RGBA")
-        blueprint_layer = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
-        transparent_overlay = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
+        base_draw_layer = ImageDraw.Draw(card_base, "RGBA")
+        blueprint_layer = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
+        transparent_overlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
         transparent_overlay_draw = ImageDraw.Draw(transparent_overlay)
-        top_overlay = Image.new("RGBA", self.card_base.size, Colors.TRANSPARENT)
+        top_overlay = Image.new("RGBA", card_base.size, Colors.TRANSPARENT)
         top_overlay_draw = ImageDraw.Draw(top_overlay)
 
         def populate_header():
-            self.card_base.paste(NationEmblems.get_emblem(self.nation), Coordinates.NATION_EMBLEM,
+            card_base.paste(NationEmblems.get_emblem(self.nation), Coordinates.NATION_EMBLEM,
                                  NationEmblems.get_emblem(self.nation))
 
             ship_name_font = Fonts.get_header_font(self.unit.name, tracking=Values.SHIP_NAME_FONT_TRACKING)
@@ -409,7 +409,7 @@ class Generator:
         populate_abilities()
         populate_set()
         out = Image.alpha_composite(transparent_overlay, top_overlay)
-        base = numpy.array(self.card_base)
+        base = numpy.array(card_base)
         base = base.astype(float)
         blueprint_layer = numpy.array(blueprint_layer)
         blueprint_layer = blueprint_layer.astype(float)
@@ -430,8 +430,130 @@ class Generator:
             os.makedirs(card_path, exist_ok=True)
             out.save("{}/{}.png".format(card_path, self.unit.name).replace("\"", ";"))
 
+    def generate_back(self, display: bool = False, output_folder: str = None) -> None:
+        """
+        Generates the back of the card.
+        :param display: if set to true, will display the card instead of writing it out as an image. Defaults to false.
+        :param output_folder: folder to dump the cards to, defaults to the current directory.
+        """
+        if self.nation.get_alliance() == Alliance.Allies.value:
+            card_back = Image.open(Background.ALLIES_BACK).convert("RGBA")
+        else:
+            card_back = Image.open(Background.AXIS_BACK).convert("RGBA")
 
-def generate_all(output_folder: str = None):
+        # configure the various layers needed to draw the back
+        base_draw_layer = ImageDraw.Draw(card_back, "RGBA")
+        blueprint_layer = Image.new("RGBA", card_back.size, Colors.TRANSPARENT)
+        transparent_overlay = Image.new("RGBA", card_back.size, Colors.TRANSPARENT)
+
+        def populate_header():
+            card_back.paste(NationEmblems.get_emblem(self.nation), Coordinates.NATION_EMBLEM_BACK,
+                            NationEmblems.get_emblem(self.nation))
+            ship_name_font = Fonts.get_header_font(self.unit.name, tracking=Values.SHIP_NAME_FONT_TRACKING)
+            ship_name_y = y_center_text(Values.SHIP_NAME_END_Y,
+                                        Values.SHIP_NAME_START_Y,
+                                        self.unit.name, ship_name_font
+                                        )
+
+            draw_text_psd_style(base_draw_layer,
+                                (Values.SHIP_NAME_START_X, ship_name_y),
+                                self.unit.name,
+                                ship_name_font,
+                                tracking=Values.SHIP_NAME_FONT_TRACKING, leading=0, fill=Colors.SHIP_NAME)
+            # Determine the unit type and class or manufactor (aircraft)
+            if self.unit.ship_class is not None:
+                type_text = self.unit.type.split("-")
+                if len(type_text) == 1:
+                    # submarines have no qualifier such as ship or aircraft, so we only need submarine.
+                    type_text = type_text[0]
+                else:
+                    # strip the ship or aircraft qualifier
+                    type_text = type_text[1]
+                type_text = "{}-class {}".format(self.unit.ship_class, type_text)
+            else:
+                type_text = self.unit.manufacturer
+
+
+            base_draw_layer.text(Coordinates.SHIP_TYPE_BACK, type_text,
+                                 font=Fonts.SHIP_TYPE_AND_YEAR,
+                                 fill=Colors.SHIP_TYPE_AND_YEAR)
+
+            base_draw_layer.text(Coordinates.SHIP_YEAR_BACK, str(self.unit.year),
+                                 font=Fonts.SHIP_TYPE_AND_YEAR,
+                                 fill=Colors.SHIP_TYPE_AND_YEAR)
+
+            # silhouette
+            if self.unit.ship_class is not None:
+                silhouette = Background.get_silhouette(UnitType.SHIP, self.nation.name, self.unit.ship_class.lower())
+                w, h = silhouette.size
+                # scale by width first
+                scale = (Values.SILHOUETTE_BASE_WIDTH + Values.DROP_SHADOW_GROWTH) / w
+                silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                w, h = silhouette.size
+                # Todo the silhouettes need to be scaled vertically too if they are too tall.
+                transparent_overlay.paste(silhouette,
+                                          (Values.SILHOUETTE_X_MARGIN - Values.DROP_SHADOW_OFFSET,
+                                           Values.SILHOUETTE_SECTION_HEIGHT - h - 2))
+            else:
+                silhouette = Background.get_silhouette(UnitType.PLANE, self.nation.name, self.unit.name.lower())
+                w, h = silhouette.size
+                scale = Values.AIRCRAFT_SILHOUETTE_MAX_HEIGHT / h
+                silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                height = center_image(0, 0, 0, Values.SILHOUETTE_SECTION_HEIGHT, silhouette)[1]
+                transparent_overlay.paste(silhouette, (Values.SILHOUETTE_X_MARGIN, height))
+
+        def populate_text_area():
+            # size the blueprint first
+            if self.unit.ship_class is None:
+                if self.unit.blue_print_settings.file_name is not None:
+                    blueprint = Background.get_blueprint(UnitType.PLANE,
+                                                         self.nation.name,
+                                                         self.unit.blue_print_settings.file_name)
+                else:
+                    blueprint = Background.get_blueprint(UnitType.PLANE,
+                                                         self.nation.name,
+                                                         self.unit.name.lower())
+            else:
+                if self.unit.blue_print_settings.file_name is not None:
+                    blueprint = Background.get_blueprint(UnitType.SHIP,
+                                                         self.nation.name,
+                                                         self.unit.blue_print_settings.file_name)
+                else:
+                    blueprint = Background.get_blueprint(UnitType.SHIP,
+                                                         self.nation.name,
+                                                         self.unit.ship_class.lower())
+            w, h = blueprint.size
+            blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
+            y_offset = 0
+            for line in wrap(self.unit.back_text, width=Values.BACK_TEXT_WIDTH):
+                base_draw_layer.text((Coordinates.BACK_TEXT[0], Coordinates.BACK_TEXT[1] + y_offset), line, font=Fonts.BACK_TEXT, fill=Colors.WHITE)
+                y_offset += Fonts.BACK_TEXT.getsize(line)[1]
+
+        populate_header()
+        populate_text_area()
+        base = numpy.array(card_back)
+        base = base.astype(float)
+        blueprint_layer = numpy.array(blueprint_layer)
+        blueprint_layer = blueprint_layer.astype(float)
+        base = screen(base, blueprint_layer, 1.0)
+        base = numpy.uint8(base)
+        base = Image.fromarray(base)
+        base = Image.alpha_composite(base, transparent_overlay)
+        if display:
+            base.show()
+        if output_folder is not None:
+            card_path = (os.path.join(output_folder, "cards", self.nation.name))
+        else:
+            card_path = (os.path.join(os.getcwd(), "cards", self.nation.name))
+        try:
+            base.save("{}/{}-back.png".format(card_path, self.unit.name).replace("\"", ";"))
+            logger.debug("saved to {}".format(card_path))
+        except FileNotFoundError:
+            os.makedirs(card_path, exist_ok=True)
+            base.save("{}/{}-back.png".format(card_path, self.unit.name).replace("\"", ";"))
+
+
+def generate_all(output_folder: str = None, full: bool = False):
     """
     Generates all units that are present in the included War at Sea data file.
     :param output_folder: folder to dump the cards to, defaults to the current directory.
@@ -441,15 +563,17 @@ def generate_all(output_folder: str = None):
     axis_and_allies_deck = load_json(data)
     for nation in axis_and_allies_deck:
         for unit in nation.get_units():
-            Generator(nation, unit).generate(output_folder=output_folder)
+            Generator(nation, unit).generate_front(output_folder=output_folder)
     data_file.close()
 
 
-def generate_country(country: str, output_folder: str = None):
+def generate_country(country: str, output_folder: str = None, full: bool = False):
     """
     Generates all units for a given country.
     :param country: name of the nation to generate units for.
     :param output_folder: folder to dump the cards to, defaults to the current directory.
+    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
+                 front.
     """
     data_file = get_war_at_sea_json()
     data = json.load(data_file)
@@ -464,29 +588,36 @@ def generate_country(country: str, output_folder: str = None):
         if index == len(axis_and_allies_deck):
             raise ValueError("\"{}\" does not exist in the default countries".format(country))
         for unit in axis_and_allies_deck[index].get_units():
-            Generator(axis_and_allies_deck[index], unit).generate(output_folder=output_folder)
+            generator = Generator(axis_and_allies_deck[index], unit)
+            if full:
+                generator.generate_back(output_folder=output_folder)
+            generator.generate_front(output_folder=output_folder)
     except ValueError as e:
         logger.error(e)
 
 
-def generate_from_file(file: str, output_folder: str = None):
+def generate_from_file(file: str, output_folder: str = None, full: bool = False):
     """
     Generates units for countries listed in a new line delimited text file.
     :param file: files containing countries to generate for.
     :param output_folder: folder to dump the cards to, defaults to the current directory.
+    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
+                 front.
     """
     countries_file = open(file, "r")
     for country in countries_file:
-        generate_country(country.strip(), output_folder)
+        generate_country(country.strip(), output_folder, full)
     countries_file.close()
 
 
-def generate_single(country: str, unit: str, output_folder: str = None):
+def generate_single(country: str, unit: str, output_folder: str = None, full: bool = False):
     """
     Generates a single card for a single unit.
     :param country: name of country of the unit
     :param unit: name of the unit
     :param output_folder: output folder, defaults to the current directory.
+    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
+                 front.
     """
     data_file = get_war_at_sea_json()
     data = json.load(data_file)
@@ -509,9 +640,11 @@ def generate_single(country: str, unit: str, output_folder: str = None):
         logger.error("\"{}\" unit does not exist in for \"{}\"".format(unit, country))
         exit(1)
 
-    Generator(axis_and_allies_deck[country_index],
-              axis_and_allies_deck[country_index].get_units()[unit_index]).generate(output_folder=output_folder,
-                                                                                    display=True)
+    generator = Generator(axis_and_allies_deck[country_index],
+                          axis_and_allies_deck[country_index].get_units()[unit_index])
+    if full:
+        generator.generate_back(display=True, output_folder=output_folder)
+    generator.generate_front(display=True, output_folder=output_folder)
     data_file.close()
 
 
@@ -539,6 +672,11 @@ if __name__ == '__main__':
     generate_all_command.add_argument("-o", "--output-folder",
                                       help="Location to output the generated cards to, defaults to the current "
                                            "directory.")
+    generate_all_command.add_argument("--full",
+                                      help="Generates the front and back of the cards. By default only the front is"
+                                           " generated.",
+                                      default=False,
+                                      action="store_true")
     # -------------------------------------  Generate Country ------------------------------------
     generate_country_command = subparsers.add_parser("generate_country",
                                                      help="Generates all units for a specified country")
@@ -548,6 +686,11 @@ if __name__ == '__main__':
     generate_country_command.add_argument("-o", "--output-folder",
                                           help="Location to output the generated cards to, defaults to the current "
                                                "directory.")
+    generate_country_command.add_argument("--full",
+                                          help="Generates the front and back of the cards. By default only the front is"
+                                           " generated.",
+                                         default=False,
+                                         action="store_true")
     # ------------------------------------  Generate From File ------------------------------------
     generate_from_file_command = subparsers.add_parser("generate_from_file",
                                                        help="Generates all units for all countries"
@@ -559,6 +702,11 @@ if __name__ == '__main__':
     generate_from_file_command.add_argument("-o", "--output-folder",
                                             help="Location to output the generated cards to, defaults to the current "
                                                  "directory.")
+    generate_from_file_command.add_argument("--full",
+                                          help="Generates the front and back of the cards. By default only the front is"
+                                           " generated.",
+                                         default=False,
+                                         action="store_true")
     # --------------------------------------  Generate Single -------------------------------------
     generate_single_command = subparsers.add_parser("generate_single",
                                                     help="Generate a single card for a single unit")
@@ -570,6 +718,11 @@ if __name__ == '__main__':
     generate_single_command.add_argument("-o", "--output-folder",
                                          help="Location to output the generated cards to, defaults to the current "
                                               "directory.")
+    generate_single_command.add_argument("--full",
+                                          help="Generates the front and back of the cards. By default only the front is"
+                                           " generated.",
+                                         default=False,
+                                         action="store_true")
     args = parser.parse_args()
     # check the log level
     logging.basicConfig(level=logging.getLevelName(args.log_level))
