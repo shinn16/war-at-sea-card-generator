@@ -523,6 +523,8 @@ class Generator:
                                                          self.nation.name,
                                                          self.unit.ship_class.lower())
             w, h = blueprint.size
+            if w > Values.BLUEPRINT_MAX_WIDTH_BACK:
+                w = int(Values.BLUEPRINT_MAX_WIDTH_BACK / w)
             blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
             y_offset = 0
             for line in wrap(self.unit.back_text, width=Values.BACK_TEXT_WIDTH):

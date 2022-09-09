@@ -9222,7 +9222,8 @@
                 },
                 "set": "War At Sea",
                 "set_number": "50/64",
-                "rarity": "Rare"
+                "rarity": "Rare",
+                "class":  "Akagi"
             },
             {
                 "name": "Akitsuki",
