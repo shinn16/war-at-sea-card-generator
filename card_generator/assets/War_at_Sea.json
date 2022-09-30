@@ -9223,7 +9223,12 @@
                 "set": "War At Sea",
                 "set_number": "50/64",
                 "rarity": "Rare",
-                "class":  "Akagi"
+                "class":  "Akagi",
+                "blue_print_settings":{
+                    "max_width":   220,
+                    "x_placement": 517,
+                    "y_placement": 230
+                }
             },
             {
                 "name": "Akitsuki",
@@ -9582,7 +9587,12 @@
                 },
                 "set": "War At Sea",
                 "set_number": "52/64",
-                "rarity": "Common"
+                "rarity": "Common",
+                "blue_print_settings":{
+                    "max_width":   220,
+                    "x_placement": 518,
+                    "y_placement": 252
+                }
             },
             {
                 "name": "D4YI \"Judy\"",
