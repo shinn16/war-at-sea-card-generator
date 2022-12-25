@@ -1,19 +1,66 @@
 import os
-import json
-import argparse
+import math
 
 import numpy
 from PIL import ImageDraw
+from enum import Enum
 from blend_modes.blending_functions import screen
 
 from card_generator.models.assets import *
 from card_generator.models.alliance import Alliance
 from card_generator.utils.helper_functions import *
-from card_generator.models.utils import load_json
 from card_generator.models.nation import Nation
 from card_generator.models.unit import Unit, UnitType
 
 logger = logging.getLogger(__name__)
+
+
+class PageFormat(str, Enum):
+    """
+    Standard page formats.
+    """
+    width: float
+    height: float
+
+    def __new__(cls, width: float, height: float):
+        obj = str.__new__(cls)
+        obj._value_ = (width, height)
+        obj.width = width
+        obj.height = height
+        return obj
+
+    def height_in_pixels(self, ppi: int) -> int:
+        return int(self.height * ppi)
+
+    def width_in_pixels(self, ppi: int) -> int:
+        return int(self.width * ppi)
+
+    LETTER = 8.5, 11.0,
+    A4 = 8.3, 11.7,
+    LEGAL = 8.5, 14.0
+
+
+class CardFormat(str, Enum):
+    """
+    Standard War At Sea card format.
+    """
+    width: float
+    height: float
+
+    def __new__(cls, width: float, height: float):
+        obj = str.__new__(cls)
+        obj._value_ = (width, height)
+        obj.width = width
+        obj.height = height
+        return obj
+
+    def height_in_pixels(self, ppi: int) -> int:
+        return int(self.height * ppi)
+
+    def width_in_pixels(self, ppi: int) -> int:
+        return int(self.width * ppi)
+
+    STANDARD = 2.5, 3.5
 
 
 class Generator:
@@ -46,7 +93,7 @@ class Generator:
 
         def populate_header():
             card_base.paste(NationEmblems.get_emblem(self.nation), Coordinates.NATION_EMBLEM,
-                                 NationEmblems.get_emblem(self.nation))
+                            NationEmblems.get_emblem(self.nation))
 
             ship_name_font = Fonts.get_header_font(self.unit.name, tracking=Values.SHIP_NAME_FONT_TRACKING)
             ship_name_y = y_center_text(Values.SHIP_NAME_END_Y,
@@ -473,7 +520,6 @@ class Generator:
             else:
                 type_text = self.unit.manufacturer
 
-
             base_draw_layer.text(Coordinates.SHIP_TYPE_BACK, type_text,
                                  font=Fonts.SHIP_TYPE_AND_YEAR,
                                  fill=Colors.SHIP_TYPE_AND_YEAR)
@@ -528,7 +574,8 @@ class Generator:
             blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
             y_offset = 0
             for line in wrap(self.unit.back_text, width=Values.BACK_TEXT_WIDTH):
-                base_draw_layer.text((Coordinates.BACK_TEXT[0], Coordinates.BACK_TEXT[1] + y_offset), line, font=Fonts.BACK_TEXT, fill=Colors.WHITE)
+                base_draw_layer.text((Coordinates.BACK_TEXT[0], Coordinates.BACK_TEXT[1] + y_offset), line,
+                                     font=Fonts.BACK_TEXT, fill=Colors.WHITE)
                 y_offset += Fonts.BACK_TEXT.getsize(line)[1]
 
         populate_header()
@@ -555,187 +602,72 @@ class Generator:
             base.save("{}/{}-back.png".format(card_path, self.unit.name).replace("\"", ";"))
 
 
-def generate_all(output_folder: str = None, full: bool = False):
+class PrintFormatter:
     """
-    Generates all units that are present in the included War at Sea data file.
-    :param output_folder: folder to dump the cards to, defaults to the current directory.
+    Creates a formatted sheet of cards for printing.
     """
-    data_file = get_war_at_sea_json()
-    data = json.load(data_file)
-    axis_and_allies_deck = load_json(data)
-    for nation in axis_and_allies_deck:
-        for unit in nation.get_units():
-            Generator(nation, unit).generate_front(output_folder=output_folder)
-    data_file.close()
 
+    @staticmethod
+    def generate_print_layout(page_format: PageFormat,
+                              card_format: CardFormat,
+                              card_folder: str,
+                              output_folder: str,
+                              ppi: int = 300,
+                              spacing: float = 0.05) -> None:
+        """
+        Generates a page of cards from a given folder. The size of the cards and size of the page are configurable based
+        on the available values from PageFormat and CardFormat classes.
 
-def generate_country(country: str, output_folder: str = None, full: bool = False):
-    """
-    Generates all units for a given country.
-    :param country: name of the nation to generate units for.
-    :param output_folder: folder to dump the cards to, defaults to the current directory.
-    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
-                 front.
-    """
-    data_file = get_war_at_sea_json()
-    data = json.load(data_file)
-    axis_and_allies_deck = load_json(data)
-    try:
-        index = 0
-        for candidate_country in axis_and_allies_deck:
-            if candidate_country.name == country:
-                break
-            else:
-                index += 1
-        if index == len(axis_and_allies_deck):
-            raise ValueError("\"{}\" does not exist in the default countries".format(country))
-        for unit in axis_and_allies_deck[index].get_units():
-            generator = Generator(axis_and_allies_deck[index], unit)
-            if full:
-                generator.generate_back(output_folder=output_folder)
-            generator.generate_front(output_folder=output_folder)
-    except ValueError as e:
-        logger.error(e)
+        :param page_format: page format to be used for printing.
+        :param card_format: card format to be used for printing.
+        :param card_folder: source folder for the card images.
+        :param output_folder: folder to place the formatted prints.
+        :param ppi: ppi to be used for printing.
+        :param spacing: The spacing between cards on all sides in inches.
+        :return: None
+        """
+        cards = list()
+        # get all the cards to be printed
+        for card in os.listdir(card_folder):
+            card = os.path.join(card_folder, card)
+            cards.append(Image.open(card).resize((card_format.width_in_pixels(ppi), card_format.height_in_pixels(ppi))))
 
+        cards_per_row = int(page_format.width / card_format.width)
+        cards_per_column = int(page_format.height / card_format.height)
+        cards_per_page = cards_per_row * cards_per_column
+        row_width = (cards_per_row * card_format.width_in_pixels(ppi)) + ((cards_per_row - 1) * spacing * ppi)
+        column_height = card_format.height_in_pixels(ppi)
+        number_of_pages = int(math.ceil(len(cards) / cards_per_page))
 
-def generate_from_file(file: str, output_folder: str = None, full: bool = False):
-    """
-    Generates units for countries listed in a new line delimited text file.
-    :param file: files containing countries to generate for.
-    :param output_folder: folder to dump the cards to, defaults to the current directory.
-    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
-                 front.
-    """
-    countries_file = open(file, "r")
-    for country in countries_file:
-        generate_country(country.strip(), output_folder, full)
-    countries_file.close()
+        logger.info("Page fits {} cards".format(cards_per_page))
+        logger.debug("Cards per row: {}".format(cards_per_row))
+        logger.debug("Cards per column: {}".format(cards_per_column))
+        logger.info("Will need to print {} pages to print all cards.".format(number_of_pages))
 
-
-def generate_single(country: str, unit: str, output_folder: str = None, full: bool = False):
-    """
-    Generates a single card for a single unit.
-    :param country: name of country of the unit
-    :param unit: name of the unit
-    :param output_folder: output folder, defaults to the current directory.
-    :param full: whether to generate both the front and backs of the cards, defaults to false which generates only the
-                 front.
-    """
-    data_file = get_war_at_sea_json()
-    data = json.load(data_file)
-    axis_and_allies_deck = load_json(data)
-
-    country_index = 0
-    unit_index = 0
-    for candidate_country in axis_and_allies_deck:
-        if candidate_country.name == country:
-            for candidate_unit in candidate_country.get_units():
-                if candidate_unit.name == unit:
+        for page_number in range(number_of_pages):
+            page_number += 1
+            output_page_path = f"{output_folder}/page-{page_number}.png"
+            page = Image.new("RGB", (int(page_format.width * ppi), int(page_format.height * ppi)), Colors.WHITE)
+            start_x = int((page.width - row_width) / 2)
+            start_y = int(
+                (page.height - ((column_height * cards_per_column) + ((cards_per_row - 1) * ppi * spacing))) / 2)
+            for column in range(cards_per_column):
+                out_of_cards = False
+                current_x = start_x
+                current_y = start_y + (column_height * column) + int(spacing * ppi * column)
+                for row in range(cards_per_row):
+                    try:
+                        page.paste(cards.pop(), (current_x, current_y))
+                    except IndexError as e:
+                        logger.info("Out of cards to add to this page")
+                        out_of_cards = True
+                        break
+                    current_x += card_format.width_in_pixels(ppi) + int(spacing * ppi)
+                if out_of_cards:
                     break
-                else:
-                    unit_index += 1
-            break
-        else:
-            country_index += 1
-    if country_index == len(axis_and_allies_deck) or \
-            unit_index == len(axis_and_allies_deck[country_index].get_units()):
-        logger.error("\"{}\" unit does not exist in for \"{}\"".format(unit, country))
-        exit(1)
-
-    generator = Generator(axis_and_allies_deck[country_index],
-                          axis_and_allies_deck[country_index].get_units()[unit_index])
-    if full:
-        generator.generate_back(display=True, output_folder=output_folder)
-    generator.generate_front(display=True, output_folder=output_folder)
-    data_file.close()
-
-
-if __name__ == '__main__':
-    commands = {
-        "generate_all": generate_all,
-        "generate_country": generate_country,
-        "generate_from_file": generate_from_file,
-        "generate_single": generate_single
-    }
-
-    parser = argparse.ArgumentParser(prog="War at Sea Card Generator",
-                                     description="Generate unit cards for the Axis and Allies War at Sea Naval "
-                                                 "Miniatures game.",
-                                     formatter_class=argparse.RawDescriptionHelpFormatter,
-                                     )
-    parser.add_argument("-l", "--log-level", required=False, default="INFO", help="Sets the logging level, defaults to"
-                                                                                  " INFO.")
-    subparsers = parser.add_subparsers(title="Available Commands", dest="command", metavar="command [options ...]")
-    # ---------------------------------------  Generate All -------------------------------------
-    generate_all_command = subparsers.add_parser("generate_all",
-                                                 help="Generates the entire deck as defined by the "
-                                                      "War at Sea data set.")
-    generate_all_command.description = "Generate all units for all countries in the included War at Sea data set."
-    generate_all_command.add_argument("-o", "--output-folder",
-                                      help="Location to output the generated cards to, defaults to the current "
-                                           "directory.")
-    generate_all_command.add_argument("--full",
-                                      help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                      default=False,
-                                      action="store_true")
-    # -------------------------------------  Generate Country ------------------------------------
-    generate_country_command = subparsers.add_parser("generate_country",
-                                                     help="Generates all units for a specified country")
-    generate_country_command.description = "Generate all units for a specific country"
-    generate_country_command.add_argument("-c", "--country", required=True,
-                                          help="name of the country to generate units for")
-    generate_country_command.add_argument("-o", "--output-folder",
-                                          help="Location to output the generated cards to, defaults to the current "
-                                               "directory.")
-    generate_country_command.add_argument("--full",
-                                          help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                         default=False,
-                                         action="store_true")
-    # ------------------------------------  Generate From File ------------------------------------
-    generate_from_file_command = subparsers.add_parser("generate_from_file",
-                                                       help="Generates all units for all countries"
-                                                            " specified in a text file.")
-    generate_from_file_command.description = "Generate all units for all countries specified in a new line delimited" \
-                                             " text file."
-    generate_from_file_command.add_argument("-f", "--file", required=True,
-                                            help="countries file")
-    generate_from_file_command.add_argument("-o", "--output-folder",
-                                            help="Location to output the generated cards to, defaults to the current "
-                                                 "directory.")
-    generate_from_file_command.add_argument("--full",
-                                          help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                         default=False,
-                                         action="store_true")
-    # --------------------------------------  Generate Single -------------------------------------
-    generate_single_command = subparsers.add_parser("generate_single",
-                                                    help="Generate a single card for a single unit")
-    generate_single_command.description = "Generate a single card for a single unit"
-    generate_single_command.add_argument("-c", "--country", required=True,
-                                         help="name of the country to generate units for")
-    generate_single_command.add_argument("-u", "--unit", required=True,
-                                         help="unit to generate")
-    generate_single_command.add_argument("-o", "--output-folder",
-                                         help="Location to output the generated cards to, defaults to the current "
-                                              "directory.")
-    generate_single_command.add_argument("--full",
-                                          help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                         default=False,
-                                         action="store_true")
-    args = parser.parse_args()
-    # check the log level
-    logging.basicConfig(level=logging.getLevelName(args.log_level))
-
-    # lookup the command
-    command = commands[args.command]
-
-    # store all arguments, then remove the command
-    args = vars(args)
-    del args["command"]
-    del args["log_level"]
-
-    # pass all remaining args as keyword args.
-    command(**args)
+            logger.info(f"Saving page {page_number} to {output_page_path}")
+            try:
+                page.save(output_page_path, "png")
+            except FileNotFoundError:
+                os.makedirs(output_folder, exist_ok=True)
+                page.save(output_page_path, "png")

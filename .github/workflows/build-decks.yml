@@ -20,7 +20,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build Decks of Completed Countries
         run: |
-          PYTHONPATH=$(pwd) python card_generator/generator.py generate_from_file -f finished-countries.txt
+          PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_file -f finished-countries.txt
       - name: Archive Cards
         run: zip -r cards.zip ./cards
       - name: Upload to gdrive
