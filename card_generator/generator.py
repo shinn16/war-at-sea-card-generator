@@ -8,9 +8,11 @@ from blend_modes.blending_functions import screen
 
 from card_generator.models.assets import *
 from card_generator.models.alliance import Alliance
-from card_generator.utils.helper_functions import *
 from card_generator.models.nation import Nation
 from card_generator.models.unit import Unit, UnitType
+from card_generator.utils.image import center_image
+from card_generator.utils.image.ImageTextWrap import ImageTextWrap
+from card_generator.utils.text import y_center_text, draw_text_psd_style
 
 logger = logging.getLogger(__name__)
 
@@ -455,6 +457,7 @@ class Generator:
         populate_armor()
         populate_abilities()
         populate_set()
+
         out = Image.alpha_composite(transparent_overlay, top_overlay)
         base = numpy.array(card_base)
         base = base.astype(float)
@@ -507,7 +510,7 @@ class Generator:
                                 self.unit.name,
                                 ship_name_font,
                                 tracking=Values.SHIP_NAME_FONT_TRACKING, leading=0, fill=Colors.SHIP_NAME)
-            # Determine the unit type and class or manufactor (aircraft)
+            # Determine the unit type and class or manufacture (aircraft)
             if self.unit.ship_class is not None:
                 type_text = self.unit.type.split("-")
                 if len(type_text) == 1:
@@ -549,6 +552,7 @@ class Generator:
                 transparent_overlay.paste(silhouette, (Values.SILHOUETTE_X_MARGIN, height))
 
         def populate_text_area():
+            nonlocal blueprint_layer
             # size the blueprint first
             if self.unit.ship_class is None:
                 if self.unit.blue_print_settings.file_name is not None:
@@ -572,11 +576,11 @@ class Generator:
             if w > Values.BLUEPRINT_MAX_WIDTH_BACK:
                 w = int(Values.BLUEPRINT_MAX_WIDTH_BACK / w)
             blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
-            y_offset = 0
-            for line in wrap(self.unit.back_text, width=Values.BACK_TEXT_WIDTH):
-                base_draw_layer.text((Coordinates.BACK_TEXT[0], Coordinates.BACK_TEXT[1] + y_offset), line,
-                                     font=Fonts.BACK_TEXT, fill=Colors.WHITE)
-                y_offset += Fonts.BACK_TEXT.getsize(line)[1]
+            text_wrap = ImageTextWrap(Fonts.BACK_TEXT,
+                                      blueprint_layer,
+                                      wrap_over=[[255, 255, 255, 0], [0, 0, 0, 0]],
+                                      margin=5)
+            blueprint_layer = text_wrap.wrap_around(self.unit.back_text, Coordinates.BACK_TEXT)
 
         populate_header()
         populate_text_area()
@@ -658,7 +662,7 @@ class PrintFormatter:
                 for row in range(cards_per_row):
                     try:
                         page.paste(cards.pop(), (current_x, current_y))
-                    except IndexError as e:
+                    except IndexError:
                         logger.info("Out of cards to add to this page")
                         out_of_cards = True
                         break

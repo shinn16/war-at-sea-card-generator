@@ -7,12 +7,14 @@ from textwrap import wrap
 from typing import BinaryIO
 import logging
 
-from PIL import ImageFont
+from PIL import ImageFont, Image
+
 from card_generator.models.nation import Nation
 from card_generator.models.unit import UnitType, Unit
-from card_generator.utils.helper_functions import *
 from card_generator import assets
-
+from card_generator.utils import ability_sort
+from card_generator.utils.image import icon_resize
+from card_generator.utils.text import x_center_text, center_text
 
 RESOURCES = pkg_resources.files(assets)
 logger = logging.getLogger(__name__)
@@ -77,11 +79,12 @@ class Values:
     SILHOUETTE_X_MARGIN = 65
     SILHOUETTE_BASE_WIDTH = 380
     DROP_SHADOW_GROWTH = 150  # the true growth is only 90, but additional padding is added
-    DROP_SHADOW_OFFSET = 45   # half of the true growth
+    DROP_SHADOW_OFFSET = 45  # half of the true growth
     AIRCRAFT_SILHOUETTE_MAX_HEIGHT = 95
 
     BACK_TEXT_WIDTH = 85
     BLUEPRINT_MAX_WIDTH_BACK = 883
+
 
 class Resizing:
     """
@@ -167,9 +170,9 @@ class Icons:
     }
 
     # special icons
-    CARRIER = Image.open(io.BytesIO((RESOURCES / "card-icons" / "Carrier.png").read_bytes()))\
+    CARRIER = Image.open(io.BytesIO((RESOURCES / "card-icons" / "Carrier.png").read_bytes())) \
         .resize(Resizing.CARRIER)
-    FLAGSHIP = Image.open(io.BytesIO((RESOURCES / "card-icons" / "Flagship.png").read_bytes()))\
+    FLAGSHIP = Image.open(io.BytesIO((RESOURCES / "card-icons" / "Flagship.png").read_bytes())) \
         .resize(Resizing.FLAGSHIP)
 
     # rarity icons
@@ -217,33 +220,33 @@ class NationEmblems:
     """
     Emblems and mappings relating to the various nations.
     """
-    GERMANY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Germany-sm.png").read_bytes()))\
+    GERMANY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Germany-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    ITALY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Italy-sm.png").read_bytes()))\
+    ITALY = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Italy-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    JAPAN = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Japan-sm.png").read_bytes()))\
+    JAPAN = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Japan-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    US = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "United States-sm.png").read_bytes()))\
+    US = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "United States-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    UK = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "United Kingdom-sm.png").read_bytes()))\
+    UK = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "United Kingdom-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    CANADA = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Canada-sm.png").read_bytes()))\
+    CANADA = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Canada-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    AUSTRALIA = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Australia-sm.png").read_bytes()))\
+    AUSTRALIA = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Australia-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    FRANCE = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "France-sm.png").read_bytes()))\
+    FRANCE = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "France-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    GREECE = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Greece-sm.png").read_bytes()))\
+    GREECE = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Greece-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    NETHERLANDS = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Netherlands-sm.png").read_bytes()))\
+    NETHERLANDS = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Netherlands-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    SWEDEN = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Sweden-sm.png").read_bytes()))\
+    SWEDEN = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Sweden-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    USSR = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Soviet Union-sm.png").read_bytes()))\
+    USSR = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Soviet Union-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    FINLAND = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Finland-sm.png").read_bytes()))\
+    FINLAND = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "Finland-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
-    NEW_ZEALAND = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "New Zealand-sm.png").read_bytes()))\
+    NEW_ZEALAND = Image.open(io.BytesIO((RESOURCES / "nation-emblems" / "New Zealand-sm.png").read_bytes())) \
         .resize(Resizing.NATION_EMBLEM)
 
     NATION_MAPPING = {
@@ -309,7 +312,8 @@ class Fonts:
         # dry run until we get the right size
         while not correct_size:
             abilities = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Regular.ttf").read_bytes()), font_size)
-            abilities_title = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()), font_size)
+            abilities_title = ImageFont.truetype(io.BytesIO((RESOURCES / "RobotoSlab-Bold.ttf").read_bytes()),
+                                                 font_size)
             current_y_offset = y_offset + Values.ARMOR_ROW_TOP_MARGIN + 45 + Values.SPECIAL_ABILITY_TOP_MARGIN
             for title, ability in sorted(unit.special_abilities.items(), key=ability_sort):
                 if ability is not None:
@@ -318,7 +322,7 @@ class Fonts:
                 # scale the width of the first line to accommodate the title text.
                 first_line_width = int(
                     (1.2 - ((
-                            Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                                    Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
                     (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                 text = ability
                 if ability is not None:
@@ -430,8 +434,7 @@ class Coordinates:
         """
         w, h = blueprint.size
         print(h)
-        return (Coordinates._DEFAULT_BLUEPRINT_BACK[0], Coordinates._DEFAULT_BLUEPRINT_BACK[1] - h)
-
+        return Coordinates._DEFAULT_BLUEPRINT_BACK[0], Coordinates._DEFAULT_BLUEPRINT_BACK[1] - h
 
 
 def get_war_at_sea_json() -> BinaryIO:

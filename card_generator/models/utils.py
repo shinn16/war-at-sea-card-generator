@@ -6,6 +6,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
+
 class ModelJsonEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, Nation):

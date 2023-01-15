@@ -154,7 +154,7 @@ class Unit:
 
     def with_manufacturer(self, manufacturer: str):
         self.manufacturer = manufacturer
-        return this
+        return self
 
     def with_back_text(self, text: str):
         self.back_text = text

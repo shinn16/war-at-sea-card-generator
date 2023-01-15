@@ -144,9 +144,9 @@ if __name__ == '__main__':
                                                "directory.")
     generate_country_command.add_argument("--full",
                                           help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                         default=False,
-                                         action="store_true")
+                                               " generated.",
+                                          default=False,
+                                          action="store_true")
     # ------------------------------------  Generate From File ------------------------------------
     generate_from_file_command = subparsers.add_parser("generate_from_file",
                                                        help="Generates all units for all countries"
@@ -159,10 +159,10 @@ if __name__ == '__main__':
                                             help="Location to output the generated cards to, defaults to the current "
                                                  "directory.")
     generate_from_file_command.add_argument("--full",
-                                          help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
-                                         default=False,
-                                         action="store_true")
+                                            help="Generates the front and back of the cards. By default only the "
+                                                 "front is generated.",
+                                            default=False,
+                                            action="store_true")
     # --------------------------------------  Generate Single -------------------------------------
     generate_single_command = subparsers.add_parser("generate_single",
                                                     help="Generate a single card for a single unit")
@@ -175,8 +175,8 @@ if __name__ == '__main__':
                                          help="Location to output the generated cards to, defaults to the current "
                                               "directory.")
     generate_single_command.add_argument("--full",
-                                          help="Generates the front and back of the cards. By default only the front is"
-                                           " generated.",
+                                         help="Generates the front and back of the cards. By default only the front is"
+                                              " generated.",
                                          default=False,
                                          action="store_true")
     args = parser.parse_args()
