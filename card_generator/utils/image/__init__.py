@@ -3,7 +3,7 @@ Utility classes and functions for working with images.
 """
 from PIL import Image
 
-from card_generator.utils import get_center_point
+from card_generator.utils import get_center_point, get_axis_center_point
 
 
 def icon_resize(icon: Image.Image, scale: float) -> Image.Image:
@@ -19,7 +19,7 @@ def icon_resize(icon: Image.Image, scale: float) -> Image.Image:
     return icon.resize((new_width, new_height))
 
 
-def center_image(x1: int, y1: int, x2: int, y2: int, image: Image.Image) -> tuple:
+def center_image(x1: int, y1: int, x2: int, y2: int, image: Image.Image) -> tuple[int, int]:
     """
     Centers an image given two points.
     :param x1: x1
@@ -32,6 +32,19 @@ def center_image(x1: int, y1: int, x2: int, y2: int, image: Image.Image) -> tupl
     x, y = get_center_point(x1, y1, x2, y2)
     w, h = image.size
     return int(x - (w / 2)), int(y - (h / 2))
+
+
+def x_center_image(x1: int, x2: int, image: Image.Image) -> int:
+    """
+    Gets the x coordinate for centering an image in a space.
+    :param x1: start of space
+    :param x2: end of space
+    :param image: image to center
+    :return: x point for centering the image
+    """
+    x = get_axis_center_point(x1, x2)
+    w, h = image.size
+    return int(x - (w/2))
 
 
 def expand_transparent_area(x_scale: float, y_scale: float, img: Image.Image) -> Image.Image:

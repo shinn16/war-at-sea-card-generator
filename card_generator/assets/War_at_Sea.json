@@ -47,7 +47,8 @@
                 "set": "Task Force",
                 "set_number": "1/60",
                 "rarity": "Common",
-                "class": "Tribal"
+                "class": "Tribal",
+                "back_text": "HMAS Arunta, the first of three Tribal Class destroyers built at Cockatoo Dockyard during World War II, was commissioned on 30 March 1942 under the command of Commander James C Morrow DSO RAN. Following a period of trials and working up, Arunta commenced operational duty on 17 May 1942 on anti-submarine patrol off the Australian east coast. This service continued until August. This period encompassed the Japanese midget submarine attack on Sydney Harbour and the loss of three ships that were torpedoed in June off the coast of New South Wales. Japanese submarines remained active in July, sinking four ships totalling 15,000 tons."
             },
             {
                 "name": "HMAS Australia",

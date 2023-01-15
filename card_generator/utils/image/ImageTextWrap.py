@@ -40,7 +40,7 @@ class ImageTextWrap:
         self._margin = margin
         self._last_x_pixel_checked = 0
         self._last_x_pixel_written = 0
-        print(f"Image width: {self._image_width}, height: {self._image_height}")
+        log.debug(f"Image width: {self._image_width}, height: {self._image_height}")
 
     @staticmethod
     def _split_last_word(buffer: str) -> Tuple[str, str]:

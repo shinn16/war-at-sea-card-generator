@@ -13,7 +13,7 @@ from card_generator.models.nation import Nation
 from card_generator.models.unit import UnitType, Unit
 from card_generator import assets
 from card_generator.utils import ability_sort
-from card_generator.utils.image import icon_resize
+from card_generator.utils.image import icon_resize, center_image, x_center_image
 from card_generator.utils.text import x_center_text, center_text
 
 RESOURCES = pkg_resources.files(assets)
@@ -321,8 +321,7 @@ class Fonts:
                 first_line_offset = abilities_title.getsize(title)[0]
                 # scale the width of the first line to accommodate the title text.
                 first_line_width = int(
-                    (1.2 - ((
-                                    Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
+                    (1.2 - ((Values.SPECIAL_ABILITY_LEFT_MARGIN + first_line_offset) / Values.ATTACK_RECTANGLE_END_X)) *
                     (Values.SPECIAL_ABILITY_TEXT_WIDTH * (25 / font_size)))
                 text = ability
                 if ability is not None:
@@ -433,8 +432,8 @@ class Coordinates:
         :return tuple of x, y coordinate.
         """
         w, h = blueprint.size
-        print(h)
-        return Coordinates._DEFAULT_BLUEPRINT_BACK[0], Coordinates._DEFAULT_BLUEPRINT_BACK[1] - h
+        return x_center_image(Coordinates._DEFAULT_BLUEPRINT_BACK[0], 1025, blueprint), \
+            Coordinates._DEFAULT_BLUEPRINT_BACK[1] - h
 
 
 def get_war_at_sea_json() -> BinaryIO:

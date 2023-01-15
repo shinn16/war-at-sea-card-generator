@@ -11,10 +11,9 @@ class BlueprintSettings:
         """
         Creates optional settings
         :param settings:
-        :return:
         """
         fields = ["max_width", "x_placement", "y_placement", "file_name",
-                  "back_max_width", "back_x_placement, back_y_placement"]
+                  "back_max_width", "back_x_placement", "back_y_placement"]
         for field in fields:
             try:
                 self.__setattr__(field, settings[field])
@@ -25,7 +24,6 @@ class BlueprintSettings:
 class Unit:
     def __init__(self):
         self.name = None
-        # self.nation = None
         self.flagship = None
         self.points = None
         self.year = None

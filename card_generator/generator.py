@@ -575,7 +575,14 @@ class Generator:
             w, h = blueprint.size
             if w > Values.BLUEPRINT_MAX_WIDTH_BACK:
                 w = int(Values.BLUEPRINT_MAX_WIDTH_BACK / w)
-            blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
+            if self.unit.blue_print_settings.back_y_placement is not None:
+                blueprint_layer.paste(blueprint,
+                                      (
+                                          self.unit.blue_print_settings.back_x_placement,
+                                          self.unit.blue_print_settings.back_y_placement)
+                                      )
+            else:
+                blueprint_layer.paste(blueprint, Coordinates.get_default_blueprint_back_coordinates(blueprint))
             text_wrap = ImageTextWrap(Fonts.BACK_TEXT,
                                       blueprint_layer,
                                       wrap_over=[[255, 255, 255, 0], [0, 0, 0, 0]],
@@ -630,6 +637,7 @@ class PrintFormatter:
         :param spacing: The spacing between cards on all sides in inches.
         :return: None
         """
+        # TODO needs to handle printing the back of the cards properly too. Preferable front and back on the same sheet.
         cards = list()
         # get all the cards to be printed
         for card in os.listdir(card_folder):
