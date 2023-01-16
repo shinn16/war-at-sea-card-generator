@@ -21,9 +21,9 @@ jobs:
       - name: Build Decks of Completed Countries
         run: |
           PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_countries_file -f finished-countries.txt --full
-          for country in ./cards; do 
+          for country in ./cards/*; do 
             echo "Generating card sheet for $country"
-            python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"
+            PYTHONPATH=$(pwd) python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"
           done
       - name: Archive Cards
         run: |
