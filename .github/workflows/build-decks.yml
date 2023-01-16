@@ -21,15 +21,25 @@ jobs:
       - name: Build Decks of Completed Countries
         run: |
           PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_countries_file -f finished-countries.txt --full
-          for country in ./cards do; python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"; done
+          for country in ./cards do 
+            echo "Generating card sheet for $country"
+            python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"
+          done
       - name: Archive Cards
         run: |
           zip -r cards.zip ./cards
           zip -r card_sheets.zip ./card_sheets
-      - name: Upload to gdrive
+      - name: Upload Cards to Google Drive
         uses: adityak74/google-drive-upload-git-action@main
         with:
           credentials: ${{ secrets.credentials }}
           filename: "cards.zip"
+          folderId: ${{ secrets.folder_id }}
+          overwrite: "true"
+      - name: Upload Card Sheets to Google Drive
+        uses: adityak74/google-drive-upload-git-action@main
+        with:
+          credentials: ${{ secrets.credentials }}
+          filename: "card_sheets.zip"
           folderId: ${{ secrets.folder_id }}
           overwrite: "true"
