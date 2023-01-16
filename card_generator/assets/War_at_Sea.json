@@ -3245,7 +3245,8 @@
                 "set": "Surface Action",
                 "set_number": "1/40",
                 "rarity": "Common",
-                "class":  "v"
+                "class":  "v",
+                "back_text": "HMCS Algonquin was a V-class destroyer, laid down for the Royal Navy as HMS Valentine (R17) and transferred to the Royal Canadian Navy on completion during the Second World War. She saw service in the Second World War escorting the aircraft carriers that bombed the Tirpitz in March 1944 and providing naval gunfire support to the Normandy landings. The destroyer was to participate in the Pacific Campaign but the war ended before her arrival in that theatre."
             },
             {
                 "name": "HMCS Haida",
@@ -3293,7 +3294,8 @@
                 "set": "Task Force",
                 "set_number": "2/60",
                 "rarity": "Common",
-                "class": "tribal"
+                "class": "tribal",
+                "back_text": "HMCS Haida is a Tribal-class destroyer that served in the Royal Canadian Navy (RCN) from 1943 to 1963, participating in World War II and the Korean War. She was named for the Haida people.\n\nThe only surviving Tribal-class destroyer out of 27 vessels constructed for the RCN, the Royal Navy, and the Royal Australian Navy between 1937 and 1945, Haida sank more enemy surface tonnage than any other Canadian warship and as such is commonly referred to as the \"Fightingest Ship in the Royal Canadian Navy\".\n\nDesignated a National Historic Site of Canada in 1984, she now serves as a museum ship berthed next to HMCS Star, an active Royal Canadian Naval Reserve Division, in Hamilton, Ontario. In 2018, Haida was designated the ceremonial flagship of the RCN."
             },
             {
                 "name": "HMCS Sackville",
@@ -3336,7 +3338,8 @@
                 "set": "Flank Speed",
                 "set_number": "1/40",
                 "rarity": "Common",
-                "class": "flower"
+                "class": "flower",
+                "back_text": "HMCS Sackville is a Flower-class corvette that served in the Royal Canadian Navy and later served as a civilian research vessel. She is now a museum ship located in Halifax, Nova Scotia, and the last surviving Flower-class corvette."
             },
             {
                 "name": "HMCS St. Laurent",
@@ -3384,7 +3387,8 @@
                 "set": "Set V",
                 "set_number": "2/39",
                 "rarity": "Common",
-                "class": "c"
+                "class": "c",
+                "back_text": "HMS Cygnet was a C-class destroyer built for the Royal Navy in the early 1930s. The ship was initially assigned to the Home Fleet, although she was temporarily deployed in the Red Sea during the Abyssinia Crisis of 1935–36. Cygnet was sold to the Royal Canadian Navy (RCN) in late 1937 and renamed HMCS St. Laurent. She was stationed on the west coast of Canada when World War II began in September 1939, and had to be transferred to the Atlantic coast for convoy escort duties. She served as a convoy escort in the Battle of the Atlantic and participated in the sinking of two German submarines. The ship was on anti-submarine patrols during the invasion of Normandy, and was employed as a troop transport after VE Day for returning Canadian servicemen. St. Laurent was decommissioned in late 1945 and scrapped in 1947."
             },
             {
                 "name": "HMCS Uganda",
@@ -3432,7 +3436,8 @@
                 "set": "Condition Zebra",
                 "set_number": "1/40",
                 "rarity": "Uncommon",
-                "class": "fiji"
+                "class": "fiji",
+                "back_text": "HMS Uganda was a Second World War-era Fiji-class light cruiser launched in 1941. She served in the Royal Navy during 1943 and 1944, including operations in the Mediterranean, and was transferred to the Royal Canadian Navy as HMCS Uganda in October 1944. She served in the Pacific theatre in 1945 and was put into reserve in 1947. When she was reactivated for the Korean War in 1952 she was renamed HMCS Quebec. She was decommissioned for the last time in 1956 and scrapped in Japan in 1961."
             }
         ],
         "name": "Canada",

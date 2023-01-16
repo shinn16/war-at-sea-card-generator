@@ -543,7 +543,7 @@ class Generator:
                                       blueprint_layer,
                                       wrap_over=[[255, 255, 255, 0], [0, 0, 0, 0]],
                                       margin=0)
-            blueprint_layer = text_wrap.wrap_around(self.unit.back_text, Coordinates.BACK_TEXT)
+            blueprint_layer = text_wrap.wrap_around(self.unit.back_text, start_coord=Coordinates.BACK_TEXT)
 
         populate_header()
         populate_text_area()

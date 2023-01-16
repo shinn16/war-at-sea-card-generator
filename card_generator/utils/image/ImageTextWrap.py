@@ -92,14 +92,17 @@ class ImageTextWrap:
         return True
 
     def wrap_around(self, text: str,
+                    font_gap: int = 2,
                     start_coord: tuple[int, int] = (0, 0)) -> Image.Image:
         """
         Wraps text around the non-transparent part of an image.
 
-        :param start_coord:
         :param text: text to wrap
+        :param font_gap:
+        :param start_coord:
         :return: Image with applied text wrapping.
         """
+        font_height = self._font.size
         base_draw = Draw(self._image, "RGBA")
         # lines to be written out
         lines = list()
@@ -118,7 +121,7 @@ class ImageTextWrap:
                 exchange_buffer = ""
                 new_line = False
             buffer += character
-            buffer_width, font_height = self._font.getsize(buffer)
+            buffer_width = self._font.getsize(buffer)[0]
             buffer_width += start_coord[0]
             if y_offset + font_height >= self._image_height:
                 log.warning("The rest of the text could not be wrapped.")
@@ -144,12 +147,12 @@ class ImageTextWrap:
                         fit_found = self._is_blank_area(buffer_width, y_offset, font_height)
                 if fit_found:
                     lines.append(buffer)
-                y_offset += self._font.size
+                y_offset += font_height
             # catch the last line
             elif i == len(text) - 1:
                 lines.append(buffer)
         y_offset = 0 + start_coord[1]
         for line in lines:
             base_draw.text((0 + start_coord[0], y_offset), line, font=self._font, fill=Colors.WHITE)
-            y_offset += self._font.size
+            y_offset += font_height
         return self._image

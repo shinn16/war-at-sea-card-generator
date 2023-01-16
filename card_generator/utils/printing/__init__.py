@@ -142,6 +142,8 @@ class PrintFormatter:
         :param spacing: The spacing between cards on all sides in inches.
         :return: None
         """
+        logger.info(f"Preparing to print on {page_format.name.lower()} page format with {card_format.name.lower()}"
+                    f" card format")
         card_backs = set()
         cards = Queue()
         for card in sorted(os.listdir(card_folder)):
@@ -162,7 +164,7 @@ class PrintFormatter:
         logger.info("Page fits {} cards".format(cards_per_page))
         logger.debug("Cards per row: {}".format(cards_per_row))
         logger.debug("Cards per column: {}".format(cards_per_column))
-        logger.info("Will need to print {} pages front and back to print all cards.".format(number_of_pages))
+        logger.info("Will need to print {} pages front and back to print all cards".format(number_of_pages))
 
         for page_number in range(number_of_pages):
             page_number += 1
@@ -195,7 +197,7 @@ class PrintFormatter:
                                 # if we are getting the backs, drain the queue.
                                 card = cards_queue_list[column].pop()
                                 logger.debug(f"Popping {card} from deque {column}")
-                                logger.debug(f"Adding {card} to page {page_number}-back.")
+                                logger.debug(f"Adding {card} to page {page_number}-back")
                                 card_image = card.get_back()
                             logger.debug(f"Current coordinate ({current_x}, {current_y})")
                             page.paste(card_image, (current_x, current_y))

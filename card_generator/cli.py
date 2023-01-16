@@ -53,7 +53,7 @@ def generate_country(country: str, output_folder: str = None, full: bool = False
         logger.error(e)
 
 
-def generate_from_file(file: str, output_folder: str = None, full: bool = False):
+def generate_from_countries_file(file: str, output_folder: str = None, full: bool = False):
     """
     Generates units for countries listed in a new line delimited text file.
     :param file: files containing countries to generate for.
@@ -105,17 +105,31 @@ def generate_single(country: str, unit: str, output_folder: str = None, full: bo
     data_file.close()
 
 
-def generate_print_sheet(cards_folder: str, output_folder: str = "./"):
-    PrintFormatter.generate_print_layout(PageFormat.LETTER, CardFormat.STANDARD,
+def generate_print_sheet(cards_folder: str,
+                         output_folder: str = "./",
+                         ppi: int = 300,
+                         spacing: int = 0,
+                         card_format: str = "STANDARD",
+                         page_format: str = "LETTER"):
+    try:
+        card_format = CardFormat[card_format]
+        page_format = PageFormat[page_format]
+    except Exception as e:
+        logger.error(f"The supplied format is not accepted at this time: {e}")
+        exit(1)
+    PrintFormatter.generate_print_layout(page_format,
+                                         card_format,
                                          cards_folder,
-                                         output_folder)
+                                         output_folder,
+                                         ppi=ppi,
+                                         spacing=spacing)
 
 
 if __name__ == '__main__':
     commands = {
         "generate_all": generate_all,
         "generate_country": generate_country,
-        "generate_from_file": generate_from_file,
+        "generate_from_countries_file": generate_from_countries_file,
         "generate_single": generate_single,
         "generate_print_sheet": generate_print_sheet
     }
@@ -155,8 +169,8 @@ if __name__ == '__main__':
                                                " generated.",
                                           default=False,
                                           action="store_true")
-    # ------------------------------------  Generate From File ------------------------------------
-    generate_from_file_command = subparsers.add_parser("generate_from_file",
+    # ---------------------------------  Generate From Countries File -----------------------------
+    generate_from_file_command = subparsers.add_parser("generate_from_countries_file",
                                                        help="Generates all units for all countries"
                                                             " specified in a text file.")
     generate_from_file_command.description = "Generate all units for all countries specified in a new line delimited" \
@@ -195,8 +209,25 @@ if __name__ == '__main__':
     generate_printable_sheet_command.add_argument("-f", "--cards-folder", required=True,
                                                   help="Location of the cards to print")
     generate_printable_sheet_command.add_argument("-o", "--output-folder",
+                                                  default="./",
                                                   help="Location to output the generated print sheet to, defaults to "
                                                        "the current directory.")
+    generate_printable_sheet_command.add_argument("-d", "--ppi",
+                                                  default=300,
+                                                  help="The pixels to print per inch (check your printer resolution "
+                                                       "settings), defaults to 300.")
+    generate_printable_sheet_command.add_argument("-s", "--spacing",
+                                                  default=0,
+                                                  help="The amount of distance between each card on the print, default"
+                                                       "is 0.")
+    generate_printable_sheet_command.add_argument("-c", "--card-format",
+                                                  default="STANDARD",
+                                                  help="The format of the cards, defaults to STANDARD (2.5\"X3.5\")."
+                                                       "At present there are no other accepted card formats.")
+    generate_printable_sheet_command.add_argument("-p", "--page-format",
+                                                  default="LETTER",
+                                                  help="The page format for printing. Defaults to LETTER. Other "
+                                                       "accepted values are A4 and LEGAL.")
 
     args = parser.parse_args()
     # check the log level

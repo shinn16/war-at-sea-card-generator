@@ -20,9 +20,11 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Build Decks of Completed Countries
         run: |
-          PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_file -f finished-countries.txt
+          PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_countries_file -f finished-countries.txt --full
+          for country in ./cards do;  PYTHONPATH=$(pwd) python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"; done
       - name: Archive Cards
-        run: zip -r cards.zip ./cards
+        run: |
+          zip -r cards.zip ./cards
       - name: Upload to gdrive
         uses: adityak74/google-drive-upload-git-action@main
         with:
