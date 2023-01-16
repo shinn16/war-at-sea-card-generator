@@ -21,10 +21,11 @@ jobs:
       - name: Build Decks of Completed Countries
         run: |
           PYTHONPATH=$(pwd) python card_generator/cli.py generate_from_countries_file -f finished-countries.txt --full
-          for country in ./cards do;  PYTHONPATH=$(pwd) python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"; done
+          for country in ./cards do; python card_generator/cli.py generate_print_sheet -f "./cards/$country" -o "./card_sheets/$country"; done
       - name: Archive Cards
         run: |
           zip -r cards.zip ./cards
+          zip -r card_sheets.zip ./card_sheets
       - name: Upload to gdrive
         uses: adityak74/google-drive-upload-git-action@main
         with:
