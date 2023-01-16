@@ -1,15 +1,46 @@
 import enum
 
 
+def ability_sort(item: tuple) -> int:
+    """
+    Used to sort special ability headings. Prioritizes headings with no associated text, otherwise sorts by alphabetical
+    order based on ability name.
+    :param item: ability
+    :return: sorting order.
+    """
+    code = 0
+    # items with no value are ranked higher in priority
+    if item[1] is None:
+        code += ord(str.lower(item[0][0]))
+    else:
+        code += 26
+        code += ord(str.lower(item[0][0]))
+    return code
+
+
 class UnitType(enum.Enum):
     SHIP = 0,
     PLANE = 1
 
 
+class BlueprintSettings:
+    def __init__(self, settings: dict):
+        """
+        Creates optional settings
+        :param settings:
+        """
+        fields = ["max_width", "x_placement", "y_placement", "file_name",
+                  "back_max_width", "back_x_placement", "back_y_placement"]
+        for field in fields:
+            try:
+                self.__setattr__(field, settings[field])
+            except KeyError:
+                self.__setattr__(field, None)
+
+
 class Unit:
-    def __init__(self) -> None:
+    def __init__(self):
         self.name = None
-        # self.nation = None
         self.flagship = None
         self.points = None
         self.year = None
@@ -32,6 +63,9 @@ class Unit:
         self.set_number = None
         self.rarity = None
         self.ship_class = None
+        self.manufacturer = None
+        self.blue_print_settings = None
+        self.back_text = ""
 
     def with_name(self, name: str):
         self.name = name
@@ -127,6 +161,18 @@ class Unit:
 
     def with_ship_class(self, ship_class: str):
         self.ship_class = ship_class
+        return self
+
+    def with_blueprint_settings(self, settings: dict):
+        self.blue_print_settings = BlueprintSettings(settings)
+        return self
+
+    def with_manufacturer(self, manufacturer: str):
+        self.manufacturer = manufacturer
+        return self
+
+    def with_back_text(self, text: str):
+        self.back_text = text
         return self
 
     def get_attacks(self) -> tuple:
