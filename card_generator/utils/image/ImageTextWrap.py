@@ -77,7 +77,8 @@ class ImageTextWrap:
         :param buffer_height: height of the current buffer
         :return: True is the checked area is blank, otherwise False.
         """
-        log.debug(f"Checking pixels {self._last_x_pixel_checked},{y_offset} to {buffer_width},{y_offset + buffer_height - 1}")
+        log.debug(f"Checking pixels {self._last_x_pixel_checked},{y_offset} "
+                  f"to {buffer_width},{y_offset + buffer_height - 1}")
         for y in range(y_offset, y_offset + buffer_height - 1):
             for x in range(self._last_x_pixel_checked, buffer_width + 1):
                 log.debug(f"Checking pixel at {x},{y}")
@@ -124,9 +125,12 @@ class ImageTextWrap:
                 break
             # if the width of the line is greater than the width of the image we are producing, break the line
             log.debug(f"checking character: {character}")
-            if buffer_width >= self._image_width or \
+            if buffer_width >= self._image_width or character == "\n" or\
                     not self._is_blank_area(buffer_width, y_offset, font_height, start_x=start_coord[0]):
-                buffer, exchange_buffer = self._split_last_word(buffer)
+                if character == "\n":
+                    buffer = buffer.strip("\n")
+                else:
+                    buffer, exchange_buffer = self._split_last_word(buffer)
                 new_line = True
                 if buffer == "":
                     # only one word was in the buffer, find a place to put it before continuing

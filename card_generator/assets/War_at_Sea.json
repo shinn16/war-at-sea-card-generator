@@ -48,7 +48,7 @@
                 "set_number": "1/60",
                 "rarity": "Common",
                 "class": "Tribal",
-                "back_text": "HMAS Arunta, the first of three Tribal Class destroyers built at Cockatoo Dockyard during World War II, was commissioned on 30 March 1942 under the command of Commander James C Morrow DSO RAN. Following a period of trials and working up, Arunta commenced operational duty on 17 May 1942 on anti-submarine patrol off the Australian east coast. This service continued until August. This period encompassed the Japanese midget submarine attack on Sydney Harbour and the loss of three ships that were torpedoed in June off the coast of New South Wales. Japanese submarines remained active in July, sinking four ships totalling 15,000 tons."
+                "back_text": "HMAS Arunta was a Tribal-class destroyer of the Royal Australian Navy (RAN). Named for the Arrernte Aboriginal peoples, the destroyer was laid down in 1939 and commissioned into the RAN in 1942.\n\nArunta fought during the second half of World War II; initially as a convoy escort and patrol ship, then in the shore bombardment and amphibious landing support roles while attached to the United States 7th Fleet. During the war, she was responsible for sinking Japanese submarine Ro-33 off Port Moresby on 24 August 1942, and earned five battle honours (one of which was later rescinded). After the war's end, Arunta underwent two deployments to Japan as part of the British Commonwealth Occupation Force."
             },
             {
                 "name": "HMAS Australia",
@@ -87,7 +87,8 @@
                 "set": "Set V",
                 "set_number": "1/39",
                 "rarity": "Rare",
-                "class": "County"
+                "class": "County",
+                "back_text": "HMAS Australia was a County-class heavy cruiser of the Royal Australian Navy (RAN). One of two Kent-subclass ships ordered for the RAN in 1924, Australia was laid down in Scotland in 1925, and entered service in 1928. Apart from an exchange deployment to the Mediterranean from 1934 to 1936, during which she became involved in the planned British response to the Abyssinia Crisis, Australia operated in local and South-West Pacific waters until World War II began.\n\nThe cruiser remained near Australia until mid-1940, when she was deployed for duties in the eastern Atlantic, including hunts for German ships and participation in Operation Menace. During 1941, Australia operated in home and Indian Ocean waters, but was reassigned as flagship of the ANZAC Squadron in early 1942. As part of this force (which was later redesignated Task Force 44, then Task Force 74), Australia operated in support of United States naval and amphibious operations throughout South-East Asia until the start of 1945, including involvement in the battles at the Coral Sea and Savo Island, the amphibious landings at Guadalcanal and Leyte Gulf, and numerous actions during the New Guinea campaign. She was forced to withdraw following a series of kamikaze attacks during the invasion of Lingayen Gulf. The prioritisation of shipyard work in Australia for British Pacific Fleet vessels saw the Australian cruiser sail to England for repairs, where she was at the end of the war."
             },
             {
                 "name": "HMAS Canberra",
@@ -127,7 +128,8 @@
                 "set": "War At Sea",
                 "set_number": "1/64",
                 "rarity": "Rare",
-                "class": "County"
+                "class": "County",
+                "back_text": "HMAS Canberra, named after the Australian capital city of Canberra, was a Royal Australian Navy (RAN) heavy cruiser of the Kent sub-class of County-class cruisers. Constructed in Scotland during the mid-1920s, commissioned in 1928, and spent the first part of her career primarily operating in Australian waters, with some deployments to the China Station.\n\nAt the start of World War II, Canberra was initially used for patrols and convoy escort around Australia. In July 1940, she was reassigned as a convoy escort between Western Australia, Sri Lanka, and South Africa. During this deployment, which ended in mid-1941, Canberra was involved in the hunt for several German auxiliary cruisers. The cruiser resumed operations in Australian waters, but when Japan entered the war, she was quickly reassigned to convoy duties around New Guinea, interspersed with operations in Malaysian and Javanese waters. Canberra later joined Task Force 44, and was involved in the Guadalcanal Campaign and the Tulagi landings.\n\nOn 9 August 1942, Canberra was struck by the opening Japanese shots of the Battle of Savo Island, and was quickly damaged. Unable to propel herself, the cruiser was evacuated and sunk in Ironbottom Sound by two American destroyers."
             },
             {
                 "name": "HMAS Nizam",
@@ -175,7 +177,8 @@
                 "set": "Starter Set",
                 "set_number": "1/8",
                 "rarity": "Pre",
-                "class": "N"
+                "class": "N",
+                "back_text": "HMAS Nizam was an N-class destroyer of the Royal Australian Navy (RAN). The destroyer, named after Osman Ali Khan, the last Nizam of Hyderabad, was commissioned into the RAN in 1940, although the ship remained the property of the Royal Navy for her entire career.\n\nNizam spent the early part of her service in the Atlantic, then was reassigned to the Mediterranean, where she was involved in the Crete and Syria-Lebanon Campaigns, the Tobruk Ferry Service, and the Malta Convoys. During 1942, the destroyer was involved in Operation Vigorous and the Madagascar Campaign. The next year saw the ship involved in patrols of the Indian and South Atlantic oceans, searching for German ships and submarines, and rescuing the survivors of U-boat attacks. After returning to Australia for a refit at the end of 1944, ten sailors were washed overboard in February 1945, with none ever seen again. The rest of World War II was spent operating in the Philippines and New Guinea regions."
             },
             {
                 "name": "HMAS Sydney",
@@ -217,7 +220,8 @@
                 "set": "War At Sea",
                 "set_number": "2/64",
                 "rarity": "Uncommon",
-                "class": "Leander"
+                "class": "Leander",
+                "back_text": "HMAS Sydney, named after the Australian city of Sydney, was one of three modified Leander-class light cruisers operated by the Royal Australian Navy (RAN). Ordered for the Royal Navy as HMS Phaeton, the cruiser was purchased by the Australian government and renamed prior to her 1934 launch.\n\nDuring the early part of her operational history, Sydney helped enforce sanctions during the Abyssinian crisis, and at the start of World War II was assigned to convoy escort and patrol duties in Australian waters. In May 1940, Sydney joined the British Mediterranean Fleet for an eight-month deployment, during which she sank two Italian warships, participated in multiple shore bombardments, and provided support to the Malta Convoys. On her return to Australia in February 1941, Sydney resumed convoy escort and patrol duties in home waters.\n\nOn 19 November 1941, Sydney was involved in a destructive engagement with the German auxiliary cruiser Kormoran, and was lost with all hands (645 aboard)."
             }
         ],
         "name": "Australia",

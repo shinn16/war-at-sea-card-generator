@@ -542,7 +542,7 @@ class Generator:
             text_wrap = ImageTextWrap(Fonts.BACK_TEXT,
                                       blueprint_layer,
                                       wrap_over=[[255, 255, 255, 0], [0, 0, 0, 0]],
-                                      margin=5)
+                                      margin=0)
             blueprint_layer = text_wrap.wrap_around(self.unit.back_text, Coordinates.BACK_TEXT)
 
         populate_header()
