@@ -1,6 +1,6 @@
 import unittest
 
-from card_generator.utils.printing import PrintFormatter, PageFormat, CardFormat, CardFace
+from card_generator.utils.printing import PrintFormatter, PageFormat, CardFormat, Card
 
 
 class PrintTestCases(unittest.TestCase):
@@ -10,7 +10,7 @@ class PrintTestCases(unittest.TestCase):
                                              "/Users/shinn/Desktop/print-test")
 
     def test_card_rotate(self):
-        CardFace(
+        Card(
             "C:\\Users\\shinn\\Desktop\\cards\\Australia\\HMAS Arunta.png",
             True,
             CardFormat.STANDARD,
