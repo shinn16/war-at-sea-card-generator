@@ -1,6 +1,23 @@
 import enum
 
 
+def ability_sort(item: tuple) -> int:
+    """
+    Used to sort special ability headings. Prioritizes headings with no associated text, otherwise sorts by alphabetical
+    order based on ability name.
+    :param item: ability
+    :return: sorting order.
+    """
+    code = 0
+    # items with no value are ranked higher in priority
+    if item[1] is None:
+        code += ord(str.lower(item[0][0]))
+    else:
+        code += 26
+        code += ord(str.lower(item[0][0]))
+    return code
+
+
 class UnitType(enum.Enum):
     SHIP = 0,
     PLANE = 1

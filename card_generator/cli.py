@@ -2,9 +2,10 @@ import json
 import argparse
 import logging
 
-from card_generator.generator import Generator
+from card_generator import Generator
 from card_generator.models.assets import get_war_at_sea_json
 from card_generator.models.utils import load_json
+from card_generator.utils.printing import PrintFormatter, PageFormat, CardFormat
 
 logger = logging.getLogger(__name__)
 
@@ -104,12 +105,19 @@ def generate_single(country: str, unit: str, output_folder: str = None, full: bo
     data_file.close()
 
 
+def generate_print_sheet(cards_folder: str, output_folder: str = "./"):
+    PrintFormatter.generate_print_layout(PageFormat.LETTER, CardFormat.STANDARD,
+                                         cards_folder,
+                                         output_folder)
+
+
 if __name__ == '__main__':
     commands = {
         "generate_all": generate_all,
         "generate_country": generate_country,
         "generate_from_file": generate_from_file,
-        "generate_single": generate_single
+        "generate_single": generate_single,
+        "generate_print_sheet": generate_print_sheet
     }
 
     parser = argparse.ArgumentParser(prog="War at Sea Card Generator",
@@ -179,9 +187,21 @@ if __name__ == '__main__':
                                               " generated.",
                                          default=False,
                                          action="store_true")
+
+    # -----------------------------------  Generate Print Sheet ----------------------------------
+    generate_printable_sheet_command = subparsers.add_parser("generate_print_sheet",
+                                                             help="Generate a printable sheet of cards")
+    generate_printable_sheet_command.description = "Generate a printable sheet of cards"
+    generate_printable_sheet_command.add_argument("-f", "--cards-folder", required=True,
+                                                  help="Location of the cards to print")
+    generate_printable_sheet_command.add_argument("-o", "--output-folder",
+                                                  help="Location to output the generated print sheet to, defaults to "
+                                                       "the current directory.")
+
     args = parser.parse_args()
     # check the log level
     logging.basicConfig(level=logging.getLevelName(args.log_level))
+    logging.getLogger("PIL").propagate = False
 
     # lookup the command
     command = commands[args.command]

@@ -12,8 +12,8 @@ from PIL import ImageFont, Image
 from card_generator.models.nation import Nation
 from card_generator.models.unit import UnitType, Unit
 from card_generator import assets
-from card_generator.utils import ability_sort
-from card_generator.utils.image import icon_resize, center_image, x_center_image
+from card_generator.models.unit import ability_sort
+from card_generator.utils.image import icon_resize, x_center_image
 from card_generator.utils.text import x_center_text, center_text
 
 RESOURCES = pkg_resources.files(assets)
