@@ -111,7 +111,11 @@ class Generator:
                 scale = (Values.SILHOUETTE_BASE_WIDTH + Values.DROP_SHADOW_GROWTH) / w
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 w, h = silhouette.size
-                # Todo the silhouettes need to be scaled vertically too if they are too tall.
+                # now scale by height if needed
+                if h >= Values.SILHOUETTE_SECTION_HEIGHT + Values.SILHOUETTE_HEIGHT_SHIP_OFFSET:
+                    scale = (Values.SILHOUETTE_SECTION_HEIGHT + Values.SILHOUETTE_HEIGHT_SHIP_OFFSET)/h
+                    silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                    w, h = silhouette.size
                 transparent_overlay.paste(silhouette,
                                           (Values.SILHOUETTE_X_MARGIN - Values.DROP_SHADOW_OFFSET,
                                            Values.SILHOUETTE_SECTION_HEIGHT - h))
@@ -494,7 +498,11 @@ class Generator:
                 scale = (Values.SILHOUETTE_BASE_WIDTH + Values.DROP_SHADOW_GROWTH) / w
                 silhouette = silhouette.resize((int(w * scale), int(h * scale)))
                 w, h = silhouette.size
-                # Todo the silhouettes need to be scaled vertically too if they are too tall.
+                # scale height if needed
+                if h >= Values.SILHOUETTE_SECTION_HEIGHT + Values.SILHOUETTE_HEIGHT_SHIP_OFFSET:
+                    scale = (Values.SILHOUETTE_SECTION_HEIGHT + Values.SILHOUETTE_HEIGHT_SHIP_OFFSET) / h
+                    silhouette = silhouette.resize((int(w * scale), int(h * scale)))
+                    w, h = silhouette.size
                 transparent_overlay.paste(silhouette,
                                           (Values.SILHOUETTE_X_MARGIN - Values.DROP_SHADOW_OFFSET,
                                            Values.SILHOUETTE_SECTION_HEIGHT - h - 2))

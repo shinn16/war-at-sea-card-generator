@@ -76,6 +76,7 @@ class Values:
     SET_Y_OFFSET = 990
 
     SILHOUETTE_SECTION_HEIGHT = 97
+    SILHOUETTE_HEIGHT_SHIP_OFFSET = 30
     SILHOUETTE_X_MARGIN = 65
     SILHOUETTE_BASE_WIDTH = 380
     DROP_SHADOW_GROWTH = 150  # the true growth is only 90, but additional padding is added
