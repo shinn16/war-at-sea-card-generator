@@ -42,4 +42,4 @@ the [War at Sea Cards Folder](https://drive.google.com/drive/folders/1xM3eKRPzZV
 
 ## How to Contribute
 If you are interested in contributing, please join our discord server at https://discord.gg/EeWxsBqy.
-There is also a [guide](readme-resources/War%20at%20Sea%20Card%20Generator%20Silhouette%20Tutorial.pdf) on how to create assets for the cards.
+There is also a [guide](https://docs.google.com/document/d/1BWnaTWDJ_4lq5-5IzVEvzLPgyG741Fj-/edit) on how to create assets for the cards.
